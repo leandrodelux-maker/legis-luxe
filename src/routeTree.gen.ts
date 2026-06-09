@@ -16,6 +16,7 @@ import { Route as SessoesRouteImport } from './routes/sessoes'
 import { Route as NoticiasRouteImport } from './routes/noticias'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
 import { Route as AdminVereadoresIndexRouteImport } from './routes/admin/vereadores/index'
 import { Route as AdminTransparenciaIndexRouteImport } from './routes/admin/transparencia/index'
@@ -56,6 +57,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/admin/dashboard',
   path: '/admin/dashboard',
@@ -86,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/transparencia': typeof TransparenciaRoute
   '/vereadores': typeof VereadoresRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/': typeof AdminIndexRoute
   '/admin/projetos/': typeof AdminProjetosIndexRoute
   '/admin/transparencia/': typeof AdminTransparenciaIndexRoute
   '/admin/vereadores/': typeof AdminVereadoresIndexRoute
@@ -99,6 +106,7 @@ export interface FileRoutesByTo {
   '/transparencia': typeof TransparenciaRoute
   '/vereadores': typeof VereadoresRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin': typeof AdminIndexRoute
   '/admin/projetos': typeof AdminProjetosIndexRoute
   '/admin/transparencia': typeof AdminTransparenciaIndexRoute
   '/admin/vereadores': typeof AdminVereadoresIndexRoute
@@ -113,6 +121,7 @@ export interface FileRoutesById {
   '/transparencia': typeof TransparenciaRoute
   '/vereadores': typeof VereadoresRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/': typeof AdminIndexRoute
   '/admin/projetos/': typeof AdminProjetosIndexRoute
   '/admin/transparencia/': typeof AdminTransparenciaIndexRoute
   '/admin/vereadores/': typeof AdminVereadoresIndexRoute
@@ -128,6 +137,7 @@ export interface FileRouteTypes {
     | '/transparencia'
     | '/vereadores'
     | '/admin/dashboard'
+    | '/admin/'
     | '/admin/projetos/'
     | '/admin/transparencia/'
     | '/admin/vereadores/'
@@ -141,6 +151,7 @@ export interface FileRouteTypes {
     | '/transparencia'
     | '/vereadores'
     | '/admin/dashboard'
+    | '/admin'
     | '/admin/projetos'
     | '/admin/transparencia'
     | '/admin/vereadores'
@@ -154,6 +165,7 @@ export interface FileRouteTypes {
     | '/transparencia'
     | '/vereadores'
     | '/admin/dashboard'
+    | '/admin/'
     | '/admin/projetos/'
     | '/admin/transparencia/'
     | '/admin/vereadores/'
@@ -168,6 +180,7 @@ export interface RootRouteChildren {
   TransparenciaRoute: typeof TransparenciaRoute
   VereadoresRoute: typeof VereadoresRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminIndexRoute: typeof AdminIndexRoute
   AdminProjetosIndexRoute: typeof AdminProjetosIndexRoute
   AdminTransparenciaIndexRoute: typeof AdminTransparenciaIndexRoute
   AdminVereadoresIndexRoute: typeof AdminVereadoresIndexRoute
@@ -224,6 +237,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/dashboard': {
       id: '/admin/dashboard'
       path: '/admin/dashboard'
@@ -264,6 +284,7 @@ const rootRouteChildren: RootRouteChildren = {
   TransparenciaRoute: TransparenciaRoute,
   VereadoresRoute: VereadoresRoute,
   AdminDashboardRoute: AdminDashboardRoute,
+  AdminIndexRoute: AdminIndexRoute,
   AdminProjetosIndexRoute: AdminProjetosIndexRoute,
   AdminTransparenciaIndexRoute: AdminTransparenciaIndexRoute,
   AdminVereadoresIndexRoute: AdminVereadoresIndexRoute,
