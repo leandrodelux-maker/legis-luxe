@@ -1,21 +1,33 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Calendar, Clock, FileText, MapPin } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { 
+  Calendar, 
+  Clock, 
+  FileText, 
+  MapPin, 
+  Search, 
+  Filter, 
+  ArrowRight,
+  Gavel,
+  FileCheck,
+  Users2,
+  CheckCircle2,
+  Stamp
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionHeading } from "@/components/section-heading";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/sessoes")({
   head: () => ({
     meta: [
-      { title: "Sessões e Pautas — Câmara Municipal" },
+      { title: "Atividade Legislativa — Câmara Municipal" },
       {
         name: "description",
-        content: "Agenda de sessões, pautas, atas e projetos de lei em tramitação na Câmara.",
+        content: "Agenda de sessões, pautas, atas e processos legislativos em tramitação.",
       },
-      { property: "og:title", content: "Sessões — Câmara Municipal" },
-      { property: "og:description", content: "Calendário e pautas das sessões legislativas." },
-      { property: "og:url", content: "/sessoes" },
     ],
-    links: [{ rel: "canonical", href: "/sessoes" }],
   }),
   component: SessoesPage,
 });
@@ -26,95 +38,269 @@ const proximasSessoes = [
   { tipo: "Sessão Extraordinária", data: "23 Jun 2026", hora: "10h00", local: "Plenário Principal", pauta: 4 },
 ];
 
-const projetos = [
-  { num: "PL 124/2026", titulo: "Institui o programa municipal de incentivo à leitura", autor: "Ver. Mariana Souza", status: "Em comissão" },
-  { num: "PL 118/2026", titulo: "Cria a semana de prevenção à violência doméstica", autor: "Ver. Patrícia Ribeiro", status: "Aprovado em 1º turno" },
-  { num: "PL 109/2026", titulo: "Dispõe sobre acessibilidade em logradouros públicos", autor: "Ver. Lucas Andrade", status: "Em plenário" },
-  { num: "PL 097/2026", titulo: "Regulamenta horta comunitária em áreas municipais", autor: "Ver. Juliana Martins", status: "Sanção" },
+const tiposMateria = [
+  "Projeto de Lei",
+  "Projeto Complementar",
+  "Emenda",
+  "Moção",
+  "Requerimento",
+  "Indicação"
 ];
 
-const statusColor: Record<string, string> = {
-  "Em comissão": "bg-blue-500/10 text-blue-700 border-blue-500/20 dark:text-blue-300",
-  "Aprovado em 1º turno": "bg-amber-500/10 text-amber-700 border-amber-500/30 dark:text-amber-300",
-  "Em plenário": "bg-purple-500/10 text-purple-700 border-purple-500/20 dark:text-purple-300",
-  Sanção: "bg-emerald-500/10 text-emerald-700 border-emerald-500/20 dark:text-emerald-300",
-};
+const projetos = [
+  { 
+    id: "pl-124-2026",
+    num: "124", 
+    ano: "2026",
+    tipo: "Projeto de Lei",
+    titulo: "Institui o programa municipal de incentivo à leitura", 
+    autor: "Ver. Mariana Souza", 
+    status: "Comissão",
+    fase: 2 
+  },
+  { 
+    id: "pl-118-2026",
+    num: "118", 
+    ano: "2026",
+    tipo: "Projeto de Lei",
+    titulo: "Cria a semana de prevenção à violência doméstica", 
+    autor: "Ver. Patrícia Ribeiro", 
+    status: "Plenário",
+    fase: 3
+  },
+  { 
+    id: "ind-045-2026",
+    num: "045", 
+    ano: "2026",
+    tipo: "Indicação",
+    titulo: "Manutenção asfáltica na Rua das Palmeiras", 
+    autor: "Ver. Roberto Mendes", 
+    status: "Protocolado",
+    fase: 1
+  },
+  { 
+    id: "pl-097-2026",
+    num: "097", 
+    ano: "2026",
+    tipo: "Projeto de Lei",
+    titulo: "Regulamenta horta comunitária em áreas municipais", 
+    autor: "Ver. Juliana Martins", 
+    status: "Sancionado",
+    fase: 5
+  },
+];
+
+const fases = [
+  { label: "Protocolado", icon: FileText },
+  { label: "Comissão", icon: Users2 },
+  { label: "Plenário", icon: Gavel },
+  { label: "Aprovado", icon: CheckCircle2 },
+  { label: "Sancionado", icon: Stamp },
+];
+
+function LegislativeTimeline({ currentFase }: { currentFase: number }) {
+  return (
+    <div className="flex items-center justify-between w-full max-w-3xl mx-auto py-8">
+      {fases.map((fase, index) => {
+        const step = index + 1;
+        const isActive = step <= currentFase;
+        const isCurrent = step === currentFase;
+        const Icon = fase.icon;
+
+        return (
+          <div key={fase.label} className="flex flex-col items-center relative flex-1">
+            {index !== 0 && (
+              <div 
+                className={`absolute right-1/2 top-5 w-full h-0.5 -translate-y-1/2 -z-10 ${
+                  isActive ? "bg-primary" : "bg-muted"
+                }`} 
+              />
+            )}
+            <div 
+              className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500 ${
+                isActive 
+                  ? "bg-primary text-primary-foreground ring-4 ring-primary/20" 
+                  : "bg-muted text-muted-foreground"
+              } ${isCurrent ? "scale-110 shadow-lg shadow-primary/20" : ""}`}
+            >
+              <Icon className="w-5 h-5" />
+            </div>
+            <span className={`mt-3 text-[10px] font-bold uppercase tracking-tighter text-center max-w-[80px] ${
+              isActive ? "text-primary" : "text-muted-foreground"
+            }`}>
+              {fase.label}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
 function SessoesPage() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedType, setSelectedType] = useState("Todos");
+
+  const filteredProjetos = projetos.filter(p => {
+    const matchesSearch = p.titulo.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         p.num.includes(searchTerm);
+    const matchesType = selectedType === "Todos" || p.tipo === selectedType;
+    return matchesSearch && matchesType;
+  });
+
   return (
     <>
-      <section className="bg-gradient-to-br from-primary-deep to-primary text-primary-foreground">
-        <div className="container-page py-16 md:py-20">
+      <section className="bg-gradient-to-br from-primary-deep to-primary text-primary-foreground relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-gold/5 skew-x-12 translate-x-1/2" />
+        <div className="container-page py-16 md:py-24 relative z-10">
           <div className="text-xs uppercase tracking-[0.2em] text-gold flex items-center gap-3">
-            <span className="gold-divider" /> Atividade Legislativa
+            <span className="gold-divider" /> Atividade Parlamentar
           </div>
-          <h1 className="mt-4 font-display text-4xl md:text-5xl font-semibold">Sessões e Pautas</h1>
-          <p className="mt-4 max-w-2xl text-primary-foreground/85">
-            Calendário oficial das sessões, pautas, atas e tramitação de projetos de lei.
+          <h1 className="mt-4 font-display text-4xl md:text-6xl font-bold leading-tight">
+            Processo <span className="text-gold">Legislativo</span>
+          </h1>
+          <p className="mt-6 max-w-2xl text-primary-foreground/85 text-lg">
+            Acompanhe em tempo real a tramitação de leis, requerimentos e a agenda de sessões da Câmara.
           </p>
         </div>
       </section>
 
       <section className="container-page py-16 md:py-20">
-        <SectionHeading eyebrow="Calendário" title="Próximas sessões" />
-        <div className="mt-10 grid gap-5 md:grid-cols-3">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <SectionHeading 
+            eyebrow="Agenda Oficial" 
+            title="Próximas sessões" 
+            className="mb-0"
+          />
+          <Button variant="outline" className="group">
+            Ver calendário completo <Calendar className="ml-2 h-4 w-4 group-hover:text-gold transition-colors" />
+          </Button>
+        </div>
+        
+        <div className="grid gap-6 md:grid-cols-3">
           {proximasSessoes.map((s, i) => (
             <article
               key={s.tipo + s.data}
-              className="card-premium card-premium-hover p-6 animate-[fade-up_0.5s_ease-out_both]"
-              style={{ animationDelay: `${i * 80}ms` }}
+              className="card-premium card-premium-hover p-8 animate-[fade-up_0.5s_ease-out_both]"
+              style={{ animationDelay: `${i * 100}ms` }}
             >
-              <div className="flex items-center justify-between">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary border border-primary/20">
+              <div className="flex items-center justify-between mb-6">
+                <Badge variant="secondary" className="bg-primary/5 text-primary border-primary/10 px-3 py-1">
                   {s.tipo}
-                </span>
-                <span className="text-xs text-muted-foreground">{s.pauta} pautas</span>
+                </Badge>
+                <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                  <FileText className="h-3.5 w-3.5 text-gold" /> {s.pauta} pautas
+                </div>
               </div>
-              <h3 className="mt-4 font-display text-2xl font-semibold text-foreground">{s.data}</h3>
-              <div className="mt-3 space-y-1.5 text-sm text-muted-foreground">
-                <p className="flex items-center gap-2"><Clock className="h-3.5 w-3.5 text-gold" /> {s.hora}</p>
-                <p className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5 text-gold" /> {s.local}</p>
+              <h3 className="font-display text-2xl font-bold text-foreground mb-4">{s.data}</h3>
+              <div className="space-y-3 mb-8">
+                <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                  <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
+                    <Clock className="h-4 w-4 text-primary" />
+                  </div>
+                  {s.hora}
+                </div>
+                <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                  <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
+                    <MapPin className="h-4 w-4 text-primary" />
+                  </div>
+                  {s.local}
+                </div>
               </div>
-              <Button variant="outline" size="sm" className="mt-5 w-full">
-                Ver pauta completa
+              <Button variant="default" className="w-full justify-between group">
+                Ver pauta completa <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="bg-secondary/40 border-y border-border/60">
-        <div className="container-page py-16 md:py-20">
+      <section className="bg-secondary/30 border-y border-border/50 py-20">
+        <div className="container-page">
           <SectionHeading
-            eyebrow="Projetos de Lei"
-            title="Em tramitação"
-            description="Acompanhe os projetos em análise nas comissões e em plenário."
+            eyebrow="Transparência"
+            title="Consulta de Matérias Legislativas"
+            description="Pesquise por projetos de lei, indicações e requerimentos em tramitação."
           />
-          <div className="mt-10 overflow-hidden rounded-xl border border-border bg-card shadow-card">
-            <table className="w-full text-sm">
-              <thead className="bg-secondary/60 text-left text-xs uppercase tracking-wider text-muted-foreground">
-                <tr>
-                  <th className="px-5 py-4 font-semibold">Nº</th>
-                  <th className="px-5 py-4 font-semibold">Título</th>
-                  <th className="px-5 py-4 font-semibold hidden md:table-cell">Autor</th>
-                  <th className="px-5 py-4 font-semibold">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {projetos.map((p) => (
-                  <tr key={p.num} className="hover:bg-accent/30 transition-colors">
-                    <td className="px-5 py-4 font-mono text-xs font-semibold text-primary">{p.num}</td>
-                    <td className="px-5 py-4 font-medium text-foreground">{p.titulo}</td>
-                    <td className="px-5 py-4 text-muted-foreground hidden md:table-cell">{p.autor}</td>
-                    <td className="px-5 py-4">
-                      <span className={`inline-flex rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider ${statusColor[p.status]}`}>
-                        {p.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+
+          <div className="mt-12 bg-card rounded-2xl border border-border p-6 md:p-8 shadow-sm">
+            <div className="flex flex-col lg:flex-row gap-4 mb-8">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input 
+                  placeholder="Buscar por número, ano ou palavra-chave..." 
+                  className="pl-10 h-12"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <div className="flex gap-4">
+                <div className="relative w-full md:w-64">
+                  <Filter className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <select 
+                    className="w-full h-12 pl-10 pr-4 rounded-md border border-input bg-background text-sm focus:ring-2 focus:ring-primary outline-none appearance-none"
+                    value={selectedType}
+                    onChange={(e) => setSelectedType(e.target.value)}
+                  >
+                    <option>Todos</option>
+                    {tiposMateria.map(t => <option key={t}>{t}</option>)}
+                  </select>
+                </div>
+                <Button className="h-12 px-6">Filtrar</Button>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              {filteredProjetos.map((p, i) => (
+                <div 
+                  key={p.id}
+                  className="group bg-background border border-border/60 rounded-xl p-6 hover:border-primary/30 hover:shadow-md transition-all animate-[fade-up_0.5s_ease-out_both]"
+                  style={{ animationDelay: `${i * 50}ms` }}
+                >
+                  <div className="flex flex-col lg:flex-row lg:items-center gap-6">
+                    <div className="flex-1">
+                      <div className="flex flex-wrap items-center gap-3 mb-3">
+                        <span className="text-xs font-mono font-bold text-primary bg-primary/5 px-2 py-1 rounded">
+                          {p.tipo.toUpperCase()} {p.num}/{p.ano}
+                        </span>
+                        <Badge variant="outline" className="text-[10px] uppercase font-bold tracking-wider">
+                          {p.status}
+                        </Badge>
+                      </div>
+                      <h4 className="font-display text-xl font-bold text-foreground group-hover:text-primary transition-colors mb-2">
+                        {p.titulo}
+                      </h4>
+                      <p className="text-sm text-muted-foreground flex items-center gap-2">
+                        <Users2 className="h-3.5 w-3.5 text-gold" /> {p.autor}
+                      </p>
+                    </div>
+                    
+                    <div className="lg:w-[400px]">
+                      <LegislativeTimeline currentFase={p.fase} />
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <Button variant="outline" size="sm" className="h-10">
+                        <FileText className="h-4 w-4 mr-2" /> PDF
+                      </Button>
+                      <Button size="sm" className="h-10">
+                        Detalhes
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              
+              {filteredProjetos.length === 0 && (
+                <div className="text-center py-20">
+                  <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-secondary mb-4">
+                    <Search className="h-8 w-8 text-muted-foreground" />
+                  </div>
+                  <h3 className="text-lg font-semibold">Nenhuma matéria encontrada</h3>
+                  <p className="text-muted-foreground">Tente ajustar seus termos de busca ou filtros.</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </section>
