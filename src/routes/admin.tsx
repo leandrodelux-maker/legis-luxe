@@ -18,7 +18,8 @@ import {
   Database,
   History,
   Lock,
-  Globe
+  Globe,
+  BarChart3
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -40,6 +41,7 @@ export const Route = createFileRoute("/admin")({
 
 const menuItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard", roles: ["all"] },
+  { label: "Painel Executivo", icon: BarChart3, path: "/admin/executivo", roles: ["admin", "presidente"] },
   { label: "Vereadores", icon: Users, path: "/admin/vereadores", roles: ["admin", "presidente", "legislativo"] },
   { label: "Processo Legislativo", icon: Gavel, path: "/admin/projetos", roles: ["admin", "legislativo"] },
   { label: "Sessões", icon: Calendar, path: "/admin/sessoes", roles: ["admin", "legislativo"] },
