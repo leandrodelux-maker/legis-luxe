@@ -17,7 +17,9 @@ import { Route as NoticiasRouteImport } from './routes/noticias'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SessoesIndexRouteImport } from './routes/sessoes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as SessoesAoVivoRouteImport } from './routes/sessoes/ao-vivo'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
 import { Route as AdminVereadoresIndexRouteImport } from './routes/admin/vereadores/index'
 import { Route as AdminTransparenciaIndexRouteImport } from './routes/admin/transparencia/index'
@@ -68,10 +70,20 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SessoesIndexRoute = SessoesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SessoesRoute,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
+} as any)
+const SessoesAoVivoRoute = SessoesAoVivoRouteImport.update({
+  id: '/ao-vivo',
+  path: '/ao-vivo',
+  getParentRoute: () => SessoesRoute,
 } as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/dashboard',
@@ -124,12 +136,14 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/contato': typeof ContatoRoute
   '/noticias': typeof NoticiasRoute
-  '/sessoes': typeof SessoesRoute
+  '/sessoes': typeof SessoesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/transparencia': typeof TransparenciaRoute
   '/vereadores': typeof VereadoresRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
   '/admin/': typeof AdminIndexRoute
+  '/sessoes/': typeof SessoesIndexRoute
   '/admin/comunicacao/novo': typeof AdminComunicacaoNovoRoute
   '/admin/comunicacao/': typeof AdminComunicacaoIndexRoute
   '/admin/config/': typeof AdminConfigIndexRoute
@@ -143,12 +157,13 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/contato': typeof ContatoRoute
   '/noticias': typeof NoticiasRoute
-  '/sessoes': typeof SessoesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/transparencia': typeof TransparenciaRoute
   '/vereadores': typeof VereadoresRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
   '/admin': typeof AdminIndexRoute
+  '/sessoes': typeof SessoesIndexRoute
   '/admin/comunicacao/novo': typeof AdminComunicacaoNovoRoute
   '/admin/comunicacao': typeof AdminComunicacaoIndexRoute
   '/admin/config': typeof AdminConfigIndexRoute
@@ -164,12 +179,14 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/contato': typeof ContatoRoute
   '/noticias': typeof NoticiasRoute
-  '/sessoes': typeof SessoesRoute
+  '/sessoes': typeof SessoesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/transparencia': typeof TransparenciaRoute
   '/vereadores': typeof VereadoresRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
   '/admin/': typeof AdminIndexRoute
+  '/sessoes/': typeof SessoesIndexRoute
   '/admin/comunicacao/novo': typeof AdminComunicacaoNovoRoute
   '/admin/comunicacao/': typeof AdminComunicacaoIndexRoute
   '/admin/config/': typeof AdminConfigIndexRoute
@@ -191,7 +208,9 @@ export interface FileRouteTypes {
     | '/transparencia'
     | '/vereadores'
     | '/admin/dashboard'
+    | '/sessoes/ao-vivo'
     | '/admin/'
+    | '/sessoes/'
     | '/admin/comunicacao/novo'
     | '/admin/comunicacao/'
     | '/admin/config/'
@@ -205,12 +224,13 @@ export interface FileRouteTypes {
     | '/'
     | '/contato'
     | '/noticias'
-    | '/sessoes'
     | '/sitemap.xml'
     | '/transparencia'
     | '/vereadores'
     | '/admin/dashboard'
+    | '/sessoes/ao-vivo'
     | '/admin'
+    | '/sessoes'
     | '/admin/comunicacao/novo'
     | '/admin/comunicacao'
     | '/admin/config'
@@ -230,7 +250,9 @@ export interface FileRouteTypes {
     | '/transparencia'
     | '/vereadores'
     | '/admin/dashboard'
+    | '/sessoes/ao-vivo'
     | '/admin/'
+    | '/sessoes/'
     | '/admin/comunicacao/novo'
     | '/admin/comunicacao/'
     | '/admin/config/'
@@ -246,7 +268,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   ContatoRoute: typeof ContatoRoute
   NoticiasRoute: typeof NoticiasRoute
-  SessoesRoute: typeof SessoesRoute
+  SessoesRoute: typeof SessoesRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TransparenciaRoute: typeof TransparenciaRoute
   VereadoresRoute: typeof VereadoresRoute
@@ -310,12 +332,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sessoes/': {
+      id: '/sessoes/'
+      path: '/'
+      fullPath: '/sessoes/'
+      preLoaderRoute: typeof SessoesIndexRouteImport
+      parentRoute: typeof SessoesRoute
+    }
     '/admin/': {
       id: '/admin/'
       path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/sessoes/ao-vivo': {
+      id: '/sessoes/ao-vivo'
+      path: '/ao-vivo'
+      fullPath: '/sessoes/ao-vivo'
+      preLoaderRoute: typeof SessoesAoVivoRouteImport
+      parentRoute: typeof SessoesRoute
     }
     '/admin/dashboard': {
       id: '/admin/dashboard'
@@ -411,12 +447,25 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface SessoesRouteChildren {
+  SessoesAoVivoRoute: typeof SessoesAoVivoRoute
+  SessoesIndexRoute: typeof SessoesIndexRoute
+}
+
+const SessoesRouteChildren: SessoesRouteChildren = {
+  SessoesAoVivoRoute: SessoesAoVivoRoute,
+  SessoesIndexRoute: SessoesIndexRoute,
+}
+
+const SessoesRouteWithChildren =
+  SessoesRoute._addFileChildren(SessoesRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
   ContatoRoute: ContatoRoute,
   NoticiasRoute: NoticiasRoute,
-  SessoesRoute: SessoesRoute,
+  SessoesRoute: SessoesRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TransparenciaRoute: TransparenciaRoute,
   VereadoresRoute: VereadoresRoute,

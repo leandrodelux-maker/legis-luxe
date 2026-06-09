@@ -10,6 +10,7 @@ const nav = [
   { to: "/vereadores", label: "Vereadores" },
   { to: "/noticias", label: "Notícias" },
   { to: "/sessoes", label: "Sessões" },
+  { to: "/sessoes/ao-vivo", label: "Ao Vivo", isLive: true },
   { to: "/transparencia", label: "Transparência" },
   { to: "/contato", label: "Contato" },
 ] as const;
@@ -78,12 +79,23 @@ export function SiteHeader() {
                 key={n.to}
                 to={n.to}
                 activeOptions={{ exact: n.to === "/" }}
-                className="relative px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground transition-colors rounded-md hover:bg-accent/60"
+                className={cn(
+                  "relative px-3 py-2 text-sm font-medium transition-colors rounded-md hover:bg-accent/60 flex items-center gap-2",
+                  "isLive" in n && n.isLive ? "text-red-600 font-bold" : "text-foreground/80 hover:text-foreground"
+                )}
                 activeProps={{
-                  className:
-                    "text-foreground after:absolute after:left-3 after:right-3 after:-bottom-0.5 after:h-[2px] after:rounded-full after:bg-gradient-to-r after:from-gold after:to-primary",
+                  className: cn(
+                    "text-foreground",
+                    !("isLive" in n && n.isLive) && "after:absolute after:left-3 after:right-3 after:-bottom-0.5 after:h-[2px] after:rounded-full after:bg-gradient-to-r after:from-gold after:to-primary"
+                  ),
                 }}
               >
+                {"isLive" in n && n.isLive && (
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                  </span>
+                )}
                 {n.label}
               </Link>
             ))}
