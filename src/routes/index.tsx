@@ -434,7 +434,7 @@ function HomePage() {
               {[
                 { icon: Gavel, label: "Licitações", value: "37" },
                 { icon: FileText, label: "Contratos", value: "142" },
-                { icon: ScrollText, label: "Leis", value: "2.4k" },
+                { icon: FileText, label: "Leis", value: "2.4k" },
                 { icon: Gavel, label: "Projetos", value: "184" },
               ].map((item) => (
                 <div
