@@ -159,9 +159,6 @@ export function SiteHeader() {
                   }}
                 >
                   {item.label}
-                  {"hasDropdown" in item && item.hasDropdown && (
-                    <ChevronDown className="h-3.5 w-3.5 opacity-70" />
-                  )}
                 </Link>
               </li>
             ))}
