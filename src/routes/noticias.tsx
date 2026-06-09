@@ -92,38 +92,51 @@ function NoticiasPage() {
           ))}
         </div>
 
-        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {noticias.map((n, i) => (
-            <article
-              key={n.title}
-              className="card-premium card-premium-hover group overflow-hidden animate-[fade-up_0.5s_ease-out_both]"
-              style={{ animationDelay: `${i * 60}ms` }}
-            >
-              <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-primary-deep via-primary to-primary/70">
-                <Building2 className="absolute right-4 bottom-4 h-16 w-16 text-white/15" />
-                <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-gold px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-gold-foreground">
-                  {n.tag}
-                </div>
-              </div>
-              <div className="p-6">
-                <time className="flex items-center gap-1.5 text-xs uppercase tracking-wider text-muted-foreground">
-                  <Calendar className="h-3 w-3" /> {n.date}
-                </time>
-                <h3 className="mt-2 font-display text-lg font-semibold leading-snug group-hover:text-primary transition-colors">
-                  {n.title}
-                </h3>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{n.excerpt}</p>
-                <button className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary hover:gap-2 transition-all">
-                  Ler mais <ArrowRight className="h-3.5 w-3.5" />
-                </button>
-              </div>
-            </article>
-          ))}
-        </div>
-
-        <div className="mt-12 flex justify-center">
-          <Button variant="outline" size="lg">Carregar mais notícias</Button>
-        </div>
+        {loading ? (
+          <div className="mt-10 text-center text-muted-foreground py-12">Carregando notícias...</div>
+        ) : noticias.length === 0 ? (
+          <div className="mt-10 text-center text-muted-foreground py-12">
+            Nenhuma notícia publicada ainda.
+          </div>
+        ) : (
+          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {noticias.map((n, i) => {
+              const date = n.publicado_em ?? n.created_at;
+              return (
+                <article
+                  key={n.id}
+                  className="card-premium card-premium-hover group overflow-hidden animate-[fade-up_0.5s_ease-out_both]"
+                  style={{ animationDelay: `${i * 60}ms` }}
+                >
+                  <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-primary-deep via-primary to-primary/70">
+                    {n.imagem_url ? (
+                      <img src={n.imagem_url} alt={n.titulo} className="absolute inset-0 h-full w-full object-cover" />
+                    ) : (
+                      <Building2 className="absolute right-4 bottom-4 h-16 w-16 text-white/15" />
+                    )}
+                    {n.categoria && (
+                      <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-gold px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-gold-foreground">
+                        {n.categoria}
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-6">
+                    <time className="flex items-center gap-1.5 text-xs uppercase tracking-wider text-muted-foreground">
+                      <Calendar className="h-3 w-3" /> {new Date(date).toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" })}
+                    </time>
+                    <h3 className="mt-2 font-display text-lg font-semibold leading-snug group-hover:text-primary transition-colors">
+                      {n.titulo}
+                    </h3>
+                    {n.resumo && <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{n.resumo}</p>}
+                    <button className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary hover:gap-2 transition-all">
+                      Ler mais <ArrowRight className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
       </section>
     </>
   );
