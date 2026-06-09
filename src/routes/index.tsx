@@ -191,16 +191,38 @@ function HomePage() {
             </Button>
           </div>
 
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {noticias.map((n, i) => (
+          <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {[
+              {
+                tag: "Legislativo",
+                date: "12 Jun 2026",
+                title: "Câmara aprova programa de incentivo à educação infantil",
+                excerpt: "Projeto destina recursos adicionais à ampliação de vagas em creches e capacitação de professores.",
+                img: "https://images.unsplash.com/photo-1577416416421-72e4972844e5?auto=format&fit=crop&q=80&w=800",
+              },
+              {
+                tag: "Projetos",
+                date: "08 Jun 2026",
+                title: "Plano Diretor recebe contribuições da sociedade civil",
+                excerpt: "Audiência reuniu representantes de bairros, entidades e cidadãos para discutir a revisão do PD.",
+                img: "https://images.unsplash.com/photo-1582213782179-a0c522262656?auto=format&fit=crop&q=80&w=800",
+              },
+              {
+                tag: "Eventos",
+                date: "03 Jun 2026",
+                title: "Relatório de gestão do 1º semestre é publicado",
+                excerpt: "Documento detalha execução orçamentária, atos legislativos e indicadores de desempenho.",
+                img: "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&q=80&w=800",
+              },
+            ].map((n, i) => (
               <article
                 key={n.title}
                 className="card-premium card-premium-hover group overflow-hidden animate-[fade-up_0.6s_ease-out_both]"
                 style={{ animationDelay: `${i * 100}ms` }}
               >
-                <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-primary-deep via-primary to-primary/70">
-                  <div className="absolute inset-0 opacity-20 mix-blend-overlay [background-image:radial-gradient(circle_at_30%_20%,white,transparent_50%)]" />
-                  <Building2 className="absolute right-4 bottom-4 h-16 w-16 text-white/15" />
+                <div className="relative aspect-[16/10] overflow-hidden">
+                  <img src={n.img} alt={n.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-gold px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-gold-foreground">
                     {n.tag}
                   </div>
@@ -209,10 +231,10 @@ function HomePage() {
                   <time className="text-xs uppercase tracking-wider text-muted-foreground">
                     {n.date}
                   </time>
-                  <h3 className="mt-2 font-display text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+                  <h3 className="mt-2 font-display text-lg font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2">
                     {n.title}
                   </h3>
-                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{n.excerpt}</p>
+                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed line-clamp-3">{n.excerpt}</p>
                   <Link
                     to="/noticias"
                     className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary hover:gap-2 transition-all"
