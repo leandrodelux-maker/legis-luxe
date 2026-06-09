@@ -144,18 +144,18 @@ export function SiteHeader() {
 
       {/* BLUE NAV BAR */}
       <nav aria-label="Principal" className="hidden lg:block bg-primary-deep border-t border-white/10 sticky top-0 z-40">
-        <div className="container-page flex items-center justify-between">
-          <ul className="flex items-stretch">
+        <div className="container-page flex items-center justify-between gap-2">
+          <ul className="flex items-stretch flex-1 justify-center">
             {mainNav.map((item) => (
               <li key={item.to}>
                 <Link
                   to={item.to}
                   activeOptions={{ exact: item.to === "/" }}
                   className={cn(
-                    "relative inline-flex items-center gap-1.5 px-5 py-4 text-[13px] font-semibold tracking-wider text-white/85 hover:text-white hover:bg-white/5 transition-colors uppercase"
+                    "relative inline-flex items-center gap-1.5 px-3 py-4 text-[12px] font-semibold tracking-wide text-white/85 hover:text-white hover:bg-white/5 transition-colors uppercase whitespace-nowrap"
                   )}
                   activeProps={{
-                    className: "text-white after:absolute after:left-5 after:right-5 after:bottom-0 after:h-[3px] after:bg-white",
+                    className: "text-white after:absolute after:left-3 after:right-3 after:bottom-0 after:h-[3px] after:bg-white",
                   }}
                 >
                   {item.label}
@@ -163,19 +163,27 @@ export function SiteHeader() {
               </li>
             ))}
           </ul>
-          <div className="hidden xl:flex items-center gap-1 text-white/85">
+          <div className="flex items-center gap-1 text-white/85 shrink-0">
             <Link
               to="/transparencia"
-              className="inline-flex items-center gap-1.5 px-5 py-4 text-[13px] font-semibold tracking-wider hover:bg-white/5 hover:text-white transition-colors uppercase"
+              className="inline-flex items-center gap-1.5 px-3 py-4 text-[12px] font-semibold tracking-wide hover:bg-white/5 hover:text-white transition-colors uppercase whitespace-nowrap"
             >
-              <Shield className="h-4 w-4" /> Transparência <ChevronDown className="h-3.5 w-3.5 opacity-70" />
+              <Shield className="h-4 w-4" /> Transparência
             </Link>
-            <Link
-              to="/contato"
-              className="inline-flex items-center gap-1.5 px-5 py-4 text-[13px] font-semibold tracking-wider hover:bg-white/5 hover:text-white transition-colors uppercase"
-            >
-              <MessageSquare className="h-4 w-4" /> Acesso à Informação <ChevronDown className="h-3.5 w-3.5 opacity-70" />
-            </Link>
+            <div className="relative group">
+              <button
+                type="button"
+                className="inline-flex items-center gap-1.5 px-3 py-4 text-[12px] font-semibold tracking-wide hover:bg-white/5 hover:text-white transition-colors uppercase whitespace-nowrap"
+              >
+                <MessageSquare className="h-4 w-4" /> Acesso à Informação <ChevronDown className="h-3.5 w-3.5 opacity-70" />
+              </button>
+              <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all absolute right-0 top-full min-w-[220px] bg-white text-slate-700 shadow-xl rounded-md border border-slate-100 py-2 z-50">
+                <Link to="/contato" className="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-primary">e-SIC</Link>
+                <Link to="/contato" className="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-primary">Ouvidoria</Link>
+                <Link to="/contato" className="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-primary">Perguntas Frequentes</Link>
+                <Link to="/contato" className="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-primary">LGPD</Link>
+              </div>
+            </div>
           </div>
         </div>
       </nav>
