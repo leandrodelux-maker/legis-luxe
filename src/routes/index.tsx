@@ -248,7 +248,6 @@ function HomePage() {
         </div>
       </section>
 
-      </section>
 
       {/* AGENDA LEGISLATIVA */}
       <section className="container-page py-20 md:py-24">
