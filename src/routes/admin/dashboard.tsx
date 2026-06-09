@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/chart";
 import { Bar, BarChart, CartesianGrid, XAxis, ResponsiveContainer, Line, LineChart, Tooltip } from "recharts";
 
-export const Route = createFileRoute("/admin/")({
+export const Route = createFileRoute("/admin/dashboard")({
   component: AdminDashboard,
 });
 
