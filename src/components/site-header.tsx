@@ -82,14 +82,8 @@ export function SiteHeader() {
             <Phone className="h-3.5 w-3.5" /> {phone}
           </div>
           <div className="flex items-center gap-3">
-            <a href="#" aria-label="Facebook" className="hover:text-gold transition-colors">
-              <Facebook className="h-4 w-4" />
-            </a>
-            <a href="#" aria-label="Instagram" className="hover:text-gold transition-colors">
-              <Instagram className="h-4 w-4" />
-            </a>
-            <a href="#" aria-label="YouTube" className="hover:text-gold transition-colors">
-              <Youtube className="h-4 w-4" />
+            <a href="#" aria-label="Redes sociais" className="hover:text-gold transition-colors">
+              <Globe className="h-4 w-4" />
             </a>
           </div>
         </div>
