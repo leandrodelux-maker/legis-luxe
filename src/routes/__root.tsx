@@ -134,17 +134,19 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const location = useLocation();
+  const isAdminPath = location.pathname.startsWith("/admin");
 
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <div className="flex min-h-dvh flex-col bg-background">
-          <SiteHeader />
-          <main id="conteudo" className="flex-1">
+          {!isAdminPath && <SiteHeader />}
+          <main id="conteudo" className={isAdminPath ? "flex-1" : "flex-1"}>
             <Outlet />
           </main>
-          <SiteFooter />
-          <LgpdBanner />
+          {!isAdminPath && <SiteFooter />}
+          {!isAdminPath && <LgpdBanner />}
         </div>
       </ThemeProvider>
     </QueryClientProvider>
