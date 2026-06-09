@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { 
   Newspaper, 
   Plus, 
@@ -36,6 +36,7 @@ const mockNoticias = [
 
 function AdminComunicacao() {
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
   return (
     <div className="space-y-8 animate-[fade-up_0.5s_ease-out]">
@@ -44,7 +45,10 @@ function AdminComunicacao() {
           <h2 className="text-3xl font-display font-bold text-slate-900">Comunicação</h2>
           <p className="text-slate-500">Gestão de notícias, banners e conteúdo institucional.</p>
         </div>
-        <Button className="bg-primary-deep text-white hover:bg-primary-deep/90">
+        <Button 
+          className="bg-primary-deep text-white hover:bg-primary-deep/90"
+          onClick={() => navigate({ to: "/admin/comunicacao/novo" })}
+        >
           <Plus className="w-4 h-4 mr-2" /> Nova Notícia
         </Button>
       </div>

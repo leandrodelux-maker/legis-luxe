@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Landmark, Mail, MapPin, Phone, Facebook, Instagram, Youtube } from "lucide-react";
+import { Landmark, Mail, MapPin, Phone, MessageSquare as FacebookIcon, Camera as InstagramIcon, PlayCircle as YoutubeIcon } from "lucide-react";
 
 export function SiteFooter() {
   return (
@@ -21,7 +21,7 @@ export function SiteFooter() {
             O portal oficial do legislativo municipal. Transparência, participação e cidadania.
           </p>
           <div className="mt-5 flex gap-2">
-            {[Facebook, Instagram, Youtube].map((Icon, i) => (
+            {[FacebookIcon, InstagramIcon, YoutubeIcon].map((Icon, i) => (
               <a
                 key={i}
                 href="#"
