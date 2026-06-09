@@ -10,7 +10,10 @@ import {
   MoreVertical,
   Clock,
   PlayCircle as YoutubeIcon,
-  FileText
+  FileText,
+  Radio,
+  Share2,
+  Video
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -107,8 +110,13 @@ function AdminSessoes() {
                 </TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-red-600" title="Link YouTube">
-                      <YoutubeIcon className="w-4 h-4" />
+                    {s.status === 'Agendada' && (
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-red-600 animate-pulse" title="Iniciar Transmissão">
+                        <Radio className="w-4 h-4" />
+                      </Button>
+                    )}
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-600" title="Configurar Vídeo">
+                      <Video className="w-4 h-4" />
                     </Button>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -119,6 +127,9 @@ function AdminSessoes() {
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem>
                           <Edit className="w-4 h-4 mr-2" /> Editar Sessão
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Share2 className="w-4 h-4 mr-2" /> Links de Transmissão
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <FileText className="w-4 h-4 mr-2" /> Gerar Pauta
