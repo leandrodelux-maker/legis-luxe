@@ -26,6 +26,7 @@ import { Route as AdminProjetosIndexRouteImport } from './routes/admin/projetos/
 import { Route as AdminLogsIndexRouteImport } from './routes/admin/logs/index'
 import { Route as AdminConfigIndexRouteImport } from './routes/admin/config/index'
 import { Route as AdminComunicacaoIndexRouteImport } from './routes/admin/comunicacao/index'
+import { Route as AdminComunicacaoNovoRouteImport } from './routes/admin/comunicacao/novo'
 
 const VereadoresRoute = VereadoresRouteImport.update({
   id: '/vereadores',
@@ -112,6 +113,11 @@ const AdminComunicacaoIndexRoute = AdminComunicacaoIndexRouteImport.update({
   path: '/comunicacao/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminComunicacaoNovoRoute = AdminComunicacaoNovoRouteImport.update({
+  id: '/comunicacao/novo',
+  path: '/comunicacao/novo',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/vereadores': typeof VereadoresRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/comunicacao/novo': typeof AdminComunicacaoNovoRoute
   '/admin/comunicacao/': typeof AdminComunicacaoIndexRoute
   '/admin/config/': typeof AdminConfigIndexRoute
   '/admin/logs/': typeof AdminLogsIndexRoute
@@ -142,6 +149,7 @@ export interface FileRoutesByTo {
   '/vereadores': typeof VereadoresRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin': typeof AdminIndexRoute
+  '/admin/comunicacao/novo': typeof AdminComunicacaoNovoRoute
   '/admin/comunicacao': typeof AdminComunicacaoIndexRoute
   '/admin/config': typeof AdminConfigIndexRoute
   '/admin/logs': typeof AdminLogsIndexRoute
@@ -162,6 +170,7 @@ export interface FileRoutesById {
   '/vereadores': typeof VereadoresRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/comunicacao/novo': typeof AdminComunicacaoNovoRoute
   '/admin/comunicacao/': typeof AdminComunicacaoIndexRoute
   '/admin/config/': typeof AdminConfigIndexRoute
   '/admin/logs/': typeof AdminLogsIndexRoute
@@ -183,6 +192,7 @@ export interface FileRouteTypes {
     | '/vereadores'
     | '/admin/dashboard'
     | '/admin/'
+    | '/admin/comunicacao/novo'
     | '/admin/comunicacao/'
     | '/admin/config/'
     | '/admin/logs/'
@@ -201,6 +211,7 @@ export interface FileRouteTypes {
     | '/vereadores'
     | '/admin/dashboard'
     | '/admin'
+    | '/admin/comunicacao/novo'
     | '/admin/comunicacao'
     | '/admin/config'
     | '/admin/logs'
@@ -220,6 +231,7 @@ export interface FileRouteTypes {
     | '/vereadores'
     | '/admin/dashboard'
     | '/admin/'
+    | '/admin/comunicacao/novo'
     | '/admin/comunicacao/'
     | '/admin/config/'
     | '/admin/logs/'
@@ -361,12 +373,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminComunicacaoIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/comunicacao/novo': {
+      id: '/admin/comunicacao/novo'
+      path: '/comunicacao/novo'
+      fullPath: '/admin/comunicacao/novo'
+      preLoaderRoute: typeof AdminComunicacaoNovoRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminComunicacaoNovoRoute: typeof AdminComunicacaoNovoRoute
   AdminComunicacaoIndexRoute: typeof AdminComunicacaoIndexRoute
   AdminConfigIndexRoute: typeof AdminConfigIndexRoute
   AdminLogsIndexRoute: typeof AdminLogsIndexRoute
@@ -379,6 +399,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminDashboardRoute: AdminDashboardRoute,
   AdminIndexRoute: AdminIndexRoute,
+  AdminComunicacaoNovoRoute: AdminComunicacaoNovoRoute,
   AdminComunicacaoIndexRoute: AdminComunicacaoIndexRoute,
   AdminConfigIndexRoute: AdminConfigIndexRoute,
   AdminLogsIndexRoute: AdminLogsIndexRoute,
