@@ -392,10 +392,10 @@ function HomePage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               {[
-                { icon: FileText, label: "Atos Legislativos", value: "1.842" },
-                { icon: Eye, label: "Documentos Públicos", value: "12k+" },
-                { icon: Gavel, label: "Licitações 2026", value: "37" },
-                { icon: Users, label: "Servidores", value: "162" },
+                { icon: Gavel, label: "Licitações", value: "37" },
+                { icon: FileText, label: "Contratos", value: "142" },
+                { icon: ScrollText, label: "Leis", value: "2.4k" },
+                { icon: Gavel, label: "Projetos", value: "184" },
               ].map((item) => (
                 <div
                   key={item.label}
