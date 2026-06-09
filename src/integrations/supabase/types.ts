@@ -206,6 +206,48 @@ export type Database = {
         }
         Relationships: []
       }
+      site_settings: {
+        Row: {
+          contact_email: string | null
+          contact_hours: string | null
+          contact_phone: string | null
+          created_at: string
+          hero_eyebrow: string
+          hero_media_type: string
+          hero_media_url: string | null
+          hero_subtitle: string
+          hero_title: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          contact_email?: string | null
+          contact_hours?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          hero_eyebrow?: string
+          hero_media_type?: string
+          hero_media_url?: string | null
+          hero_subtitle?: string
+          hero_title?: string
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          contact_email?: string | null
+          contact_hours?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          hero_eyebrow?: string
+          hero_media_type?: string
+          hero_media_url?: string | null
+          hero_subtitle?: string
+          hero_title?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       transparencia_documentos: {
         Row: {
           ano: number | null

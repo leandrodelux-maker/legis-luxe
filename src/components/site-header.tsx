@@ -1,31 +1,53 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, Moon, Search, Sun, X, Landmark } from "lucide-react";
+import {
+  Mail,
+  Phone,
+  Clock,
+  Map,
+  Menu,
+  X,
+  ChevronDown,
+  Shield,
+  MessageSquare,
+  Search,
+  Globe,
+  Landmark,
+} from "lucide-react";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { useTheme } from "./theme-provider";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
-const nav = [
-  { to: "/", label: "Início" },
-  { to: "/vereadores", label: "Vereadores" },
-  { to: "/noticias", label: "Notícias" },
-  { to: "/sessoes", label: "Sessões" },
-  { to: "/sessoes/ao-vivo", label: "Ao Vivo", isLive: true },
-  { to: "/transparencia", label: "Transparência" },
-  { to: "/contato", label: "Contato" },
+type SiteSettings = {
+  contact_phone: string | null;
+  contact_email: string | null;
+  contact_hours: string | null;
+};
+
+const mainNav = [
+  { to: "/", label: "INÍCIO" },
+  { to: "/vereadores", label: "A PREFEITURA", hasDropdown: true },
+  { to: "/sessoes", label: "SERVIÇOS" },
+  { to: "/noticias", label: "NOTÍCIAS" },
+  { to: "/transparencia", label: "DIÁRIO OFICIAL" },
+  { to: "/contato", label: "CONTATO" },
 ] as const;
 
 export function SiteHeader() {
-  const { theme, toggle } = useTheme();
-  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [settings, setSettings] = useState<SiteSettings | null>(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    supabase
+      .from("site_settings")
+      .select("contact_phone, contact_email, contact_hours")
+      .limit(1)
+      .maybeSingle()
+      .then(({ data }) => setSettings(data ?? null));
   }, []);
+
+  const phone = settings?.contact_phone ?? "(64) 9482-1176";
+  const email = settings?.contact_email ?? "contato@camaramunicipal.gov.br";
+  const hours = settings?.contact_hours ?? "Seg a Sex, 8h às 17h";
 
   return (
     <>
@@ -36,120 +58,167 @@ export function SiteHeader() {
         Pular para o conteúdo
       </a>
 
-      {/* Faixa institucional superior */}
-      <div className="hidden md:block bg-primary-deep text-primary-foreground/90 text-xs">
-        <div className="container-page flex h-9 items-center justify-between">
-          <span className="tracking-wide">Portal Oficial · Câmara Municipal</span>
-          <div className="flex items-center gap-5">
-            <Link to="/transparencia" className="hover:text-gold transition-colors">
-              Transparência
+      {/* TOP STRIP — institutional blue */}
+      <div className="bg-primary-deep text-white text-xs">
+        <div className="container-page flex h-10 items-center justify-between gap-4">
+          <div className="hidden md:flex items-center gap-5">
+            <Link to="/contato" className="inline-flex items-center gap-1.5 hover:text-gold transition-colors">
+              <Map className="h-3.5 w-3.5" /> Mapa do Site
             </Link>
-            <Link to="/contato" className="hover:text-gold transition-colors">
-              Ouvidoria
-            </Link>
-            <span className="opacity-70">Acessibilidade AA</span>
+            <span className="opacity-30">|</span>
+            <a href={`tel:${phone}`} className="inline-flex items-center gap-1.5 hover:text-gold transition-colors">
+              <Phone className="h-3.5 w-3.5" /> {phone}
+            </a>
+            <span className="opacity-30">|</span>
+            <a href={`mailto:${email}`} className="inline-flex items-center gap-1.5 hover:text-gold transition-colors">
+              <Mail className="h-3.5 w-3.5" /> {email}
+            </a>
+            <span className="opacity-30">|</span>
+            <span className="inline-flex items-center gap-1.5 opacity-90">
+              <Clock className="h-3.5 w-3.5" /> {hours}
+            </span>
+          </div>
+          <div className="md:hidden inline-flex items-center gap-2">
+            <Phone className="h-3.5 w-3.5" /> {phone}
+          </div>
+          <div className="flex items-center gap-3">
+            <a href="#" aria-label="Redes sociais" className="hover:text-gold transition-colors">
+              <Globe className="h-4 w-4" />
+            </a>
           </div>
         </div>
       </div>
 
-      <header
-        className={cn(
-          "sticky top-0 z-50 w-full transition-all duration-300",
-          scrolled ? "glass-strong shadow-[0_1px_0_0_var(--color-border)]" : "bg-background border-b border-border/40"
-        )}
-      >
-        <div className="container-page flex h-16 md:h-20 items-center justify-between gap-4">
-          <Link to="/" className="group flex items-center gap-3">
-            <div className="grid h-11 w-11 place-items-center rounded-md bg-gradient-to-br from-primary-deep to-primary text-primary-foreground shadow-elegant ring-1 ring-gold/30">
-              <Landmark className="h-5 w-5" />
+      {/* WHITE HEADER — logo + search + CTAs */}
+      <div className="bg-white border-b border-slate-100">
+        <div className="container-page py-5 flex items-center justify-between gap-6">
+          <Link to="/" className="flex items-center gap-3 shrink-0">
+            <div className="grid h-14 w-14 place-items-center rounded-lg bg-gradient-to-br from-primary-deep to-primary text-white shadow-md ring-1 ring-gold/30">
+              <Landmark className="h-7 w-7" />
             </div>
             <div className="leading-tight">
-              <div className="font-display text-base md:text-lg font-semibold text-foreground">
+              <div className="font-display font-extrabold text-xl md:text-2xl text-primary-deep tracking-tight uppercase">
                 Câmara Municipal
               </div>
-              <div className="text-[10px] md:text-xs uppercase tracking-[0.18em] text-muted-foreground">
-                Poder Legislativo
+              <div className="text-[10px] md:text-[11px] uppercase tracking-[0.2em] text-slate-500 font-semibold">
+                Governo · Poder Legislativo
               </div>
             </div>
           </Link>
 
-          <nav aria-label="Principal" className="hidden lg:flex items-center gap-1">
-            {nav.map((n) => (
-              <Link
-                key={n.to}
-                to={n.to}
-                activeOptions={{ exact: n.to === "/" }}
-                className={cn(
-                  "relative px-3 py-2 text-sm font-medium transition-colors rounded-md hover:bg-accent/60 flex items-center gap-2",
-                  "isLive" in n && n.isLive ? "text-red-600 font-bold" : "text-foreground/80 hover:text-foreground"
-                )}
-                activeProps={{
-                  className: cn(
-                    "text-foreground",
-                    !("isLive" in n && n.isLive) && "after:absolute after:left-3 after:right-3 after:-bottom-0.5 after:h-[2px] after:rounded-full after:bg-gradient-to-r after:from-gold after:to-primary"
-                  ),
-                }}
-              >
-                {"isLive" in n && n.isLive && (
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-                  </span>
-                )}
-                {n.label}
-              </Link>
-            ))}
-          </nav>
+          <div className="hidden lg:flex flex-1 max-w-xs">
+            <div className="relative w-full">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <input
+                placeholder="Buscar serviços, notícia"
+                className="w-full h-11 pl-10 pr-3 rounded-xl bg-slate-100 text-sm placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 border border-transparent focus:border-primary/40 transition-all"
+              />
+            </div>
+          </div>
 
-          <div className="flex items-center gap-1.5">
-            <Button variant="ghost" size="icon" aria-label="Buscar no portal" className="hidden sm:inline-flex">
-              <Search className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label={theme === "dark" ? "Ativar modo claro" : "Ativar modo escuro"}
-              onClick={toggle}
+          <div className="hidden md:flex items-center gap-3">
+            <Link
+              to="/transparencia"
+              className="inline-flex items-center gap-2 h-11 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm shadow-sm transition-colors"
             >
-              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="lg:hidden"
-              aria-label={open ? "Fechar menu" : "Abrir menu"}
-              aria-expanded={open}
-              onClick={() => setOpen((v) => !v)}
+              <Shield className="h-4 w-4" /> Transparência
+            </Link>
+            <Link
+              to="/contato"
+              className="inline-flex items-center gap-2 h-11 px-5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm shadow-sm transition-colors"
             >
-              {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
+              <MessageSquare className="h-4 w-4" /> Ouvidoria
+            </Link>
+          </div>
+
+          <button
+            className="md:hidden inline-flex items-center justify-center h-11 w-11 rounded-lg text-primary-deep hover:bg-slate-100"
+            aria-label={open ? "Fechar menu" : "Abrir menu"}
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+          >
+            {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
+      </div>
+
+      {/* BLUE NAV BAR */}
+      <nav aria-label="Principal" className="hidden lg:block bg-primary-deep border-t border-white/10 sticky top-0 z-40">
+        <div className="container-page flex items-center justify-between">
+          <ul className="flex items-stretch">
+            {mainNav.map((item) => (
+              <li key={item.to}>
+                <Link
+                  to={item.to}
+                  activeOptions={{ exact: item.to === "/" }}
+                  className={cn(
+                    "relative inline-flex items-center gap-1.5 px-5 py-4 text-[13px] font-semibold tracking-wider text-white/85 hover:text-white hover:bg-white/5 transition-colors uppercase"
+                  )}
+                  activeProps={{
+                    className: "text-white after:absolute after:left-5 after:right-5 after:bottom-0 after:h-[3px] after:bg-white",
+                  }}
+                >
+                  {item.label}
+                  {"hasDropdown" in item && item.hasDropdown && (
+                    <ChevronDown className="h-3.5 w-3.5 opacity-70" />
+                  )}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <div className="hidden xl:flex items-center gap-1 text-white/85">
+            <Link
+              to="/transparencia"
+              className="inline-flex items-center gap-1.5 px-5 py-4 text-[13px] font-semibold tracking-wider hover:bg-white/5 hover:text-white transition-colors uppercase"
+            >
+              <Shield className="h-4 w-4" /> Transparência <ChevronDown className="h-3.5 w-3.5 opacity-70" />
+            </Link>
+            <Link
+              to="/contato"
+              className="inline-flex items-center gap-1.5 px-5 py-4 text-[13px] font-semibold tracking-wider hover:bg-white/5 hover:text-white transition-colors uppercase"
+            >
+              <MessageSquare className="h-4 w-4" /> Acesso à Informação <ChevronDown className="h-3.5 w-3.5 opacity-70" />
+            </Link>
           </div>
         </div>
+      </nav>
 
-        {/* Mobile nav */}
-        {open && (
-          <nav
-            aria-label="Menu mobile"
-            className="lg:hidden border-t border-border/60 bg-background animate-[fade-in_0.2s_ease-out]"
-          >
-            <ul className="container-page py-3 flex flex-col">
-              {nav.map((n) => (
-                <li key={n.to}>
-                  <Link
-                    to={n.to}
-                    onClick={() => setOpen(false)}
-                    activeOptions={{ exact: n.to === "/" }}
-                    className="block rounded-md px-3 py-3 text-sm font-medium text-foreground/80 hover:bg-accent"
-                    activeProps={{ className: "text-primary bg-accent/60" }}
-                  >
-                    {n.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        )}
-      </header>
+      {/* MOBILE NAV */}
+      {open && (
+        <nav aria-label="Menu mobile" className="lg:hidden bg-primary-deep text-white animate-[fade-in_0.2s_ease-out]">
+          <ul className="container-page py-3 flex flex-col">
+            {mainNav.map((item) => (
+              <li key={item.to}>
+                <Link
+                  to={item.to}
+                  onClick={() => setOpen(false)}
+                  activeOptions={{ exact: item.to === "/" }}
+                  className="block rounded-md px-3 py-3 text-sm font-semibold uppercase tracking-wider text-white/85 hover:bg-white/10"
+                  activeProps={{ className: "text-white bg-white/10" }}
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+            <li className="pt-3 mt-2 border-t border-white/10 flex gap-2">
+              <Link
+                to="/transparencia"
+                onClick={() => setOpen(false)}
+                className="flex-1 inline-flex items-center justify-center gap-2 h-11 px-4 rounded-xl bg-emerald-600 text-white font-semibold text-sm"
+              >
+                <Shield className="h-4 w-4" /> Transparência
+              </Link>
+              <Link
+                to="/contato"
+                onClick={() => setOpen(false)}
+                className="flex-1 inline-flex items-center justify-center gap-2 h-11 px-4 rounded-xl bg-orange-500 text-white font-semibold text-sm"
+              >
+                <MessageSquare className="h-4 w-4" /> Ouvidoria
+              </Link>
+            </li>
+          </ul>
+        </nav>
+      )}
     </>
   );
 }
