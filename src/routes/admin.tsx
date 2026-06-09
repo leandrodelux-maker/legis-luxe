@@ -22,6 +22,8 @@ import {
   BarChart3
 } from "lucide-react";
 import { useState } from "react";
+import { AdminGuard } from "@/components/admin/admin-guard";
+import { useSupabaseAuth, signOut } from "@/hooks/use-supabase-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -36,7 +38,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export const Route = createFileRoute("/admin")({
-  component: AdminLayout,
+  component: () => (
+    <AdminGuard>
+      <AdminLayout />
+    </AdminGuard>
+  ),
 });
 
 const menuItems = [
@@ -57,17 +63,15 @@ function AdminLayout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  
-  // Mock User Role
-  const user = {
-    name: "Dr. Ricardo Oliveira",
-    role: "Administrador Geral",
-    roleKey: "admin",
-    avatar: null
-  };
+  const { user: authUser } = useSupabaseAuth();
 
-  const logout = () => {
-    navigate({ to: "/" });
+  const displayName = authUser?.user_metadata?.full_name || authUser?.email || "Administrador";
+  const initials = displayName.split(" ").map((p: string) => p[0]).slice(0, 2).join("").toUpperCase();
+  const user = { name: displayName, role: "Administrador", roleKey: "admin", avatar: null };
+
+  const logout = async () => {
+    await signOut();
+    navigate({ to: "/auth" });
   };
 
   return (
