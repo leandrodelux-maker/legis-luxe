@@ -109,7 +109,7 @@ function AdminLayout() {
           <div className="p-4 rounded-2xl bg-white/5 space-y-4">
             <div className="flex items-center gap-3">
               <Avatar className="w-10 h-10 border-2 border-gold/50">
-                <AvatarFallback className="bg-primary text-white font-bold">RO</AvatarFallback>
+                <AvatarFallback className="bg-primary text-white font-bold">{initials}</AvatarFallback>
               </Avatar>
               <div className="min-w-0">
                 <p className="font-bold text-sm truncate">{user.name}</p>
@@ -164,9 +164,9 @@ function AdminLayout() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="p-1 h-auto flex items-center gap-2 hover:bg-slate-100 rounded-full">
                     <Avatar className="w-8 h-8">
-                      <AvatarFallback className="bg-primary-deep text-white text-xs">RO</AvatarFallback>
+                      <AvatarFallback className="bg-primary-deep text-white text-xs">{initials}</AvatarFallback>
                     </Avatar>
-                    <span className="hidden sm:inline-block font-bold text-sm text-slate-700">{user.name.split(' ')[1]}</span>
+                    <span className="hidden sm:inline-block font-bold text-sm text-slate-700">{displayName}</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
