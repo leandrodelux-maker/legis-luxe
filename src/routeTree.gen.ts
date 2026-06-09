@@ -18,6 +18,7 @@ import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminVereadoresIndexRouteImport } from './routes/admin/vereadores/index'
+import { Route as AdminTransparenciaIndexRouteImport } from './routes/admin/transparencia/index'
 import { Route as AdminProjetosIndexRouteImport } from './routes/admin/projetos/index'
 
 const VereadoresRoute = VereadoresRouteImport.update({
@@ -65,6 +66,11 @@ const AdminVereadoresIndexRoute = AdminVereadoresIndexRouteImport.update({
   path: '/admin/vereadores/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminTransparenciaIndexRoute = AdminTransparenciaIndexRouteImport.update({
+  id: '/admin/transparencia/',
+  path: '/admin/transparencia/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminProjetosIndexRoute = AdminProjetosIndexRouteImport.update({
   id: '/admin/projetos/',
   path: '/admin/projetos/',
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/vereadores': typeof VereadoresRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/projetos/': typeof AdminProjetosIndexRoute
+  '/admin/transparencia/': typeof AdminTransparenciaIndexRoute
   '/admin/vereadores/': typeof AdminVereadoresIndexRoute
 }
 export interface FileRoutesByTo {
@@ -93,6 +100,7 @@ export interface FileRoutesByTo {
   '/vereadores': typeof VereadoresRoute
   '/admin': typeof AdminIndexRoute
   '/admin/projetos': typeof AdminProjetosIndexRoute
+  '/admin/transparencia': typeof AdminTransparenciaIndexRoute
   '/admin/vereadores': typeof AdminVereadoresIndexRoute
 }
 export interface FileRoutesById {
@@ -106,6 +114,7 @@ export interface FileRoutesById {
   '/vereadores': typeof VereadoresRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/projetos/': typeof AdminProjetosIndexRoute
+  '/admin/transparencia/': typeof AdminTransparenciaIndexRoute
   '/admin/vereadores/': typeof AdminVereadoresIndexRoute
 }
 export interface FileRouteTypes {
@@ -120,6 +129,7 @@ export interface FileRouteTypes {
     | '/vereadores'
     | '/admin/'
     | '/admin/projetos/'
+    | '/admin/transparencia/'
     | '/admin/vereadores/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -132,6 +142,7 @@ export interface FileRouteTypes {
     | '/vereadores'
     | '/admin'
     | '/admin/projetos'
+    | '/admin/transparencia'
     | '/admin/vereadores'
   id:
     | '__root__'
@@ -144,6 +155,7 @@ export interface FileRouteTypes {
     | '/vereadores'
     | '/admin/'
     | '/admin/projetos/'
+    | '/admin/transparencia/'
     | '/admin/vereadores/'
   fileRoutesById: FileRoutesById
 }
@@ -157,6 +169,7 @@ export interface RootRouteChildren {
   VereadoresRoute: typeof VereadoresRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminProjetosIndexRoute: typeof AdminProjetosIndexRoute
+  AdminTransparenciaIndexRoute: typeof AdminTransparenciaIndexRoute
   AdminVereadoresIndexRoute: typeof AdminVereadoresIndexRoute
 }
 
@@ -225,6 +238,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminVereadoresIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/transparencia/': {
+      id: '/admin/transparencia/'
+      path: '/admin/transparencia'
+      fullPath: '/admin/transparencia/'
+      preLoaderRoute: typeof AdminTransparenciaIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/projetos/': {
       id: '/admin/projetos/'
       path: '/admin/projetos'
@@ -245,6 +265,7 @@ const rootRouteChildren: RootRouteChildren = {
   VereadoresRoute: VereadoresRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminProjetosIndexRoute: AdminProjetosIndexRoute,
+  AdminTransparenciaIndexRoute: AdminTransparenciaIndexRoute,
   AdminVereadoresIndexRoute: AdminVereadoresIndexRoute,
 }
 export const routeTree = rootRouteImport
