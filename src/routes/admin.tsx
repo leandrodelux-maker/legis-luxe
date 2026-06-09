@@ -46,6 +46,7 @@ const menuItems = [
   { label: "Processo Legislativo", icon: Gavel, path: "/admin/projetos", roles: ["admin", "legislativo"] },
   { label: "Sessões", icon: Calendar, path: "/admin/sessoes", roles: ["admin", "legislativo"] },
   { label: "Notícias e Banners", icon: Newspaper, path: "/admin/comunicacao", roles: ["admin", "comunicacao"] },
+  { label: "Acesso Rápido", icon: Globe, path: "/admin/acesso-rapido", roles: ["admin", "comunicacao"] },
   { label: "Transparência", icon: ShieldCheck, path: "/admin/transparencia", roles: ["admin", "transparencia", "controle"] },
   { label: "Documentos e Atas", icon: FileText, path: "/admin/documentos", roles: ["admin", "legislativo"] },
   { label: "Logs e Histórico", icon: History, path: "/admin/logs", roles: ["admin", "controle"] },

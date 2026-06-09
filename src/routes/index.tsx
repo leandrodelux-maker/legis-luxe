@@ -13,6 +13,7 @@ import {
 import heroImg from "@/assets/hero-camara.jpg";
 import { Button } from "@/components/ui/button";
 import { SectionHeading } from "@/components/section-heading";
+import { QuickAccess } from "@/components/quick-access";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -108,41 +109,8 @@ function HomePage() {
       </section>
 
       {/* QUICK ACCESS */}
-      <section className="container-page py-20 md:py-24">
-        <SectionHeading
-          eyebrow="Acesso rápido"
-          title="Tudo o que você precisa, à mão"
-          description="Serviços e informações principais para acompanhar o trabalho legislativo."
-        />
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {[
-            { icon: Users, label: "Vereadores", to: "/vereadores", desc: "Conheça os parlamentares" },
-            { icon: Calendar, label: "Sessões", to: "/sessoes", desc: "Pautas e calendário" },
-            { icon: Eye, label: "Transparência", to: "/transparencia", desc: "Dados públicos" },
-            { icon: MessageSquare, label: "Ouvidoria", to: "/contato", desc: "Envie sua manifestação" },
-            { icon: FileText, label: "SIC", to: "/transparencia", desc: "Acesso à informação" },
-            { icon: Calendar, label: "Agenda", to: "/sessoes", desc: "Eventos e audiências" },
-          ].map((item, i) => (
-            <Link
-              key={item.label}
-              to={item.to}
-              className="card-premium card-premium-hover group p-6 animate-[fade-up_0.6s_ease-out_both]"
-              style={{ animationDelay: `${i * 80}ms` }}
-            >
-              <div className="grid h-12 w-12 place-items-center rounded-lg bg-gradient-to-br from-primary to-primary-deep text-primary-foreground shadow-elegant ring-1 ring-gold/20 transition-transform group-hover:scale-110">
-                <item.icon className="h-5 w-5" />
-              </div>
-              <h3 className="mt-5 font-display text-lg font-semibold text-foreground">
-                {item.label}
-              </h3>
-              <p className="mt-1.5 text-sm text-muted-foreground">{item.desc}</p>
-              <div className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary group-hover:gap-2 transition-all">
-                Acessar <ArrowRight className="h-3.5 w-3.5" />
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
+      <QuickAccess />
+
 
       {/* NOTÍCIAS */}
       <section className="bg-secondary/40 border-y border-border/60">
