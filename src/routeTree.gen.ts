@@ -15,6 +15,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SessoesRouteImport } from './routes/sessoes'
 import { Route as NoticiasRouteImport } from './routes/noticias'
 import { Route as ContatoRouteImport } from './routes/contato'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
@@ -52,39 +53,45 @@ const ContatoRoute = ContatoRouteImport.update({
   path: '/contato',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/admin/',
-  path: '/admin/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
-  id: '/admin/dashboard',
-  path: '/admin/dashboard',
-  getParentRoute: () => rootRouteImport,
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminVereadoresIndexRoute = AdminVereadoresIndexRouteImport.update({
-  id: '/admin/vereadores/',
-  path: '/admin/vereadores/',
-  getParentRoute: () => rootRouteImport,
+  id: '/vereadores/',
+  path: '/vereadores/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminTransparenciaIndexRoute = AdminTransparenciaIndexRouteImport.update({
-  id: '/admin/transparencia/',
-  path: '/admin/transparencia/',
-  getParentRoute: () => rootRouteImport,
+  id: '/transparencia/',
+  path: '/transparencia/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminProjetosIndexRoute = AdminProjetosIndexRouteImport.update({
-  id: '/admin/projetos/',
-  path: '/admin/projetos/',
-  getParentRoute: () => rootRouteImport,
+  id: '/projetos/',
+  path: '/projetos/',
+  getParentRoute: () => AdminRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/contato': typeof ContatoRoute
   '/noticias': typeof NoticiasRoute
   '/sessoes': typeof SessoesRoute
@@ -114,6 +121,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/contato': typeof ContatoRoute
   '/noticias': typeof NoticiasRoute
   '/sessoes': typeof SessoesRoute
@@ -130,6 +138,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/contato'
     | '/noticias'
     | '/sessoes'
@@ -158,6 +167,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/contato'
     | '/noticias'
     | '/sessoes'
@@ -173,17 +183,13 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   ContatoRoute: typeof ContatoRoute
   NoticiasRoute: typeof NoticiasRoute
   SessoesRoute: typeof SessoesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TransparenciaRoute: typeof TransparenciaRoute
   VereadoresRoute: typeof VereadoresRoute
-  AdminDashboardRoute: typeof AdminDashboardRoute
-  AdminIndexRoute: typeof AdminIndexRoute
-  AdminProjetosIndexRoute: typeof AdminProjetosIndexRoute
-  AdminTransparenciaIndexRoute: typeof AdminTransparenciaIndexRoute
-  AdminVereadoresIndexRoute: typeof AdminVereadoresIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -230,6 +236,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContatoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -239,56 +252,80 @@ declare module '@tanstack/react-router' {
     }
     '/admin/': {
       id: '/admin/'
-      path: '/admin'
+      path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/dashboard': {
       id: '/admin/dashboard'
-      path: '/admin/dashboard'
+      path: '/dashboard'
       fullPath: '/admin/dashboard'
       preLoaderRoute: typeof AdminDashboardRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/vereadores/': {
       id: '/admin/vereadores/'
-      path: '/admin/vereadores'
+      path: '/vereadores'
       fullPath: '/admin/vereadores/'
       preLoaderRoute: typeof AdminVereadoresIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/transparencia/': {
       id: '/admin/transparencia/'
-      path: '/admin/transparencia'
+      path: '/transparencia'
       fullPath: '/admin/transparencia/'
       preLoaderRoute: typeof AdminTransparenciaIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/projetos/': {
       id: '/admin/projetos/'
-      path: '/admin/projetos'
+      path: '/projetos'
       fullPath: '/admin/projetos/'
       preLoaderRoute: typeof AdminProjetosIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
   }
 }
 
-const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  ContatoRoute: ContatoRoute,
-  NoticiasRoute: NoticiasRoute,
-  SessoesRoute: SessoesRoute,
-  SitemapDotxmlRoute: SitemapDotxmlRoute,
-  TransparenciaRoute: TransparenciaRoute,
-  VereadoresRoute: VereadoresRoute,
+interface AdminRouteChildren {
+  AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminProjetosIndexRoute: typeof AdminProjetosIndexRoute
+  AdminTransparenciaIndexRoute: typeof AdminTransparenciaIndexRoute
+  AdminVereadoresIndexRoute: typeof AdminVereadoresIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
   AdminDashboardRoute: AdminDashboardRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminProjetosIndexRoute: AdminProjetosIndexRoute,
   AdminTransparenciaIndexRoute: AdminTransparenciaIndexRoute,
   AdminVereadoresIndexRoute: AdminVereadoresIndexRoute,
 }
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
+  ContatoRoute: ContatoRoute,
+  NoticiasRoute: NoticiasRoute,
+  SessoesRoute: SessoesRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TransparenciaRoute: TransparenciaRoute,
+  VereadoresRoute: VereadoresRoute,
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
