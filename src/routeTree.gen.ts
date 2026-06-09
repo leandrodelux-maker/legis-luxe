@@ -20,6 +20,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as SessoesIndexRouteImport } from './routes/sessoes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as SessoesAoVivoRouteImport } from './routes/sessoes/ao-vivo'
+import { Route as AdminExecutivoRouteImport } from './routes/admin/executivo'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
 import { Route as AdminVereadoresIndexRouteImport } from './routes/admin/vereadores/index'
 import { Route as AdminTransparenciaIndexRouteImport } from './routes/admin/transparencia/index'
@@ -85,6 +86,11 @@ const SessoesAoVivoRoute = SessoesAoVivoRouteImport.update({
   path: '/ao-vivo',
   getParentRoute: () => SessoesRoute,
 } as any)
+const AdminExecutivoRoute = AdminExecutivoRouteImport.update({
+  id: '/executivo',
+  path: '/executivo',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -141,6 +147,7 @@ export interface FileRoutesByFullPath {
   '/transparencia': typeof TransparenciaRoute
   '/vereadores': typeof VereadoresRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/executivo': typeof AdminExecutivoRoute
   '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
   '/admin/': typeof AdminIndexRoute
   '/sessoes/': typeof SessoesIndexRoute
@@ -161,6 +168,7 @@ export interface FileRoutesByTo {
   '/transparencia': typeof TransparenciaRoute
   '/vereadores': typeof VereadoresRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/executivo': typeof AdminExecutivoRoute
   '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
   '/admin': typeof AdminIndexRoute
   '/sessoes': typeof SessoesIndexRoute
@@ -184,6 +192,7 @@ export interface FileRoutesById {
   '/transparencia': typeof TransparenciaRoute
   '/vereadores': typeof VereadoresRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/executivo': typeof AdminExecutivoRoute
   '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
   '/admin/': typeof AdminIndexRoute
   '/sessoes/': typeof SessoesIndexRoute
@@ -208,6 +217,7 @@ export interface FileRouteTypes {
     | '/transparencia'
     | '/vereadores'
     | '/admin/dashboard'
+    | '/admin/executivo'
     | '/sessoes/ao-vivo'
     | '/admin/'
     | '/sessoes/'
@@ -228,6 +238,7 @@ export interface FileRouteTypes {
     | '/transparencia'
     | '/vereadores'
     | '/admin/dashboard'
+    | '/admin/executivo'
     | '/sessoes/ao-vivo'
     | '/admin'
     | '/sessoes'
@@ -250,6 +261,7 @@ export interface FileRouteTypes {
     | '/transparencia'
     | '/vereadores'
     | '/admin/dashboard'
+    | '/admin/executivo'
     | '/sessoes/ao-vivo'
     | '/admin/'
     | '/sessoes/'
@@ -353,6 +365,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SessoesAoVivoRouteImport
       parentRoute: typeof SessoesRoute
     }
+    '/admin/executivo': {
+      id: '/admin/executivo'
+      path: '/executivo'
+      fullPath: '/admin/executivo'
+      preLoaderRoute: typeof AdminExecutivoRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/dashboard': {
       id: '/admin/dashboard'
       path: '/dashboard'
@@ -421,6 +440,7 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminExecutivoRoute: typeof AdminExecutivoRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminComunicacaoNovoRoute: typeof AdminComunicacaoNovoRoute
   AdminComunicacaoIndexRoute: typeof AdminComunicacaoIndexRoute
@@ -434,6 +454,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminDashboardRoute: AdminDashboardRoute,
+  AdminExecutivoRoute: AdminExecutivoRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminComunicacaoNovoRoute: AdminComunicacaoNovoRoute,
   AdminComunicacaoIndexRoute: AdminComunicacaoIndexRoute,
