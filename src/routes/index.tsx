@@ -2,18 +2,22 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowRight,
   Calendar,
-  FileText,
   Gavel,
-  ScrollText,
   Users,
-  Building2,
-  Eye,
   MessageSquare,
+  Shield,
+  FileText,
+  BookOpen,
+  Search,
+  Sparkles,
+  Newspaper,
 } from "lucide-react";
+import { useEffect, useState } from "react";
 import heroImg from "@/assets/hero-camara.jpg";
 import { Button } from "@/components/ui/button";
 import { SectionHeading } from "@/components/section-heading";
 import { QuickAccess } from "@/components/quick-access";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -40,73 +44,141 @@ const stats = [
   { value: "100%", label: "Transparência ativa" },
 ];
 
+const heroPills = [
+  { icon: Shield, label: "Transparência", to: "/transparencia" },
+  { icon: FileText, label: "e-SIC", to: "/contato" },
+  { icon: MessageSquare, label: "Ouvidoria", to: "/contato" },
+  { icon: BookOpen, label: "Carta de Serviços", to: "/transparencia" },
+  { icon: Gavel, label: "Licitações", to: "/transparencia" },
+  { icon: Newspaper, label: "Diário Oficial", to: "/noticias" },
+];
+
+type HeroData = {
+  hero_media_url: string | null;
+  hero_media_type: string;
+  hero_title: string;
+  hero_subtitle: string;
+  hero_eyebrow: string;
+};
+
 function HomePage() {
+  const [hero, setHero] = useState<HeroData | null>(null);
+
+  useEffect(() => {
+    supabase
+      .from("site_settings")
+      .select("hero_media_url, hero_media_type, hero_title, hero_subtitle, hero_eyebrow")
+      .limit(1)
+      .maybeSingle()
+      .then(({ data }) => setHero(data as HeroData | null));
+  }, []);
+
+  const mediaUrl = hero?.hero_media_url || null;
+  const isVideo = hero?.hero_media_type === "video";
+  const title = hero?.hero_title || "Câmara Municipal";
+  const subtitle = hero?.hero_subtitle || "Transparência, serviços e informação ao alcance do cidadão";
+  const eyebrow = hero?.hero_eyebrow || "Portal Oficial do Município";
+
   return (
     <>
-      {/* HERO */}
+      {/* HERO — full-bleed media with overlay, centered content, search pill row */}
       <section className="relative isolate overflow-hidden">
         <div className="absolute inset-0 -z-10">
-          <img
-            src={heroImg}
-            alt="Edifício da Câmara Municipal ao entardecer"
-            width={1920}
-            height={1080}
-            className="h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary-deep/95 via-primary-deep/80 to-primary-deep/50" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent" />
+          {isVideo && mediaUrl ? (
+            <video
+              src={mediaUrl}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <img
+              src={mediaUrl || heroImg}
+              alt="Imagem do município"
+              className="h-full w-full object-cover"
+            />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-b from-primary-deep/85 via-primary-deep/75 to-primary-deep/85" />
         </div>
 
-        <div className="container-page py-20 md:py-28 lg:py-36 text-primary-foreground">
-          <div className="max-w-3xl animate-[fade-up_0.8s_ease-out]">
-            <div className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-white/5 px-3 py-1 text-xs font-medium uppercase tracking-[0.18em] text-gold backdrop-blur-sm">
-              <span className="h-1.5 w-1.5 rounded-full bg-gold animate-pulse" />
-              Portal Oficial · Legislativo Municipal
-            </div>
-            <h1 className="mt-6 font-display text-4xl md:text-6xl lg:text-7xl font-semibold leading-[1.05] tracking-tight">
-              A voz do <span className="text-gold">cidadão</span>,<br />
-              no centro das decisões.
-            </h1>
-            <p className="mt-6 max-w-2xl text-base md:text-lg text-primary-foreground/85 leading-relaxed">
-              Acompanhe em tempo real o trabalho dos vereadores, a tramitação de projetos de lei
-              e os dados de transparência da Câmara Municipal.
-            </p>
-            <div className="mt-9 flex flex-wrap gap-3">
+        <div className="container-page py-20 md:py-28 lg:py-32 text-white text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-white/10 backdrop-blur-sm px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-gold animate-[fade-up_0.6s_ease-out]">
+            <Sparkles className="h-3.5 w-3.5" /> {eyebrow}
+          </div>
+
+          <h1 className="mt-6 font-display text-5xl md:text-7xl lg:text-8xl font-extrabold leading-[1.02] tracking-tight animate-[fade-up_0.7s_ease-out]">
+            {title}
+          </h1>
+
+          <p className="mt-5 max-w-2xl mx-auto text-base md:text-lg text-white/85 leading-relaxed animate-[fade-up_0.8s_ease-out]">
+            {subtitle}
+          </p>
+
+          {/* Search bar */}
+          <form className="mt-10 max-w-2xl mx-auto animate-[fade-up_0.9s_ease-out]">
+            <div className="flex items-stretch rounded-2xl bg-white shadow-2xl shadow-primary-deep/30 overflow-hidden">
+              <div className="flex items-center pl-4 text-slate-400">
+                <Search className="h-5 w-5" />
+              </div>
+              <input
+                type="search"
+                placeholder="O que você procura? Ex: IPTU, licitações..."
+                className="flex-1 px-3 h-14 text-slate-700 placeholder:text-slate-400 focus:outline-none text-base"
+              />
               <Button
-                asChild
-                size="lg"
-                className="bg-gold text-gold-foreground hover:bg-gold/90 shadow-gold h-12 px-6"
+                type="submit"
+                className="h-14 rounded-none rounded-r-2xl px-6 md:px-8 bg-orange-500 hover:bg-orange-600 text-white font-bold text-base"
               >
-                <Link to="/sessoes">
-                  <Calendar className="mr-2 h-4 w-4" /> Sessões ao Vivo
-                </Link>
-              </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="h-12 px-6 border-white/30 bg-white/5 text-white hover:bg-white/15 hover:text-white backdrop-blur-sm"
-              >
-                <Link to="/transparencia">Portal da Transparência</Link>
+                Buscar
               </Button>
             </div>
+          </form>
+
+          {/* Pill quick links */}
+          <div className="mt-8 flex flex-wrap justify-center gap-3 animate-[fade-up_1s_ease-out]">
+            {heroPills.map((p) => (
+              <Link
+                key={p.label}
+                to={p.to}
+                className="inline-flex items-center gap-2 h-11 px-5 rounded-full border border-white/25 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white text-sm font-medium transition-colors"
+              >
+                <p.icon className="h-4 w-4 text-gold" /> {p.label}
+              </Link>
+            ))}
           </div>
 
           {/* Stats glass card */}
-          <div className="mt-16 lg:mt-24 grid grid-cols-2 lg:grid-cols-4 gap-px rounded-2xl glass-strong overflow-hidden border border-white/15 bg-white/5 max-w-4xl">
+          <div className="mt-16 grid grid-cols-2 lg:grid-cols-4 gap-px rounded-2xl glass-strong overflow-hidden border border-white/15 bg-white/5 max-w-4xl mx-auto">
             {stats.map((s) => (
               <div key={s.label} className="bg-primary-deep/40 p-6 md:p-7 text-center">
-                <div className="font-display text-3xl md:text-4xl font-semibold text-gold">
+                <div className="font-display text-3xl md:text-4xl font-extrabold text-gold">
                   {s.value}
                 </div>
-                <div className="mt-1 text-xs md:text-sm uppercase tracking-wider text-primary-foreground/75">
+                <div className="mt-1 text-xs md:text-sm uppercase tracking-wider text-white/75">
                   {s.label}
                 </div>
               </div>
             ))}
           </div>
         </div>
+
+        {/* Decorative wave bottom */}
+        <svg
+          aria-hidden
+          viewBox="0 0 1440 80"
+          className="block w-full h-12 md:h-16 -mb-px text-background"
+          preserveAspectRatio="none"
+        >
+          <path
+            fill="currentColor"
+            d="M0,40 C240,90 480,0 720,30 C960,60 1200,80 1440,40 L1440,80 L0,80 Z"
+          />
+        </svg>
       </section>
+
+
 
       {/* QUICK ACCESS */}
       <QuickAccess />
