@@ -49,7 +49,7 @@ export function CrudPage<T extends { id: string }>({
 
   const load = async () => {
     setLoading(true);
-    let q = supabase.from(table).select("*");
+    let q = (supabase as any).from(table).select("*");
     if (orderBy) q = q.order(orderBy.column, { ascending: orderBy.ascending ?? false });
     const { data, error } = await q;
     if (error) toast.error(error.message);
@@ -73,7 +73,7 @@ export function CrudPage<T extends { id: string }>({
 
   const handleDelete = async (row: T) => {
     if (!confirm("Excluir este registro?")) return;
-    const { error } = await supabase.from(table).delete().eq("id", row.id);
+    const { error } = await (supabase as any).from(table).delete().eq("id", row.id);
     if (error) return toast.error(error.message);
     toast.success("Excluído");
     load();
@@ -91,8 +91,8 @@ export function CrudPage<T extends { id: string }>({
       payload[f.name] = v;
     });
     const op = editing
-      ? supabase.from(table).update(payload).eq("id", editing.id)
-      : supabase.from(table).insert(payload);
+      ? (supabase as any).from(table).update(payload).eq("id", editing.id)
+      : (supabase as any).from(table).insert(payload);
     const { error } = await op;
     setSaving(false);
     if (error) return toast.error(error.message);
