@@ -145,8 +145,15 @@ function HomePage() {
           title="Tudo o que você precisa, à mão"
           description="Serviços e informações principais para acompanhar o trabalho legislativo."
         />
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {quickAccess.map((item, i) => (
+        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            { icon: Users, label: "Vereadores", to: "/vereadores", desc: "Conheça os parlamentares" },
+            { icon: Calendar, label: "Sessões", to: "/sessoes", desc: "Pautas e calendário" },
+            { icon: Eye, label: "Transparência", to: "/transparencia", desc: "Dados públicos" },
+            { icon: MessageSquare, label: "Ouvidoria", to: "/contato", desc: "Envie sua manifestação" },
+            { icon: FileText, label: "SIC", to: "/transparencia", desc: "Acesso à informação" },
+            { icon: Calendar, label: "Agenda", to: "/sessoes", desc: "Eventos e audiências" },
+          ].map((item, i) => (
             <Link
               key={item.label}
               to={item.to}
