@@ -8,16 +8,24 @@ import {
   Filter, 
   ArrowRight,
   Gavel,
-  FileCheck,
   Users2,
   CheckCircle2,
-  Stamp
+  Stamp,
+  Youtube,
+  Play,
+  ClipboardList,
+  Vote,
+  FileCheck,
+  ChevronRight,
+  ExternalLink
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionHeading } from "@/components/section-heading";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 
 export const Route = createFileRoute("/sessoes")({
   head: () => ({
@@ -33,9 +41,16 @@ export const Route = createFileRoute("/sessoes")({
 });
 
 const proximasSessoes = [
-  { tipo: "Sessão Ordinária", data: "16 Jun 2026", hora: "14h00", local: "Plenário Principal", pauta: 7 },
-  { tipo: "Audiência Pública", data: "18 Jun 2026", hora: "19h00", local: "Auditório", pauta: 3 },
-  { tipo: "Sessão Extraordinária", data: "23 Jun 2026", hora: "10h00", local: "Plenário Principal", pauta: 4 },
+  { id: 1, tipo: "Sessão Ordinária", data: "16 Jun 2026", hora: "14h00", local: "Plenário Principal", pauta: 7, videoId: "dQw4w9WgXcQ" },
+  { id: 2, tipo: "Audiência Pública", data: "18 Jun 2026", hora: "19h00", local: "Auditório", pauta: 3, videoId: "dQw4w9WgXcQ" },
+  { id: 3, tipo: "Sessão Extraordinária", data: "23 Jun 2026", hora: "10h00", local: "Plenário Principal", pauta: 4, videoId: null },
+  { id: 4, tipo: "Sessão Solene", data: "25 Jun 2026", hora: "19h30", local: "Plenário Principal", pauta: 2, videoId: null },
+];
+
+const historicoSessoes = [
+  { id: 101, tipo: "Sessão Ordinária", data: "09 Jun 2026", videoId: "dQw4w9WgXcQ", pauta: 12, ata: true, presenca: 19, votacoes: 5 },
+  { id: 102, tipo: "Sessão Ordinária", data: "02 Jun 2026", videoId: "dQw4w9WgXcQ", pauta: 8, ata: true, presenca: 21, votacoes: 3 },
+  { id: 103, tipo: "Audiência Pública", data: "28 Mai 2026", videoId: "dQw4w9WgXcQ", pauta: 1, ata: true, presenca: 15, votacoes: 0 },
 ];
 
 const tiposMateria = [
@@ -48,46 +63,10 @@ const tiposMateria = [
 ];
 
 const projetos = [
-  { 
-    id: "pl-124-2026",
-    num: "124", 
-    ano: "2026",
-    tipo: "Projeto de Lei",
-    titulo: "Institui o programa municipal de incentivo à leitura", 
-    autor: "Ver. Mariana Souza", 
-    status: "Comissão",
-    fase: 2 
-  },
-  { 
-    id: "pl-118-2026",
-    num: "118", 
-    ano: "2026",
-    tipo: "Projeto de Lei",
-    titulo: "Cria a semana de prevenção à violência doméstica", 
-    autor: "Ver. Patrícia Ribeiro", 
-    status: "Plenário",
-    fase: 3
-  },
-  { 
-    id: "ind-045-2026",
-    num: "045", 
-    ano: "2026",
-    tipo: "Indicação",
-    titulo: "Manutenção asfáltica na Rua das Palmeiras", 
-    autor: "Ver. Roberto Mendes", 
-    status: "Protocolado",
-    fase: 1
-  },
-  { 
-    id: "pl-097-2026",
-    num: "097", 
-    ano: "2026",
-    tipo: "Projeto de Lei",
-    titulo: "Regulamenta horta comunitária em áreas municipais", 
-    autor: "Ver. Juliana Martins", 
-    status: "Sancionado",
-    fase: 5
-  },
+  { id: "pl-124-2026", num: "124", ano: "2026", tipo: "Projeto de Lei", titulo: "Institui o programa municipal de incentivo à leitura", autor: "Ver. Mariana Souza", status: "Comissão", fase: 2 },
+  { id: "pl-118-2026", num: "118", ano: "2026", tipo: "Projeto de Lei", titulo: "Cria a semana de prevenção à violência doméstica", autor: "Ver. Patrícia Ribeiro", status: "Plenário", fase: 3 },
+  { id: "ind-045-2026", num: "045", ano: "2026", tipo: "Indicação", titulo: "Manutenção asfáltica na Rua das Palmeiras", autor: "Ver. Roberto Mendes", status: "Protocolado", fase: 1 },
+  { id: "pl-097-2026", num: "097", ano: "2026", tipo: "Projeto de Lei", titulo: "Regulamenta horta comunitária em áreas municipais", autor: "Ver. Juliana Martins", status: "Sancionado", fase: 5 },
 ];
 
 const fases = [
@@ -140,6 +119,7 @@ function LegislativeTimeline({ currentFase }: { currentFase: number }) {
 function SessoesPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("Todos");
+  const [date, setDate] = useState<Date | undefined>(new Date());
 
   const filteredProjetos = projetos.filter(p => {
     const matchesSearch = p.titulo.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -157,70 +137,190 @@ function SessoesPage() {
             <span className="gold-divider" /> Atividade Parlamentar
           </div>
           <h1 className="mt-4 font-display text-4xl md:text-6xl font-bold leading-tight">
-            Processo <span className="text-gold">Legislativo</span>
+            Sessões e <span className="text-gold">Processo</span>
           </h1>
           <p className="mt-6 max-w-2xl text-primary-foreground/85 text-lg">
-            Acompanhe em tempo real a tramitação de leis, requerimentos e a agenda de sessões da Câmara.
+            Acompanhe as sessões ao vivo, consulte pautas, atas e toda a tramitação legislativa de forma transparente.
           </p>
         </div>
       </section>
 
-      <section className="container-page py-16 md:py-20">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-          <SectionHeading 
-            eyebrow="Agenda Oficial" 
-            title="Próximas sessões" 
-            className="mb-0"
-          />
-          <Button variant="outline" className="group">
-            Ver calendário completo <Calendar className="ml-2 h-4 w-4 group-hover:text-gold transition-colors" />
-          </Button>
-        </div>
-        
-        <div className="grid gap-6 md:grid-cols-3">
-          {proximasSessoes.map((s, i) => (
-            <article
-              key={s.tipo + s.data}
-              className="card-premium card-premium-hover p-8 animate-[fade-up_0.5s_ease-out_both]"
-              style={{ animationDelay: `${i * 100}ms` }}
-            >
-              <div className="flex items-center justify-between mb-6">
-                <Badge variant="secondary" className="bg-primary/5 text-primary border-primary/10 px-3 py-1">
-                  {s.tipo}
-                </Badge>
-                <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                  <FileText className="h-3.5 w-3.5 text-gold" /> {s.pauta} pautas
-                </div>
-              </div>
-              <h3 className="font-display text-2xl font-bold text-foreground mb-4">{s.data}</h3>
-              <div className="space-y-3 mb-8">
-                <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                  <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
-                    <Clock className="h-4 w-4 text-primary" />
+      <section className="container-page py-16 md:py-24">
+        <Tabs defaultValue="proximas" className="space-y-10">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-border pb-6">
+            <TabsList className="bg-secondary/50 p-1 rounded-xl">
+              <TabsTrigger value="proximas" className="px-6 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                Próximas Sessões
+              </TabsTrigger>
+              <TabsTrigger value="historico" className="px-6 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                Histórico e Vídeos
+              </TabsTrigger>
+              <TabsTrigger value="calendario" className="px-6 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                Calendário Completo
+              </TabsTrigger>
+            </TabsList>
+            
+            <Button className="bg-red-600 hover:bg-red-700 text-white animate-pulse">
+              <Youtube className="mr-2 h-4 w-4" /> Assista Ao Vivo
+            </Button>
+          </div>
+
+          <TabsContent value="proximas" className="animate-[fade-up_0.5s_ease-out]">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+              {proximasSessoes.map((s, i) => (
+                <article
+                  key={s.id}
+                  className="card-premium card-premium-hover p-6 flex flex-col group"
+                  style={{ animationDelay: `${i * 100}ms` }}
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <Badge variant="outline" className="text-[10px] uppercase font-bold tracking-wider">
+                      {s.tipo}
+                    </Badge>
+                    {s.videoId && (
+                      <Badge className="bg-red-100 text-red-600 border-red-200">
+                        <Play className="h-3 w-3 mr-1 fill-current" /> LIVE
+                      </Badge>
+                    )}
                   </div>
-                  {s.hora}
-                </div>
-                <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                  <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
-                    <MapPin className="h-4 w-4 text-primary" />
+                  <h3 className="font-display text-xl font-bold mb-4">{s.data}</h3>
+                  <div className="space-y-2 mb-6 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-gold" /> {s.hora}</div>
+                    <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-gold" /> {s.local}</div>
+                    <div className="flex items-center gap-2"><FileText className="h-4 w-4 text-gold" /> {s.pauta} matérias na pauta</div>
                   </div>
-                  {s.local}
+                  <div className="mt-auto pt-4 border-t border-border/50 space-y-2">
+                    <Button variant="outline" size="sm" className="w-full justify-between group-hover:border-primary">
+                      Ver Pauta <ChevronRight className="h-3 w-3" />
+                    </Button>
+                    <Button variant="ghost" size="sm" className="w-full text-xs text-muted-foreground">
+                      Baixar Editais
+                    </Button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="historico" className="animate-[fade-up_0.5s_ease-out]">
+            <div className="space-y-6">
+              {historicoSessoes.map((s, i) => (
+                <div key={s.id} className="card-premium p-6 flex flex-col lg:flex-row gap-8 items-start lg:items-center">
+                  <div className="relative w-full lg:w-64 aspect-video rounded-lg overflow-hidden bg-black group cursor-pointer">
+                    <img 
+                      src={`https://img.youtube.com/vi/${s.videoId}/0.jpg`} 
+                      alt="Thumbnail" 
+                      className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Play className="h-6 w-6 text-white fill-current" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex-1 space-y-4">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <Badge variant="secondary" className="bg-primary/5 text-primary">
+                        {s.tipo}
+                      </Badge>
+                      <span className="text-sm font-bold text-muted-foreground">{s.data}</span>
+                    </div>
+                    <h4 className="font-display text-2xl font-bold">Resumo dos Trabalhos</h4>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="p-3 rounded-lg bg-secondary/50 border border-border/50 text-center">
+                        <div className="text-lg font-bold text-primary">{s.pauta}</div>
+                        <div className="text-[10px] uppercase font-bold text-muted-foreground">Pautas</div>
+                      </div>
+                      <div className="p-3 rounded-lg bg-secondary/50 border border-border/50 text-center">
+                        <div className="text-lg font-bold text-primary">{s.presenca}</div>
+                        <div className="text-[10px] uppercase font-bold text-muted-foreground">Presenças</div>
+                      </div>
+                      <div className="p-3 rounded-lg bg-secondary/50 border border-border/50 text-center">
+                        <div className="text-lg font-bold text-primary">{s.votacoes}</div>
+                        <div className="text-[10px] uppercase font-bold text-muted-foreground">Votações</div>
+                      </div>
+                      <div className="p-3 rounded-lg bg-secondary/50 border border-border/50 text-center">
+                        <div className="text-lg font-bold text-emerald-600">ATA</div>
+                        <div className="text-[10px] uppercase font-bold text-muted-foreground">Publicada</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="w-full lg:w-auto flex flex-col gap-2">
+                    <Button variant="outline" className="w-full lg:w-40 justify-between">
+                      <FileText className="h-4 w-4" /> Ata em PDF
+                    </Button>
+                    <Button variant="outline" className="w-full lg:w-40 justify-between">
+                      <ClipboardList className="h-4 w-4" /> Lista Presença
+                    </Button>
+                    <Button variant="outline" className="w-full lg:w-40 justify-between">
+                      <Vote className="h-4 w-4" /> Resumo Votos
+                    </Button>
+                  </div>
                 </div>
-              </div>
-              <Button variant="default" className="w-full justify-between group">
-                Ver pauta completa <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              ))}
+              <Button variant="ghost" className="w-full py-8 text-muted-foreground hover:text-primary">
+                Carregar mais sessões anteriores...
               </Button>
-            </article>
-          ))}
-        </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="calendario" className="animate-[fade-up_0.5s_ease-out]">
+            <div className="grid lg:grid-cols-3 gap-10">
+              <div className="lg:col-span-1">
+                <div className="card-premium p-6 inline-block w-full">
+                  <CalendarComponent
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    className="rounded-md"
+                  />
+                </div>
+              </div>
+              <div className="lg:col-span-2 space-y-6">
+                <h3 className="font-display text-2xl font-bold flex items-center gap-3">
+                  <Calendar className="text-gold" /> 
+                  Eventos em {date?.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
+                </h3>
+                <div className="space-y-4">
+                  {[
+                    { day: "16", title: "Sessão Ordinária", hour: "14h", type: "Legislativo" },
+                    { day: "18", title: "Audiência Pública: Orçamento 2027", hour: "19h", type: "Participativo" },
+                    { day: "23", title: "Sessão Extraordinária", hour: "10h", type: "Urgência" },
+                  ].map((event, idx) => (
+                    <div key={idx} className="flex gap-6 p-5 bg-card border border-border rounded-xl hover:border-primary/30 transition-all group">
+                      <div className="flex flex-col items-center justify-center w-16 h-16 rounded-lg bg-primary text-primary-foreground shrink-0">
+                        <span className="text-2xl font-bold leading-none">{event.day}</span>
+                        <span className="text-[10px] uppercase font-bold">JUN</span>
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-gold">{event.type}</span>
+                        </div>
+                        <h4 className="text-lg font-bold group-hover:text-primary transition-colors">{event.title}</h4>
+                        <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
+                          <Clock className="h-3.5 w-3.5" /> {event.hour} no Plenário Principal
+                        </p>
+                      </div>
+                      <Button variant="ghost" size="icon" className="self-center">
+                        <ChevronRight />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
       </section>
 
       <section className="bg-secondary/30 border-y border-border/50 py-20">
         <div className="container-page">
           <SectionHeading
-            eyebrow="Transparência"
-            title="Consulta de Matérias Legislativas"
-            description="Pesquise por projetos de lei, indicações e requerimentos em tramitação."
+            eyebrow="Tramitação"
+            title="Acompanhe o Fluxo Legislativo"
+            description="Entenda como as leis são criadas e pesquise por matérias específicas."
           />
 
           <div className="mt-12 bg-card rounded-2xl border border-border p-6 md:p-8 shadow-sm">
@@ -228,7 +328,7 @@ function SessoesPage() {
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input 
-                  placeholder="Buscar por número, ano ou palavra-chave..." 
+                  placeholder="Buscar projeto por número, ano ou palavra-chave..." 
                   className="pl-10 h-12"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -246,7 +346,7 @@ function SessoesPage() {
                     {tiposMateria.map(t => <option key={t}>{t}</option>)}
                   </select>
                 </div>
-                <Button className="h-12 px-6">Filtrar</Button>
+                <Button className="h-12 px-6">Pesquisar</Button>
               </div>
             </div>
 
@@ -284,22 +384,12 @@ function SessoesPage() {
                         <FileText className="h-4 w-4 mr-2" /> PDF
                       </Button>
                       <Button size="sm" className="h-10">
-                        Detalhes
+                        Tramitação
                       </Button>
                     </div>
                   </div>
                 </div>
               ))}
-              
-              {filteredProjetos.length === 0 && (
-                <div className="text-center py-20">
-                  <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-secondary mb-4">
-                    <Search className="h-8 w-8 text-muted-foreground" />
-                  </div>
-                  <h3 className="text-lg font-semibold">Nenhuma matéria encontrada</h3>
-                  <p className="text-muted-foreground">Tente ajustar seus termos de busca ou filtros.</p>
-                </div>
-              )}
             </div>
           </div>
         </div>
