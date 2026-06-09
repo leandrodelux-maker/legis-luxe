@@ -1,222 +1,243 @@
-import { createFileRoute, Outlet, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { 
-  LayoutDashboard, 
   Users, 
   Newspaper, 
   Gavel, 
   Calendar, 
-  ShieldCheck, 
   FileText, 
-  Settings, 
-  LogOut, 
-  Bell, 
-  UserCircle,
-  Menu,
-  X,
-  Search,
-  ChevronRight,
-  Database,
-  History,
-  Lock
+  TrendingUp,
+  ArrowUpRight,
+  ArrowDownRight,
+  Clock,
+  MessageSquare,
+  Globe,
+  Plus
 } from "lucide-react";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuLabel, 
-  DropdownMenuSeparator, 
-  DropdownMenuTrigger 
-} from "@/components/ui/dropdown-menu";
+  Card, 
+  CardContent, 
+  CardHeader, 
+  CardTitle,
+  CardDescription
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { 
+  ChartConfig, 
+  ChartContainer, 
+  ChartTooltip, 
+  ChartTooltipContent 
+} from "@/components/ui/chart";
+import { Bar, BarChart, CartesianGrid, XAxis, ResponsiveContainer, Line, LineChart, Tooltip } from "recharts";
 
 export const Route = createFileRoute("/admin/")({
-  component: AdminLayout,
+  component: AdminDashboard,
 });
 
-const menuItems = [
-  { label: "Dashboard", icon: LayoutDashboard, path: "/admin", roles: ["all"] },
-  { label: "Vereadores", icon: Users, path: "/admin/vereadores", roles: ["admin", "presidente", "legislativo"] },
-  { label: "Processo Legislativo", icon: Gavel, path: "/admin/projetos", roles: ["admin", "legislativo"] },
-  { label: "Sessões", icon: Calendar, path: "/admin/sessoes", roles: ["admin", "legislativo"] },
-  { label: "Notícias e Banners", icon: Newspaper, path: "/admin/comunicacao", roles: ["admin", "comunicacao"] },
-  { label: "Transparência", icon: ShieldCheck, path: "/admin/transparencia", roles: ["admin", "transparencia", "controle"] },
-  { label: "Documentos e Atas", icon: FileText, path: "/admin/documentos", roles: ["admin", "legislativo"] },
-  { label: "Logs e Histórico", icon: History, path: "/admin/logs", roles: ["admin", "controle"] },
-  { label: "Configurações", icon: Settings, path: "/admin/config", roles: ["admin"] },
+const stats = [
+  { label: "Projetos em Tramitação", value: "124", trend: "+12%", icon: Gavel, color: "text-blue-600", bg: "bg-blue-600/10" },
+  { label: "Sessões Realizadas", value: "48", trend: "+5%", icon: Calendar, color: "text-emerald-600", bg: "bg-emerald-600/10" },
+  { label: "Novas Notícias", value: "12", trend: "Nesta semana", icon: Newspaper, color: "text-amber-600", bg: "bg-amber-600/10" },
+  { label: "Protocolos Ouvidoria", value: "342", trend: "-8%", icon: MessageSquare, color: "text-purple-600", bg: "bg-purple-600/10" },
 ];
 
-function AdminLayout() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const navigate = useNavigate();
-  
-  // Mock User Role
-  const user = {
-    name: "Dr. Ricardo Oliveira",
-    role: "Administrador Geral",
-    roleKey: "admin",
-    avatar: null
-  };
+const activityData = [
+  { name: "Seg", acessos: 450, protocolos: 12 },
+  { name: "Ter", acessos: 520, protocolos: 18 },
+  { name: "Qua", acessos: 480, protocolos: 15 },
+  { name: "Qui", acessos: 610, protocolos: 22 },
+  { name: "Sex", acessos: 550, protocolos: 14 },
+  { name: "Sab", acessos: 210, protocolos: 5 },
+  { name: "Dom", acessos: 150, protocolos: 2 },
+];
 
-  const logout = () => {
-    navigate({ to: "/" });
-  };
+const recentLogs = [
+  { user: "Dra. Maria Clara", action: "Publicou nova notícia", target: "Inauguração da Praça Central", time: "Há 12 min", icon: Newspaper },
+  { user: "Sistema", action: "Protocolo automático SIC", target: "#2026.4521", time: "Há 45 min", icon: Clock },
+  { user: "João Silva", action: "Alterou status de projeto", target: "PL 124/2026", time: "Há 2 horas", icon: Gavel },
+  { user: "Presidente", action: "Assinou ata de sessão", target: "Sessão Ordinária 09/06", time: "Há 4 horas", icon: FileText },
+];
 
+function AdminDashboard() {
   return (
-    <div className="min-h-screen bg-slate-50 flex font-sans">
-      {/* Sidebar Desktop */}
-      <aside className="hidden lg:flex flex-col w-72 bg-primary-deep text-white shrink-0">
-        <div className="p-8 border-b border-white/10">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gold flex items-center justify-center">
-              <ShieldCheck className="text-primary-deep w-6 h-6" />
-            </div>
-            <div>
-              <h1 className="font-display font-bold text-lg leading-none">PAINEL</h1>
-              <span className="text-[10px] uppercase tracking-widest text-white/50">Legislativo Municipal</span>
-            </div>
-          </Link>
+    <div className="space-y-8 animate-[fade-up_0.5s_ease-out]">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+          <h2 className="text-3xl font-display font-bold text-slate-900">Dashboard</h2>
+          <p className="text-slate-500">Bem-vindo ao sistema de gestão da Câmara Municipal.</p>
         </div>
-
-        <nav className="flex-1 p-6 space-y-1">
-          {menuItems.map((item) => (
-            <Link
-              key={item.label}
-              to={item.path}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:bg-white/5 text-white/70 hover:text-white group [&.active]:bg-gold [&.active]:text-primary-deep"
-              activeProps={{ className: "active" }}
-            >
-              <item.icon className="w-5 h-5 opacity-70 group-hover:opacity-100" />
-              <span className="font-medium">{item.label}</span>
-              <ChevronRight className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
-            </Link>
-          ))}
-        </nav>
-
-        <div className="p-6 border-t border-white/10">
-          <div className="p-4 rounded-2xl bg-white/5 space-y-4">
-            <div className="flex items-center gap-3">
-              <Avatar className="w-10 h-10 border-2 border-gold/50">
-                <AvatarFallback className="bg-primary text-white font-bold">RO</AvatarFallback>
-              </Avatar>
-              <div className="min-w-0">
-                <p className="font-bold text-sm truncate">{user.name}</p>
-                <p className="text-[10px] text-white/40 uppercase tracking-tighter">{user.role}</p>
-              </div>
-            </div>
-            <Button 
-              variant="outline" 
-              onClick={logout}
-              className="w-full bg-transparent border-white/10 text-white hover:bg-white/10 transition-all gap-2"
-            >
-              <LogOut className="w-4 h-4" /> Sair do Painel
-            </Button>
-          </div>
+        <div className="flex gap-3">
+          <Button variant="outline" className="bg-white">
+            <Globe className="w-4 h-4 mr-2" /> Ver Site
+          </Button>
+          <Button className="bg-primary-deep text-white hover:bg-primary-deep/90">
+            <Plus className="w-4 h-4 mr-2" /> Novo Projeto
+          </Button>
         </div>
-      </aside>
+      </div>
 
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Top Header */}
-        <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-6 lg:px-10 shrink-0">
-          <div className="flex items-center gap-4">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="lg:hidden" 
-              onClick={() => setIsMobileMenuOpen(true)}
-            >
-              <Menu className="w-6 h-6" />
-            </Button>
-            <div className="hidden md:flex items-center gap-2 text-sm text-slate-500">
-              <Database className="w-4 h-4" />
-              <span>Banco de Dados: <span className="font-bold text-emerald-600">Conectado</span></span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 lg:gap-6">
-            <div className="hidden sm:flex relative w-64 lg:w-96">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <Input placeholder="Buscar no sistema..." className="pl-10 h-10 bg-slate-100 border-none focus:bg-white" />
-            </div>
-            
-            <div className="flex items-center gap-2 lg:gap-4">
-              <Button variant="ghost" size="icon" className="relative">
-                <Bell className="w-5 h-5 text-slate-600" />
-                <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
-              </Button>
-              
-              <div className="h-8 w-px bg-slate-200" />
-
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="p-1 h-auto flex items-center gap-2 hover:bg-slate-100 rounded-full">
-                    <Avatar className="w-8 h-8">
-                      <AvatarFallback className="bg-primary-deep text-white text-xs">RO</AvatarFallback>
-                    </Avatar>
-                    <span className="hidden sm:inline-block font-bold text-sm text-slate-700">{user.name.split(' ')[1]}</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <UserCircle className="mr-2 h-4 w-4" /> Perfil
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Lock className="mr-2 h-4 w-4" /> Segurança
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={logout} className="text-red-600">
-                    <LogOut className="mr-2 h-4 w-4" /> Sair
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
-        </header>
-
-        {/* Page Content */}
-        <div className="flex-1 overflow-y-auto p-6 lg:p-10">
-          <Outlet />
-        </div>
-      </main>
-
-      {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-[100] lg:hidden">
-          <div className="absolute inset-0 bg-primary-deep/60 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
-          <aside className="absolute inset-y-0 left-0 w-80 bg-primary-deep text-white p-8 flex flex-col animate-[slide-in-left_0.3s_ease-out]">
-            <div className="flex items-center justify-between mb-10">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gold flex items-center justify-center">
-                  <ShieldCheck className="text-primary-deep w-5 h-5" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats.map((s, i) => (
+          <Card key={i} className="border-none shadow-sm hover:shadow-md transition-shadow">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className={`p-3 rounded-xl ${s.bg} ${s.color}`}>
+                  <s.icon className="w-6 h-6" />
                 </div>
-                <h1 className="font-display font-bold text-lg">PAINEL</h1>
+                {s.trend.startsWith('+') ? (
+                  <Badge className="bg-emerald-50 text-emerald-600 border-emerald-100 font-bold">
+                    <ArrowUpRight className="w-3 h-3 mr-1" /> {s.trend}
+                  </Badge>
+                ) : s.trend.startsWith('-') ? (
+                  <Badge className="bg-red-50 text-red-600 border-red-100 font-bold">
+                    <ArrowDownRight className="w-3 h-3 mr-1" /> {s.trend}
+                  </Badge>
+                ) : (
+                  <Badge variant="outline" className="text-slate-500">{s.trend}</Badge>
+                )}
               </div>
-              <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)}>
-                <X className="w-6 h-6" />
-              </Button>
+              <div>
+                <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">{s.label}</p>
+                <p className="text-3xl font-display font-bold text-slate-900 mt-1">{s.value}</p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-6">
+        <Card className="lg:col-span-2 border-none shadow-sm p-6">
+          <CardHeader className="px-0 pt-0 flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="font-display">Audiência e Acessos</CardTitle>
+              <CardDescription>Acessos ao portal nos últimos 7 dias</CardDescription>
             </div>
-            <nav className="flex-1 space-y-2">
-              {menuItems.map((item) => (
-                <Link
-                  key={item.label}
-                  to={item.path}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-4 px-4 py-4 rounded-xl text-white/70 hover:bg-white/5 active:bg-gold active:text-primary-deep"
-                >
-                  <item.icon className="w-6 h-6" />
-                  <span className="font-bold">{item.label}</span>
-                </Link>
-              ))}
-            </nav>
-          </aside>
-        </div>
-      )}
+            <select className="text-sm bg-slate-100 border-none rounded-md px-2 h-8 outline-none font-medium">
+              <option>Últimos 7 dias</option>
+              <option>Último mês</option>
+            </select>
+          </CardHeader>
+          <div className="h-[350px] w-full mt-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={activityData}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#94a3b8' }} dy={10} />
+                <Tooltip 
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="acessos" 
+                  stroke="#1e3a8a" 
+                  strokeWidth={3} 
+                  dot={{ r: 4, fill: '#1e3a8a', strokeWidth: 2, stroke: '#fff' }}
+                  activeDot={{ r: 6, strokeWidth: 0 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
+
+        <Card className="border-none shadow-sm p-6">
+          <CardHeader className="px-0 pt-0">
+            <CardTitle className="font-display">Logs do Sistema</CardTitle>
+            <CardDescription>Atividades recentes dos usuários</CardDescription>
+          </CardHeader>
+          <div className="space-y-6 mt-6">
+            {recentLogs.map((log, i) => (
+              <div key={i} className="flex gap-4">
+                <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
+                  <log.icon className="w-5 h-5 text-slate-500" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-bold text-slate-900 truncate">
+                    {log.user} <span className="font-medium text-slate-500">{log.action}</span>
+                  </p>
+                  <p className="text-xs text-primary font-medium mt-0.5">{log.target}</p>
+                  <p className="text-[10px] text-slate-400 mt-1 uppercase font-bold tracking-tighter">{log.time}</p>
+                </div>
+              </div>
+            ))}
+            <Button variant="ghost" className="w-full text-slate-500 hover:text-primary text-sm font-bold">
+              Ver Logs Completos <ChevronRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
+        </Card>
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-6 pb-6">
+        <Card className="border-none shadow-sm p-6">
+          <CardHeader className="px-0 pt-0">
+            <CardTitle className="font-display">Próximas Sessões</CardTitle>
+          </CardHeader>
+          <div className="space-y-4">
+            {[
+              { title: "Sessão Ordinária", date: "Hoje, às 14:00", status: "Confirmada", color: "bg-emerald-500" },
+              { title: "Audiência Pública: LOA", date: "Quinta, às 19:00", status: "Confirmada", color: "bg-emerald-500" },
+              { title: "Sessão Solene", date: "Sexta, às 19:30", status: "Aguardando", color: "bg-amber-500" },
+            ].map((s, i) => (
+              <div key={i} className="flex items-center justify-between p-4 rounded-xl bg-slate-50 border border-slate-100 hover:border-primary/20 transition-all group">
+                <div className="flex items-center gap-4">
+                  <div className={`w-2 h-2 rounded-full ${s.color}`} />
+                  <div>
+                    <h4 className="font-bold text-slate-900 group-hover:text-primary transition-colors">{s.title}</h4>
+                    <p className="text-xs text-slate-500">{s.date}</p>
+                  </div>
+                </div>
+                <Button variant="ghost" size="icon">
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        <Card className="border-none shadow-sm p-6">
+          <CardHeader className="px-0 pt-0">
+            <CardTitle className="font-display">Protocolos Pendentes</CardTitle>
+          </CardHeader>
+          <div className="space-y-4">
+            {[
+              { id: "#2026.4521", type: "Ouvidoria", subject: "Reclamação: Buraco na via", time: "Há 45 min", priority: "Alta" },
+              { id: "#2026.4522", type: "SIC", subject: "Pedido: Folha de Pagamento", time: "Há 2 horas", priority: "Normal" },
+              { id: "#2026.4523", type: "Ouvidoria", subject: "Sugestão: Ciclovia", time: "Há 4 horas", priority: "Normal" },
+            ].map((p, i) => (
+              <div key={i} className="flex items-center justify-between p-4 rounded-xl bg-slate-50 border border-slate-100 hover:border-primary/20 transition-all">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[10px] font-bold text-primary uppercase tracking-widest">{p.type}</span>
+                    <span className="text-[10px] text-slate-400 font-mono">{p.id}</span>
+                  </div>
+                  <h4 className="font-bold text-slate-900 text-sm">{p.subject}</h4>
+                  <p className="text-[10px] text-slate-400 mt-1 uppercase font-bold tracking-tighter">{p.time}</p>
+                </div>
+                <Badge className={p.priority === 'Alta' ? 'bg-red-50 text-red-600 border-red-100' : 'bg-blue-50 text-blue-600 border-blue-100'}>
+                  {p.priority}
+                </Badge>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
     </div>
+  );
+}
+
+function ChevronRight(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="m9 18 6-6-6-6" />
+    </svg>
   );
 }
