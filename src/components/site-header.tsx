@@ -10,9 +10,7 @@ import {
   Shield,
   MessageSquare,
   Search,
-  Facebook as FacebookIcon,
-  Instagram as InstagramIcon,
-  Youtube as YoutubeIcon,
+  Globe,
   Landmark,
 } from "lucide-react";
 import { useEffect, useState } from "react";
