@@ -23,6 +23,7 @@ import { Route as AdminVereadoresIndexRouteImport } from './routes/admin/vereado
 import { Route as AdminTransparenciaIndexRouteImport } from './routes/admin/transparencia/index'
 import { Route as AdminSessoesIndexRouteImport } from './routes/admin/sessoes/index'
 import { Route as AdminProjetosIndexRouteImport } from './routes/admin/projetos/index'
+import { Route as AdminComunicacaoIndexRouteImport } from './routes/admin/comunicacao/index'
 
 const VereadoresRoute = VereadoresRouteImport.update({
   id: '/vereadores',
@@ -94,6 +95,11 @@ const AdminProjetosIndexRoute = AdminProjetosIndexRouteImport.update({
   path: '/projetos/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminComunicacaoIndexRoute = AdminComunicacaoIndexRouteImport.update({
+  id: '/comunicacao/',
+  path: '/comunicacao/',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/vereadores': typeof VereadoresRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/comunicacao/': typeof AdminComunicacaoIndexRoute
   '/admin/projetos/': typeof AdminProjetosIndexRoute
   '/admin/sessoes/': typeof AdminSessoesIndexRoute
   '/admin/transparencia/': typeof AdminTransparenciaIndexRoute
@@ -121,6 +128,7 @@ export interface FileRoutesByTo {
   '/vereadores': typeof VereadoresRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin': typeof AdminIndexRoute
+  '/admin/comunicacao': typeof AdminComunicacaoIndexRoute
   '/admin/projetos': typeof AdminProjetosIndexRoute
   '/admin/sessoes': typeof AdminSessoesIndexRoute
   '/admin/transparencia': typeof AdminTransparenciaIndexRoute
@@ -138,6 +146,7 @@ export interface FileRoutesById {
   '/vereadores': typeof VereadoresRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/comunicacao/': typeof AdminComunicacaoIndexRoute
   '/admin/projetos/': typeof AdminProjetosIndexRoute
   '/admin/sessoes/': typeof AdminSessoesIndexRoute
   '/admin/transparencia/': typeof AdminTransparenciaIndexRoute
@@ -156,6 +165,7 @@ export interface FileRouteTypes {
     | '/vereadores'
     | '/admin/dashboard'
     | '/admin/'
+    | '/admin/comunicacao/'
     | '/admin/projetos/'
     | '/admin/sessoes/'
     | '/admin/transparencia/'
@@ -171,6 +181,7 @@ export interface FileRouteTypes {
     | '/vereadores'
     | '/admin/dashboard'
     | '/admin'
+    | '/admin/comunicacao'
     | '/admin/projetos'
     | '/admin/sessoes'
     | '/admin/transparencia'
@@ -187,6 +198,7 @@ export interface FileRouteTypes {
     | '/vereadores'
     | '/admin/dashboard'
     | '/admin/'
+    | '/admin/comunicacao/'
     | '/admin/projetos/'
     | '/admin/sessoes/'
     | '/admin/transparencia/'
@@ -304,12 +316,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProjetosIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/comunicacao/': {
+      id: '/admin/comunicacao/'
+      path: '/comunicacao'
+      fullPath: '/admin/comunicacao/'
+      preLoaderRoute: typeof AdminComunicacaoIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminComunicacaoIndexRoute: typeof AdminComunicacaoIndexRoute
   AdminProjetosIndexRoute: typeof AdminProjetosIndexRoute
   AdminSessoesIndexRoute: typeof AdminSessoesIndexRoute
   AdminTransparenciaIndexRoute: typeof AdminTransparenciaIndexRoute
@@ -319,6 +339,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminDashboardRoute: AdminDashboardRoute,
   AdminIndexRoute: AdminIndexRoute,
+  AdminComunicacaoIndexRoute: AdminComunicacaoIndexRoute,
   AdminProjetosIndexRoute: AdminProjetosIndexRoute,
   AdminSessoesIndexRoute: AdminSessoesIndexRoute,
   AdminTransparenciaIndexRoute: AdminTransparenciaIndexRoute,
