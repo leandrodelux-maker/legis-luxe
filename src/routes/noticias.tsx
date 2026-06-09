@@ -3,6 +3,8 @@ import { ArrowRight, Building2, Calendar, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SectionHeading } from "@/components/section-heading";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/noticias")({
   head: () => ({
@@ -21,18 +23,33 @@ export const Route = createFileRoute("/noticias")({
   component: NoticiasPage,
 });
 
-const noticias = [
-  { tag: "Sessão", date: "12 Jun 2026", title: "Câmara aprova programa de incentivo à educação infantil", excerpt: "Projeto destina recursos adicionais à ampliação de vagas em creches." },
-  { tag: "Audiência", date: "08 Jun 2026", title: "Plano Diretor recebe contribuições da sociedade civil", excerpt: "Audiência reuniu representantes de bairros e entidades." },
-  { tag: "Transparência", date: "03 Jun 2026", title: "Relatório de gestão do 1º semestre é publicado", excerpt: "Documento detalha execução orçamentária e atos legislativos." },
-  { tag: "Comissão", date: "29 Mai 2026", title: "Comissão de Saúde debate ampliação da UBS Central", excerpt: "Reunião contou com a participação da Secretaria Municipal de Saúde." },
-  { tag: "Honraria", date: "21 Mai 2026", title: "Câmara concede título de cidadão honorário a educador", excerpt: "Sessão solene reconhece décadas de trabalho na rede pública." },
-  { tag: "Projeto de Lei", date: "15 Mai 2026", title: "Projeto institui semana de prevenção à violência doméstica", excerpt: "Texto prevê ações educativas em escolas e espaços públicos." },
-];
+type DbNoticia = {
+  id: string;
+  titulo: string;
+  resumo: string | null;
+  categoria: string | null;
+  publicado_em: string | null;
+  created_at: string;
+  imagem_url: string | null;
+};
 
 const categorias = ["Todas", "Sessão", "Audiência", "Comissão", "Transparência", "Projetos de Lei"];
 
 function NoticiasPage() {
+  const [noticias, setNoticias] = useState<DbNoticia[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase
+      .from("noticias")
+      .select("id, titulo, resumo, categoria, publicado_em, created_at, imagem_url")
+      .eq("publicado", true)
+      .order("publicado_em", { ascending: false, nullsFirst: false })
+      .then(({ data }) => {
+        setNoticias(data ?? []);
+        setLoading(false);
+      });
+  }, []);
   return (
     <>
       <section className="bg-gradient-to-br from-primary-deep to-primary text-primary-foreground">
@@ -75,38 +92,51 @@ function NoticiasPage() {
           ))}
         </div>
 
-        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {noticias.map((n, i) => (
-            <article
-              key={n.title}
-              className="card-premium card-premium-hover group overflow-hidden animate-[fade-up_0.5s_ease-out_both]"
-              style={{ animationDelay: `${i * 60}ms` }}
-            >
-              <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-primary-deep via-primary to-primary/70">
-                <Building2 className="absolute right-4 bottom-4 h-16 w-16 text-white/15" />
-                <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-gold px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-gold-foreground">
-                  {n.tag}
-                </div>
-              </div>
-              <div className="p-6">
-                <time className="flex items-center gap-1.5 text-xs uppercase tracking-wider text-muted-foreground">
-                  <Calendar className="h-3 w-3" /> {n.date}
-                </time>
-                <h3 className="mt-2 font-display text-lg font-semibold leading-snug group-hover:text-primary transition-colors">
-                  {n.title}
-                </h3>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{n.excerpt}</p>
-                <button className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary hover:gap-2 transition-all">
-                  Ler mais <ArrowRight className="h-3.5 w-3.5" />
-                </button>
-              </div>
-            </article>
-          ))}
-        </div>
-
-        <div className="mt-12 flex justify-center">
-          <Button variant="outline" size="lg">Carregar mais notícias</Button>
-        </div>
+        {loading ? (
+          <div className="mt-10 text-center text-muted-foreground py-12">Carregando notícias...</div>
+        ) : noticias.length === 0 ? (
+          <div className="mt-10 text-center text-muted-foreground py-12">
+            Nenhuma notícia publicada ainda.
+          </div>
+        ) : (
+          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {noticias.map((n, i) => {
+              const date = n.publicado_em ?? n.created_at;
+              return (
+                <article
+                  key={n.id}
+                  className="card-premium card-premium-hover group overflow-hidden animate-[fade-up_0.5s_ease-out_both]"
+                  style={{ animationDelay: `${i * 60}ms` }}
+                >
+                  <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-primary-deep via-primary to-primary/70">
+                    {n.imagem_url ? (
+                      <img src={n.imagem_url} alt={n.titulo} className="absolute inset-0 h-full w-full object-cover" />
+                    ) : (
+                      <Building2 className="absolute right-4 bottom-4 h-16 w-16 text-white/15" />
+                    )}
+                    {n.categoria && (
+                      <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-gold px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-gold-foreground">
+                        {n.categoria}
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-6">
+                    <time className="flex items-center gap-1.5 text-xs uppercase tracking-wider text-muted-foreground">
+                      <Calendar className="h-3 w-3" /> {new Date(date).toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" })}
+                    </time>
+                    <h3 className="mt-2 font-display text-lg font-semibold leading-snug group-hover:text-primary transition-colors">
+                      {n.titulo}
+                    </h3>
+                    {n.resumo && <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{n.resumo}</p>}
+                    <button className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary hover:gap-2 transition-all">
+                      Ler mais <ArrowRight className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
       </section>
     </>
   );

@@ -22,6 +22,8 @@ import {
   BarChart3
 } from "lucide-react";
 import { useState } from "react";
+import { AdminGuard } from "@/components/admin/admin-guard";
+import { useSupabaseAuth, signOut } from "@/hooks/use-supabase-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -36,7 +38,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export const Route = createFileRoute("/admin")({
-  component: AdminLayout,
+  component: () => (
+    <AdminGuard>
+      <AdminLayout />
+    </AdminGuard>
+  ),
 });
 
 const menuItems = [
@@ -57,17 +63,15 @@ function AdminLayout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  
-  // Mock User Role
-  const user = {
-    name: "Dr. Ricardo Oliveira",
-    role: "Administrador Geral",
-    roleKey: "admin",
-    avatar: null
-  };
+  const { user: authUser } = useSupabaseAuth();
 
-  const logout = () => {
-    navigate({ to: "/" });
+  const displayName = authUser?.user_metadata?.full_name || authUser?.email || "Administrador";
+  const initials = displayName.split(" ").map((p: string) => p[0]).slice(0, 2).join("").toUpperCase();
+  const user = { name: displayName, role: "Administrador", roleKey: "admin", avatar: null };
+
+  const logout = async () => {
+    await signOut();
+    navigate({ to: "/auth" });
   };
 
   return (
@@ -105,7 +109,7 @@ function AdminLayout() {
           <div className="p-4 rounded-2xl bg-white/5 space-y-4">
             <div className="flex items-center gap-3">
               <Avatar className="w-10 h-10 border-2 border-gold/50">
-                <AvatarFallback className="bg-primary text-white font-bold">RO</AvatarFallback>
+                <AvatarFallback className="bg-primary text-white font-bold">{initials}</AvatarFallback>
               </Avatar>
               <div className="min-w-0">
                 <p className="font-bold text-sm truncate">{user.name}</p>
@@ -160,9 +164,9 @@ function AdminLayout() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="p-1 h-auto flex items-center gap-2 hover:bg-slate-100 rounded-full">
                     <Avatar className="w-8 h-8">
-                      <AvatarFallback className="bg-primary-deep text-white text-xs">RO</AvatarFallback>
+                      <AvatarFallback className="bg-primary-deep text-white text-xs">{initials}</AvatarFallback>
                     </Avatar>
-                    <span className="hidden sm:inline-block font-bold text-sm text-slate-700">{user.name.split(' ')[1]}</span>
+                    <span className="hidden sm:inline-block font-bold text-sm text-slate-700">{displayName}</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
