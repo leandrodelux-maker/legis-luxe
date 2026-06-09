@@ -15,7 +15,7 @@ import {
   Redo, 
   Link as LinkIcon, 
   Image as ImageIcon,
-  Youtube as YoutubeIcon,
+  PlayCircle as YoutubeIcon,
   Heading1,
   Heading2,
   Heading3

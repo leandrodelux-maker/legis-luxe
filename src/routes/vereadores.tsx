@@ -6,9 +6,9 @@ import {
   Search, 
   Filter, 
   ChevronRight, 
-  Instagram, 
-  Twitter, 
-  Facebook,
+  Instagram as InstagramIcon, 
+  Twitter as TwitterIcon, 
+  Facebook as FacebookIcon,
   Trophy,
   CalendarCheck,
   Zap,
@@ -269,10 +269,10 @@ function VereadoresPage() {
                     <div className="mt-auto flex items-center justify-between">
                       <div className="flex gap-2">
                         <a href="#" className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
-                          <Instagram className="w-4 h-4" />
+                          <InstagramIcon className="w-4 h-4" />
                         </a>
                         <a href="#" className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
-                          <Twitter className="w-4 h-4" />
+                          <TwitterIcon className="w-4 h-4" />
                         </a>
                       </div>
                       <Button variant="link" className="p-0 h-auto font-bold text-sm group-hover:text-primary">

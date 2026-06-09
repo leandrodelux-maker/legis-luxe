@@ -11,7 +11,7 @@ import {
   Users2,
   CheckCircle2,
   Stamp,
-  Youtube,
+  PlayCircle as YoutubeIcon,
   Play,
   ClipboardList,
   Vote,
@@ -161,7 +161,7 @@ function SessoesPage() {
             </TabsList>
             
             <Button className="bg-red-600 hover:bg-red-700 text-white animate-pulse">
-              <Youtube className="mr-2 h-4 w-4" /> Assista Ao Vivo
+              <YoutubeIcon className="mr-2 h-4 w-4" /> Assista Ao Vivo
             </Button>
           </div>
 

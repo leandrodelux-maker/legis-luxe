@@ -9,7 +9,7 @@ import {
   Eye, 
   MoreVertical,
   Clock,
-  Youtube,
+  PlayCircle as YoutubeIcon,
   FileText
 } from "lucide-react";
 import { useState } from "react";
@@ -108,7 +108,7 @@ function AdminSessoes() {
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
                     <Button variant="ghost" size="icon" className="h-8 w-8 text-red-600" title="Link YouTube">
-                      <Youtube className="w-4 h-4" />
+                      <YoutubeIcon className="w-4 h-4" />
                     </Button>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
