@@ -3,6 +3,8 @@ import { ArrowRight, Building2, Calendar, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SectionHeading } from "@/components/section-heading";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/noticias")({
   head: () => ({
@@ -21,18 +23,33 @@ export const Route = createFileRoute("/noticias")({
   component: NoticiasPage,
 });
 
-const noticias = [
-  { tag: "Sessão", date: "12 Jun 2026", title: "Câmara aprova programa de incentivo à educação infantil", excerpt: "Projeto destina recursos adicionais à ampliação de vagas em creches." },
-  { tag: "Audiência", date: "08 Jun 2026", title: "Plano Diretor recebe contribuições da sociedade civil", excerpt: "Audiência reuniu representantes de bairros e entidades." },
-  { tag: "Transparência", date: "03 Jun 2026", title: "Relatório de gestão do 1º semestre é publicado", excerpt: "Documento detalha execução orçamentária e atos legislativos." },
-  { tag: "Comissão", date: "29 Mai 2026", title: "Comissão de Saúde debate ampliação da UBS Central", excerpt: "Reunião contou com a participação da Secretaria Municipal de Saúde." },
-  { tag: "Honraria", date: "21 Mai 2026", title: "Câmara concede título de cidadão honorário a educador", excerpt: "Sessão solene reconhece décadas de trabalho na rede pública." },
-  { tag: "Projeto de Lei", date: "15 Mai 2026", title: "Projeto institui semana de prevenção à violência doméstica", excerpt: "Texto prevê ações educativas em escolas e espaços públicos." },
-];
+type DbNoticia = {
+  id: string;
+  titulo: string;
+  resumo: string | null;
+  categoria: string | null;
+  publicado_em: string | null;
+  created_at: string;
+  imagem_url: string | null;
+};
 
 const categorias = ["Todas", "Sessão", "Audiência", "Comissão", "Transparência", "Projetos de Lei"];
 
 function NoticiasPage() {
+  const [noticias, setNoticias] = useState<DbNoticia[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase
+      .from("noticias")
+      .select("id, titulo, resumo, categoria, publicado_em, created_at, imagem_url")
+      .eq("publicado", true)
+      .order("publicado_em", { ascending: false, nullsFirst: false })
+      .then(({ data }) => {
+        setNoticias(data ?? []);
+        setLoading(false);
+      });
+  }, []);
   return (
     <>
       <section className="bg-gradient-to-br from-primary-deep to-primary text-primary-foreground">
