@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Landmark, Mail, MapPin, Phone, Facebook as FacebookIcon, Instagram as InstagramIcon, Youtube as YoutubeIcon } from "lucide-react";
+import { Landmark, Mail, MapPin, Phone, MessageSquare as FacebookIcon, Camera as InstagramIcon, PlayCircle as YoutubeIcon } from "lucide-react";
 
 export function SiteFooter() {
   return (
