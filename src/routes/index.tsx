@@ -32,37 +32,6 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
-const quickAccess = [
-  { icon: Users, label: "Vereadores", to: "/vereadores", desc: "Conheça os parlamentares" },
-  { icon: Calendar, label: "Sessões", to: "/sessoes", desc: "Pautas e calendário" },
-  { icon: ScrollText, label: "Projetos de Lei", to: "/sessoes", desc: "Acompanhe a tramitação" },
-  { icon: Eye, label: "Transparência", to: "/transparencia", desc: "Dados públicos" },
-];
-
-const noticias = [
-  {
-    tag: "Sessão Ordinária",
-    date: "12 Jun 2026",
-    title: "Câmara aprova programa de incentivo à educação infantil",
-    excerpt:
-      "Projeto destina recursos adicionais à ampliação de vagas em creches e capacitação de professores.",
-  },
-  {
-    tag: "Audiência Pública",
-    date: "08 Jun 2026",
-    title: "Plano Diretor recebe contribuições da sociedade civil",
-    excerpt:
-      "Audiência reuniu representantes de bairros, entidades e cidadãos para discutir a revisão do PD.",
-  },
-  {
-    tag: "Transparência",
-    date: "03 Jun 2026",
-    title: "Relatório de gestão do 1º semestre é publicado",
-    excerpt:
-      "Documento detalha execução orçamentária, atos legislativos e indicadores de desempenho.",
-  },
-];
-
 const stats = [
   { value: "21", label: "Vereadores" },
   { value: "184", label: "Projetos em 2026" },
