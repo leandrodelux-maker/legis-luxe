@@ -150,20 +150,8 @@ function HomePage() {
             ))}
           </div>
 
-          {/* Stats glass card */}
-          <div className="mt-16 grid grid-cols-2 lg:grid-cols-4 gap-px rounded-2xl glass-strong overflow-hidden border border-white/15 bg-white/5 max-w-4xl mx-auto">
-            {stats.map((s) => (
-              <div key={s.label} className="bg-primary-deep/40 p-6 md:p-7 text-center">
-                <div className="font-display text-3xl md:text-4xl font-extrabold text-gold">
-                  {s.value}
-                </div>
-                <div className="mt-1 text-xs md:text-sm uppercase tracking-wider text-white/75">
-                  {s.label}
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
+
 
         {/* Decorative wave bottom */}
         <svg
