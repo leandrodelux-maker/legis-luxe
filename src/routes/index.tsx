@@ -77,7 +77,7 @@ function HomePage() {
                 className="bg-gold text-gold-foreground hover:bg-gold/90 shadow-gold h-12 px-6"
               >
                 <Link to="/sessoes">
-                  Próximas sessões <ArrowRight className="ml-1 h-4 w-4" />
+                  <Calendar className="mr-2 h-4 w-4" /> Sessões ao Vivo
                 </Link>
               </Button>
               <Button
