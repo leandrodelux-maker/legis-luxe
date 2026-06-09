@@ -25,10 +25,10 @@ type SiteSettings = {
 
 const mainNav = [
   { to: "/", label: "INÍCIO" },
-  { to: "/vereadores", label: "A PREFEITURA", hasDropdown: true },
-  { to: "/sessoes", label: "SERVIÇOS" },
+  { to: "/vereadores", label: "VEREADORES" },
+  { to: "/sessoes", label: "SESSÕES" },
+  { to: "/projetos", label: "PROCESSO LEGISLATIVO" },
   { to: "/noticias", label: "NOTÍCIAS" },
-  { to: "/transparencia", label: "DIÁRIO OFICIAL" },
   { to: "/contato", label: "CONTATO" },
 ] as const;
 
@@ -159,9 +159,6 @@ export function SiteHeader() {
                   }}
                 >
                   {item.label}
-                  {"hasDropdown" in item && item.hasDropdown && (
-                    <ChevronDown className="h-3.5 w-3.5 opacity-70" />
-                  )}
                 </Link>
               </li>
             ))}
