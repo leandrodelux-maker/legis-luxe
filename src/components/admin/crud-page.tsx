@@ -229,11 +229,11 @@ export function CrudPage<T extends { id: string }>({
                           toast.success("Documento enviado com sucesso!");
                         }}
                       />
-                      {form[f.name] && (
+                      {form[f.name] ? (
                         <p className="text-xs text-emerald-600 font-medium">
                           ✓ Arquivo carregado
                         </p>
-                      )}
+                      ) : null}
                     </div>
                   ) : (
                     <Input
