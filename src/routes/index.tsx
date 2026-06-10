@@ -76,12 +76,25 @@ type MesaMember = {
   };
 };
 
+type DbNoticia = {
+  id: string;
+  titulo: string;
+  resumo: string | null;
+  categoria: string | null;
+  publicado_em: string | null;
+  created_at: string;
+  imagem_url: string | null;
+  slug: string;
+};
+
 function HomePage() {
   const [hero, setHero] = useState<HeroData | null>(null);
   const [vereadores, setVereadores] = useState<Vereador[]>([]);
   const [mesaDiretora, setMesaDiretora] = useState<MesaMember[]>([]);
+  const [noticias, setNoticias] = useState<DbNoticia[]>([]);
   const [loadingVereadores, setLoadingVereadores] = useState(true);
   const [loadingMesa, setLoadingMesa] = useState(true);
+  const [loadingNoticias, setLoadingNoticias] = useState(true);
 
   useEffect(() => {
     // Fetch Hero settings
@@ -113,6 +126,18 @@ function HomePage() {
       .then(({ data }) => {
         setMesaDiretora((data as any) || []);
         setLoadingMesa(false);
+      });
+
+    // Fetch Latest News
+    supabase
+      .from("noticias")
+      .select("id, titulo, resumo, categoria, publicado_em, created_at, imagem_url, slug")
+      .eq("publicado", true)
+      .order("publicado_em", { ascending: false, nullsFirst: false })
+      .limit(3)
+      .then(({ data }) => {
+        setNoticias((data as DbNoticia[]) || []);
+        setLoadingNoticias(false);
       });
   }, []);
 
