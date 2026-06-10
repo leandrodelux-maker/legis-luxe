@@ -100,7 +100,7 @@ function AdminProjetos() {
           required: true
         },
         { name: "data_apresentacao", label: "Data de Protocolo", type: "date" },
-        { name: "documento_url", label: "Link do PDF (Documento)", type: "url" },
+        { name: "documento_url", label: "Arquivo PDF (Documento)", type: "file" },
         { name: "tramitacao", label: "Histórico de Tramitação (Texto)", type: "textarea" },
         { name: "observacoes", label: "Observações Internas", type: "textarea" },
       ]}

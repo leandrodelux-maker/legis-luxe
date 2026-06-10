@@ -23,7 +23,7 @@ import { toast } from "sonner";
 export type FieldDef = {
   name: string;
   label: string;
-  type?: "text" | "textarea" | "number" | "date" | "datetime-local" | "checkbox" | "url" | "email" | "select";
+  type?: "text" | "textarea" | "number" | "date" | "datetime-local" | "checkbox" | "url" | "email" | "select" | "file";
   required?: boolean;
   placeholder?: string;
   options?: { label: string; value: string }[];
@@ -196,6 +196,45 @@ export function CrudPage<T extends { id: string }>({
                         ))}
                       </SelectContent>
                     </Select>
+                  ) : f.type === "file" ? (
+                    <div className="space-y-2">
+                      <Input
+                        id={f.name}
+                        type="file"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          
+                          setSaving(true);
+                          const fileExt = file.name.split('.').pop();
+                          const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+                          const filePath = `${table}/${fileName}`;
+
+                          const { error: uploadError, data } = await supabase.storage
+                            .from('documentos')
+                            .upload(filePath, file);
+
+                          if (uploadError) {
+                            toast.error("Erro no upload: " + uploadError.message);
+                            setSaving(false);
+                            return;
+                          }
+
+                          const { data: { publicUrl } } = supabase.storage
+                            .from('documentos')
+                            .getPublicUrl(filePath);
+
+                          setForm({ ...form, [f.name]: publicUrl });
+                          setSaving(false);
+                          toast.success("Documento enviado com sucesso!");
+                        }}
+                      />
+                      {form[f.name] ? (
+                        <p className="text-xs text-emerald-600 font-medium">
+                          ✓ Arquivo carregado
+                        </p>
+                      ) : null}
+                    </div>
                   ) : (
                     <Input
                       id={f.name}
@@ -241,7 +280,7 @@ export function CrudPage<T extends { id: string }>({
                 <TableRow key={row.id}>
                   {columns.map((c) => (
                     <TableCell key={String(c.key)}>
-                      {c.render ? c.render(row) : String((row as Record<string, unknown>)[c.key as string] ?? "—")}
+                      {c.render ? c.render(row) : (String((row as Record<string, any>)[c.key as string] ?? "—") as React.ReactNode)}
                     </TableCell>
                   ))}
                   <TableCell className="text-right">
