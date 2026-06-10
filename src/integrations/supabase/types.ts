@@ -204,12 +204,18 @@ export type Database = {
       }
       sessoes: {
         Row: {
+          ata_publicada: boolean | null
           ata_url: string | null
           created_at: string
           data_sessao: string
           id: string
+          lista_presenca_url: string | null
           local: string | null
           pauta: string | null
+          qtd_pautas: number | null
+          qtd_presencas: number | null
+          qtd_votacoes: number | null
+          resumo_votos_url: string | null
           status: string
           tipo: string | null
           titulo: string
@@ -217,12 +223,18 @@ export type Database = {
           video_url: string | null
         }
         Insert: {
+          ata_publicada?: boolean | null
           ata_url?: string | null
           created_at?: string
           data_sessao: string
           id?: string
+          lista_presenca_url?: string | null
           local?: string | null
           pauta?: string | null
+          qtd_pautas?: number | null
+          qtd_presencas?: number | null
+          qtd_votacoes?: number | null
+          resumo_votos_url?: string | null
           status?: string
           tipo?: string | null
           titulo: string
@@ -230,12 +242,18 @@ export type Database = {
           video_url?: string | null
         }
         Update: {
+          ata_publicada?: boolean | null
           ata_url?: string | null
           created_at?: string
           data_sessao?: string
           id?: string
+          lista_presenca_url?: string | null
           local?: string | null
           pauta?: string | null
+          qtd_pautas?: number | null
+          qtd_presencas?: number | null
+          qtd_votacoes?: number | null
+          resumo_votos_url?: string | null
           status?: string
           tipo?: string | null
           titulo?: string
