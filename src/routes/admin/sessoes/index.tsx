@@ -48,8 +48,14 @@ function AdminSessoes() {
         { name: "data_sessao", label: "Data e hora", type: "datetime-local", required: true },
         { name: "local", label: "Local" },
         { name: "status", label: "Status", placeholder: "agendada | realizada | cancelada" },
+        { name: "qtd_pautas", label: "Qtd. Pautas", type: "number" },
+        { name: "qtd_presencas", label: "Qtd. Presenças", type: "number" },
+        { name: "qtd_votacoes", label: "Qtd. Votações", type: "number" },
+        { name: "ata_publicada", label: "ATA Publicada?", type: "checkbox" },
         { name: "pauta", label: "Pauta", type: "textarea" },
-        { name: "ata_url", label: "URL da ata", type: "url" },
+        { name: "ata_url", label: "URL da ata (PDF)", type: "url" },
+        { name: "lista_presenca_url", label: "URL Lista Presença", type: "url" },
+        { name: "resumo_votos_url", label: "URL Resumo Votos", type: "url" },
         { name: "video_url", label: "URL do vídeo (YouTube)", type: "url" },
       ]}
     />
