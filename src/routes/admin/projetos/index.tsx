@@ -13,7 +13,13 @@ type Projeto = {
   tipo: string;
   ementa: string;
   autor: string | null;
-  status: string;
+  autor_id: string | null;
+  status: "protocolado" | "comissao" | "plenario" | "aprovado" | "sancionado" | "arquivado" | "rejeitado";
+  documento_url: string | null;
+  tramitacao: string | null;
+  vereadores?: {
+    nome: string;
+  };
 };
 
 function AdminProjetos() {
