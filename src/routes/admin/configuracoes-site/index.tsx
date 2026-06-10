@@ -213,6 +213,8 @@ function SiteSettingsAdmin() {
             <Input value={settings.contact_hours ?? ""} onChange={(e) => setSettings({ ...settings, contact_hours: e.target.value })} />
           </div>
         </div>
+      </section>
+
       {/* TRANSMISSÃO AO VIVO */}
       <section className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4">
         <h3 className="font-display font-bold text-lg text-slate-900">Transmissão Ao Vivo</h3>
