@@ -47,6 +47,44 @@ export type Database = {
         }
         Relationships: []
       }
+      mesa_diretora: {
+        Row: {
+          ativo: boolean | null
+          cargo: string
+          created_at: string
+          id: string
+          ordem: number | null
+          updated_at: string
+          vereador_id: string
+        }
+        Insert: {
+          ativo?: boolean | null
+          cargo: string
+          created_at?: string
+          id?: string
+          ordem?: number | null
+          updated_at?: string
+          vereador_id: string
+        }
+        Update: {
+          ativo?: boolean | null
+          cargo?: string
+          created_at?: string
+          id?: string
+          ordem?: number | null
+          updated_at?: string
+          vereador_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mesa_diretora_vereador_id_fkey"
+            columns: ["vereador_id"]
+            isOneToOne: false
+            referencedRelation: "vereadores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       noticias: {
         Row: {
           autor: string | null

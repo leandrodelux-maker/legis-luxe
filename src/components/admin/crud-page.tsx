@@ -10,15 +10,23 @@ import {
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Plus, Edit, Trash2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 export type FieldDef = {
   name: string;
   label: string;
-  type?: "text" | "textarea" | "number" | "date" | "datetime-local" | "checkbox" | "url" | "email";
+  type?: "text" | "textarea" | "number" | "date" | "datetime-local" | "checkbox" | "url" | "email" | "select";
   required?: boolean;
   placeholder?: string;
+  options?: { label: string; value: string }[];
 };
 
 export type ColumnDef<T> = {
@@ -142,6 +150,23 @@ export function CrudPage<T extends { id: string }>({
                       />
                       <span className="text-sm text-slate-600">{f.placeholder ?? "Sim"}</span>
                     </div>
+                  ) : f.type === "select" ? (
+                    <Select
+                      value={String(form[f.name] ?? "")}
+                      onValueChange={(v) => setForm({ ...form, [f.name]: v })}
+                      required={f.required}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={f.placeholder || "Selecione..."} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {f.options?.map((opt) => (
+                          <SelectItem key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   ) : (
                     <Input
                       id={f.name}
