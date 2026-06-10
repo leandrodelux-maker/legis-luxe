@@ -257,59 +257,66 @@ function HomePage() {
             </Button>
           </div>
 
-          <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {[
-              {
-                tag: "Legislativo",
-                date: "12 Jun 2026",
-                title: "Câmara aprova programa de incentivo à educação infantil",
-                excerpt: "Projeto destina recursos adicionais à ampliação de vagas em creches e capacitação de professores.",
-                img: "https://images.unsplash.com/photo-1577416416421-72e4972844e5?auto=format&fit=crop&q=80&w=800",
-              },
-              {
-                tag: "Projetos",
-                date: "08 Jun 2026",
-                title: "Plano Diretor recebe contribuições da sociedade civil",
-                excerpt: "Audiência reuniu representantes de bairros, entidades e cidadãos para discutir a revisão do PD.",
-                img: "https://images.unsplash.com/photo-1582213782179-a0c522262656?auto=format&fit=crop&q=80&w=800",
-              },
-              {
-                tag: "Eventos",
-                date: "03 Jun 2026",
-                title: "Relatório de gestão do 1º semestre é publicado",
-                excerpt: "Documento detalha execução orçamentária, atos legislativos e indicadores de desempenho.",
-                img: "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&q=80&w=800",
-              },
-            ].map((n, i) => (
-              <article
-                key={n.title}
-                className="card-premium card-premium-hover group overflow-hidden animate-[fade-up_0.6s_ease-out_both]"
-                style={{ animationDelay: `${i * 100}ms` }}
-              >
-                <div className="relative aspect-[16/10] overflow-hidden">
-                  <img src={n.img} alt={n.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-gold px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-gold-foreground">
-                    {n.tag}
+          <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3 min-h-[400px]">
+            {loadingNoticias ? (
+              <div className="col-span-full flex flex-col items-center justify-center py-20 gap-4">
+                <Loader2 className="w-10 h-10 text-gold animate-spin" />
+                <p className="text-muted-foreground font-medium">Carregando notícias...</p>
+              </div>
+            ) : noticias.length > 0 ? (
+              noticias.map((n, i) => (
+                <article
+                  key={n.id}
+                  className="card-premium card-premium-hover group overflow-hidden animate-[fade-up_0.6s_ease-out_both]"
+                  style={{ animationDelay: `${i * 100}ms` }}
+                >
+                  <div className="relative aspect-[16/10] overflow-hidden bg-slate-200">
+                    {n.imagem_url ? (
+                      <img
+                        src={n.imagem_url}
+                        alt={n.titulo}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                    ) : (
+                      <div className="h-full w-full flex items-center justify-center bg-gradient-to-br from-primary-deep/10 to-primary/10">
+                        <Newspaper className="w-16 h-16 text-primary/10" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    {n.categoria && (
+                      <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-gold px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-gold-foreground">
+                        {n.categoria}
+                      </div>
+                    )}
                   </div>
-                </div>
-                <div className="p-6">
-                  <time className="text-xs uppercase tracking-wider text-muted-foreground">
-                    {n.date}
-                  </time>
-                  <h3 className="mt-2 font-display text-lg font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2">
-                    {n.title}
-                  </h3>
-                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed line-clamp-3">{n.excerpt}</p>
-                  <Link
-                    to="/noticias"
-                    className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary hover:gap-2 transition-all"
-                  >
-                    Ler matéria <ArrowRight className="h-3.5 w-3.5" />
-                  </Link>
-                </div>
-              </article>
-            ))}
+                  <div className="p-6">
+                    <time className="text-xs uppercase tracking-wider text-muted-foreground">
+                      {new Date(n.publicado_em || n.created_at).toLocaleDateString("pt-BR", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </time>
+                    <h3 className="mt-2 font-display text-lg font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2">
+                      {n.titulo}
+                    </h3>
+                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed line-clamp-3">
+                      {n.resumo}
+                    </p>
+                    <Link
+                      to="/noticias"
+                      className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary hover:gap-2 transition-all"
+                    >
+                      Ler matéria <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
+                  </div>
+                </article>
+              ))
+            ) : (
+              <div className="col-span-full text-center py-20 text-muted-foreground">
+                Nenhuma notícia encontrada.
+              </div>
+            )}
           </div>
         </div>
       </section>
