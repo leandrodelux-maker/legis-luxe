@@ -15,17 +15,17 @@ import {
   Play,
   ClipboardList,
   Vote,
-  FileCheck,
   ChevronRight,
-  ExternalLink
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionHeading } from "@/components/section-heading";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/sessoes")({
   head: () => ({
@@ -58,48 +58,6 @@ type DbSessao = {
   resumo_votos_url: string | null;
 };
 
-function SessoesPage() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedType, setSelectedType] = useState("Todos");
-  const [date, setDate] = useState<Date | undefined>(new Date());
-  const [proximasSessoes, setProximasSessoes] = useState<DbSessao[]>([]);
-  const [historicoSessoes, setHistoricoSessoes] = useState<DbSessao[]>([]);
-  const [liveUrl, setLiveUrl] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadData() {
-      // Fetch Next Sessions
-      const { data: proximas } = await supabase
-        .from("sessoes")
-        .select("*")
-        .gte("data_sessao", new Date().toISOString())
-        .eq("status", "agendada")
-        .order("data_sessao", { ascending: true });
-      
-      setProximasSessoes(proximas || []);
-
-      // Fetch History
-      const { data: historico } = await supabase
-        .from("sessoes")
-        .select("*")
-        .lt("data_sessao", new Date().toISOString())
-        .order("data_sessao", { ascending: false });
-      
-      setHistoricoSessoes(historico || []);
-
-      // Fetch Live URL
-      const { data: settings } = await supabase
-        .from("site_settings")
-        .select("live_broadcast_url")
-        .limit(1)
-        .maybeSingle();
-      
-      setLiveUrl(settings?.live_broadcast_url || null);
-      setLoading(false);
-    }
-    loadData();
-  }, []);
 const projetos = [
   { id: "pl-124-2026", num: "124", ano: "2026", tipo: "Projeto de Lei", titulo: "Institui o programa municipal de incentivo à leitura", autor: "Ver. Mariana Souza", status: "Comissão", fase: 2 },
   { id: "pl-118-2026", num: "118", ano: "2026", tipo: "Projeto de Lei", titulo: "Cria a semana de prevenção à violência doméstica", autor: "Ver. Patrícia Ribeiro", status: "Plenário", fase: 3 },
@@ -142,13 +100,20 @@ function LegislativeTimeline({ currentFase }: { currentFase: number }) {
             >
               <Icon className="w-5 h-5" />
             </div>
-import { supabase } from "@/integrations/supabase/client";
-import { useEffect } from "react";
-import { Loader2 } from "lucide-react";
+            <span className={`mt-3 text-[10px] font-bold uppercase tracking-tighter text-center max-w-[80px] ${
+              isActive ? "text-primary" : "text-muted-foreground"
+            }`}>
+              {fase.label}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
 function SessoesPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedType, setSelectedType] = useState("Todos");
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [proximasSessoes, setProximasSessoes] = useState<DbSessao[]>([]);
   const [historicoSessoes, setHistoricoSessoes] = useState<DbSessao[]>([]);
@@ -157,26 +122,25 @@ function SessoesPage() {
 
   useEffect(() => {
     async function loadData() {
-      // Fetch Next Sessions
+      const now = new Date().toISOString();
+      
       const { data: proximas } = await supabase
         .from("sessoes")
         .select("*")
-        .gte("data_sessao", new Date().toISOString())
+        .gte("data_sessao", now)
         .eq("status", "agendada")
         .order("data_sessao", { ascending: true });
       
       setProximasSessoes(proximas || []);
 
-      // Fetch History
       const { data: historico } = await supabase
         .from("sessoes")
         .select("*")
-        .lt("data_sessao", new Date().toISOString())
+        .lt("data_sessao", now)
         .order("data_sessao", { ascending: false });
       
       setHistoricoSessoes(historico || []);
 
-      // Fetch Live URL
       const { data: settings } = await supabase
         .from("site_settings")
         .select("live_broadcast_url")
@@ -189,15 +153,7 @@ function SessoesPage() {
     loadData();
   }, []);
 
-  const filteredProjetos = projetos.filter(p => {
-    const matchesSearch = p.titulo.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                         p.num.includes(searchTerm);
-    // const matchesType = selectedType === "Todos" || p.tipo === selectedType; // Temporariamente comentado pois tiposMateria foi removido no loop anterior
-    return matchesSearch;
-  });
-
   return (
-
     <>
       <section className="bg-gradient-to-br from-primary-deep to-primary text-primary-foreground relative overflow-hidden">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-gold/5 skew-x-12 translate-x-1/2" />
