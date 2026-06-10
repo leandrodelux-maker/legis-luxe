@@ -102,15 +102,6 @@ function SessoesPage() {
   }, []);
 
 
-const tiposMateria = [
-  "Projeto de Lei",
-  "Projeto Complementar",
-  "Emenda",
-  "Moção",
-  "Requerimento",
-  "Indicação"
-];
-
 const projetos = [
   { id: "pl-124-2026", num: "124", ano: "2026", tipo: "Projeto de Lei", titulo: "Institui o programa municipal de incentivo à leitura", autor: "Ver. Mariana Souza", status: "Comissão", fase: 2 },
   { id: "pl-118-2026", num: "118", ano: "2026", tipo: "Projeto de Lei", titulo: "Cria a semana de prevenção à violência doméstica", autor: "Ver. Patrícia Ribeiro", status: "Plenário", fase: 3 },
