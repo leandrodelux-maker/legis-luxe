@@ -23,7 +23,8 @@ import { toast } from "sonner";
 export type FieldDef = {
   name: string;
   label: string;
-  type?: "text" | "textarea" | "number" | "date" | "datetime-local" | "checkbox" | "url" | "email" | "select" | "file";
+  type?: "text" | "textarea" | "number" | "date" | "datetime-local" | "checkbox" | "url" | "email" | "select" | "file" | "custom";
+  renderCustom?: (row: any, form: any, setForm: any) => React.ReactNode;
   required?: boolean;
   placeholder?: string;
   options?: { label: string; value: string }[];
@@ -235,6 +236,8 @@ export function CrudPage<T extends { id: string }>({
                         </p>
                       ) : null}
                     </div>
+                  ) : f.type === "custom" ? (
+                    f.renderCustom?.(editing, form, setForm)
                   ) : (
                     <Input
                       id={f.name}

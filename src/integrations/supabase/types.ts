@@ -276,6 +276,94 @@ export type Database = {
         }
         Relationships: []
       }
+      sessoes_presencas: {
+        Row: {
+          created_at: string | null
+          id: string
+          presente: boolean | null
+          sessao_id: string
+          vereador_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          presente?: boolean | null
+          sessao_id: string
+          vereador_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          presente?: boolean | null
+          sessao_id?: string
+          vereador_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sessoes_presencas_sessao_id_fkey"
+            columns: ["sessao_id"]
+            isOneToOne: false
+            referencedRelation: "sessoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessoes_presencas_vereador_id_fkey"
+            columns: ["vereador_id"]
+            isOneToOne: false
+            referencedRelation: "vereadores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sessoes_votacoes: {
+        Row: {
+          created_at: string | null
+          id: string
+          materia_id: string | null
+          sessao_id: string
+          vereador_id: string
+          voto: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          materia_id?: string | null
+          sessao_id: string
+          vereador_id: string
+          voto?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          materia_id?: string | null
+          sessao_id?: string
+          vereador_id?: string
+          voto?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sessoes_votacoes_materia_id_fkey"
+            columns: ["materia_id"]
+            isOneToOne: false
+            referencedRelation: "projetos_legislativos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessoes_votacoes_sessao_id_fkey"
+            columns: ["sessao_id"]
+            isOneToOne: false
+            referencedRelation: "sessoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessoes_votacoes_vereador_id_fkey"
+            columns: ["vereador_id"]
+            isOneToOne: false
+            referencedRelation: "vereadores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       site_settings: {
         Row: {
           contact_email: string | null
