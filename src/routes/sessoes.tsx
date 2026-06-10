@@ -174,20 +174,30 @@ function SessoesPage() {
   const [selectedType, setSelectedType] = useState("Todos");
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [proximasSessoes, setProximasSessoes] = useState<DbSessao[]>([]);
+  const [historicoSessoes, setHistoricoSessoes] = useState<DbSessao[]>([]);
   const [liveUrl, setLiveUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadData() {
       // Fetch Next Sessions
-      const { data: sessoes } = await supabase
+      const { data: proximas } = await supabase
         .from("sessoes")
         .select("*")
         .gte("data_sessao", new Date().toISOString())
         .eq("status", "agendada")
         .order("data_sessao", { ascending: true });
       
-      setProximasSessoes(sessoes || []);
+      setProximasSessoes(proximas || []);
+
+      // Fetch History
+      const { data: historico } = await supabase
+        .from("sessoes")
+        .select("*")
+        .lt("data_sessao", new Date().toISOString())
+        .order("data_sessao", { ascending: false });
+      
+      setHistoricoSessoes(historico || []);
 
       // Fetch Live URL
       const { data: settings } = await supabase
