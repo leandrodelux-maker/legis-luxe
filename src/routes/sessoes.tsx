@@ -142,18 +142,6 @@ function LegislativeTimeline({ currentFase }: { currentFase: number }) {
             >
               <Icon className="w-5 h-5" />
             </div>
-            <span className={`mt-3 text-[10px] font-bold uppercase tracking-tighter text-center max-w-[80px] ${
-              isActive ? "text-primary" : "text-muted-foreground"
-            }`}>
-              {fase.label}
-            </span>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
@@ -204,8 +192,8 @@ function SessoesPage() {
   const filteredProjetos = projetos.filter(p => {
     const matchesSearch = p.titulo.toLowerCase().includes(searchTerm.toLowerCase()) || 
                          p.num.includes(searchTerm);
-    const matchesType = selectedType === "Todos" || p.tipo === selectedType;
-    return matchesSearch && matchesType;
+    // const matchesType = selectedType === "Todos" || p.tipo === selectedType; // Temporariamente comentado pois tiposMateria foi removido no loop anterior
+    return matchesSearch;
   });
 
   return (
