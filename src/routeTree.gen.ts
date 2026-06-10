@@ -13,6 +13,7 @@ import { Route as VereadoresRouteImport } from './routes/vereadores'
 import { Route as TransparenciaRouteImport } from './routes/transparencia'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SessoesRouteImport } from './routes/sessoes'
+import { Route as ProjetosRouteImport } from './routes/projetos'
 import { Route as NoticiasRouteImport } from './routes/noticias'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -51,6 +52,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const SessoesRoute = SessoesRouteImport.update({
   id: '/sessoes',
   path: '/sessoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjetosRoute = ProjetosRouteImport.update({
+  id: '/projetos',
+  path: '/projetos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NoticiasRoute = NoticiasRouteImport.update({
@@ -156,6 +162,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/contato': typeof ContatoRoute
   '/noticias': typeof NoticiasRoute
+  '/projetos': typeof ProjetosRoute
   '/sessoes': typeof SessoesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/transparencia': typeof TransparenciaRoute
@@ -180,6 +187,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/contato': typeof ContatoRoute
   '/noticias': typeof NoticiasRoute
+  '/projetos': typeof ProjetosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/transparencia': typeof TransparenciaRoute
   '/vereadores': typeof VereadoresRoute
@@ -205,6 +213,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/contato': typeof ContatoRoute
   '/noticias': typeof NoticiasRoute
+  '/projetos': typeof ProjetosRoute
   '/sessoes': typeof SessoesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/transparencia': typeof TransparenciaRoute
@@ -232,6 +241,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contato'
     | '/noticias'
+    | '/projetos'
     | '/sessoes'
     | '/sitemap.xml'
     | '/transparencia'
@@ -256,6 +266,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contato'
     | '/noticias'
+    | '/projetos'
     | '/sitemap.xml'
     | '/transparencia'
     | '/vereadores'
@@ -280,6 +291,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contato'
     | '/noticias'
+    | '/projetos'
     | '/sessoes'
     | '/sitemap.xml'
     | '/transparencia'
@@ -306,6 +318,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ContatoRoute: typeof ContatoRoute
   NoticiasRoute: typeof NoticiasRoute
+  ProjetosRoute: typeof ProjetosRoute
   SessoesRoute: typeof SessoesRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TransparenciaRoute: typeof TransparenciaRoute
@@ -340,6 +353,13 @@ declare module '@tanstack/react-router' {
       path: '/sessoes'
       fullPath: '/sessoes'
       preLoaderRoute: typeof SessoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projetos': {
+      id: '/projetos'
+      path: '/projetos'
+      fullPath: '/projetos'
+      preLoaderRoute: typeof ProjetosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/noticias': {
@@ -529,6 +549,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ContatoRoute: ContatoRoute,
   NoticiasRoute: NoticiasRoute,
+  ProjetosRoute: ProjetosRoute,
   SessoesRoute: SessoesRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TransparenciaRoute: TransparenciaRoute,
