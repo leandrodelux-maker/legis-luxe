@@ -256,6 +256,7 @@ export type Database = {
           hero_subtitle: string
           hero_title: string
           id: string
+          live_broadcast_url: string | null
           updated_at: string
         }
         Insert: {
@@ -269,6 +270,7 @@ export type Database = {
           hero_subtitle?: string
           hero_title?: string
           id?: string
+          live_broadcast_url?: string | null
           updated_at?: string
         }
         Update: {
@@ -282,6 +284,7 @@ export type Database = {
           hero_subtitle?: string
           hero_title?: string
           id?: string
+          live_broadcast_url?: string | null
           updated_at?: string
         }
         Relationships: []
