@@ -314,8 +314,6 @@ function SessoesPage() {
           </TabsContent>
         </Tabs>
       </section>
-
-      </section>
     </>
   );
 }
