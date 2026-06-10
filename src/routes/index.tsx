@@ -66,10 +66,22 @@ type HeroData = {
 
 type Vereador = Tables<"vereadores">;
 
+type MesaMember = {
+  id: string;
+  cargo: string;
+  vereadores: {
+    nome: string;
+    partido: string | null;
+    foto_url: string | null;
+  };
+};
+
 function HomePage() {
   const [hero, setHero] = useState<HeroData | null>(null);
   const [vereadores, setVereadores] = useState<Vereador[]>([]);
+  const [mesaDiretora, setMesaDiretora] = useState<MesaMember[]>([]);
   const [loadingVereadores, setLoadingVereadores] = useState(true);
+  const [loadingMesa, setLoadingMesa] = useState(true);
 
   useEffect(() => {
     // Fetch Hero settings
@@ -90,6 +102,17 @@ function HomePage() {
       .then(({ data }) => {
         setVereadores(data || []);
         setLoadingVereadores(false);
+      });
+
+    // Fetch Mesa Diretora
+    supabase
+      .from("mesa_diretora")
+      .select("id, cargo, vereadores(nome, partido, foto_url)")
+      .eq("ativo", true)
+      .order("ordem", { ascending: true })
+      .then(({ data }) => {
+        setMesaDiretora((data as any) || []);
+        setLoadingMesa(false);
       });
   }, []);
 
@@ -348,33 +371,45 @@ function HomePage() {
             align="center"
           />
           <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
-            {[
-              { role: "Presidente", name: "Dr. Roberto Santos", party: "PSD", img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=400" },
-              { role: "1º Vice-Presidente", name: "Ana Paula Mendes", party: "MDB", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400" },
-              { role: "1º Secretário", name: "Carlos Oliveira", party: "PL", img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400" },
-            ].map((member, i) => (
-              <div key={i} className="card-premium group overflow-hidden text-center bg-card">
-                <div className="relative aspect-[4/5] overflow-hidden">
-                  <img src={member.img} alt={member.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary-deep/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-                <div className="p-6">
-                  <span className="text-xs font-bold uppercase tracking-widest text-gold">{member.role}</span>
-                  <h4 className="mt-2 font-display text-xl font-bold">{member.name}</h4>
-                  <p className="text-sm text-muted-foreground">{member.party}</p>
-                  <div className="mt-4 flex justify-center gap-2">
-                    <Button size="sm" variant="outline" className="h-8 w-8 p-0 rounded-full">
-                      <span className="sr-only">E-mail</span>
-                      <MessageSquare className="h-3.5 w-3.5" />
-                    </Button>
-                    <Button size="sm" variant="outline" className="h-8 w-8 p-0 rounded-full">
-                      <span className="sr-only">Perfil</span>
-                      <Users className="h-3.5 w-3.5" />
-                    </Button>
+            {loadingMesa ? (
+              <div className="col-span-full flex justify-center py-10">
+                <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+              </div>
+            ) : mesaDiretora.length > 0 ? (
+              mesaDiretora.map((member) => (
+                <div key={member.id} className="card-premium group overflow-hidden text-center bg-card">
+                  <div className="relative aspect-[4/5] overflow-hidden">
+                    {member.vereadores.foto_url ? (
+                      <img src={member.vereadores.foto_url} alt={member.vereadores.nome} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    ) : (
+                      <div className="h-full w-full flex items-center justify-center bg-slate-100">
+                        <User className="w-20 h-20 text-slate-300" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-primary-deep/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                  <div className="p-6">
+                    <span className="text-xs font-bold uppercase tracking-widest text-gold">{member.cargo}</span>
+                    <h4 className="mt-2 font-display text-xl font-bold">{member.vereadores.nome}</h4>
+                    <p className="text-sm text-muted-foreground">{member.vereadores.partido}</p>
+                    <div className="mt-4 flex justify-center gap-2">
+                      <Button size="sm" variant="outline" className="h-8 w-8 p-0 rounded-full">
+                        <span className="sr-only">Mensagem</span>
+                        <MessageSquare className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button size="sm" variant="outline" className="h-8 w-8 p-0 rounded-full">
+                        <span className="sr-only">Perfil</span>
+                        <Users className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div className="col-span-full text-center py-10 text-muted-foreground">
+                Nenhum membro da Mesa Diretora cadastrado.
               </div>
-            ))}
+            )}
           </div>
         </div>
       </section>
