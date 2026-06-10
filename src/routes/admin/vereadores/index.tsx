@@ -44,7 +44,7 @@ function AdminVereadores() {
         { name: "nome", label: "Nome completo", required: true },
         { name: "partido", label: "Partido" },
         { name: "cargo", label: "Cargo (ex: Presidente, Vereador)" },
-        { name: "foto_url", label: "URL da foto", type: "url" },
+        { name: "foto_url", label: "Foto do Vereador", type: "file" },
         { name: "biografia", label: "Biografia", type: "textarea" },
         { name: "email", label: "E-mail", type: "email" },
         { name: "telefone", label: "Telefone" },
