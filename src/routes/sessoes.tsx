@@ -306,62 +306,104 @@ function SessoesPage() {
 
           <TabsContent value="historico" className="animate-[fade-up_0.5s_ease-out]">
             <div className="space-y-6">
-              {historicoSessoes.map((s, i) => (
-                <div key={s.id} className="card-premium p-6 flex flex-col lg:flex-row gap-8 items-start lg:items-center">
-                  <div className="relative w-full lg:w-64 aspect-video rounded-lg overflow-hidden bg-black group cursor-pointer">
-                    <img 
-                      src={`https://img.youtube.com/vi/${s.videoId}/0.jpg`} 
-                      alt="Thumbnail" 
-                      className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity"
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Play className="h-6 w-6 text-white fill-current" />
-                      </div>
-                    </div>
-                  </div>
+              {historicoSessoes.map((s, i) => {
+                const dateObj = new Date(s.data_sessao);
+                const dateStr = dateObj.toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" });
+                const videoId = s.video_url?.includes("v=") ? s.video_url.split("v=")[1].split("&")[0] : null;
 
-                  <div className="flex-1 space-y-4">
-                    <div className="flex flex-wrap items-center gap-3">
-                      <Badge variant="secondary" className="bg-primary/5 text-primary">
-                        {s.tipo}
-                      </Badge>
-                      <span className="text-sm font-bold text-muted-foreground">{s.data}</span>
+                return (
+                  <div key={s.id} className="card-premium p-6 flex flex-col lg:flex-row gap-8 items-start lg:items-center">
+                    <div className="relative w-full lg:w-64 aspect-video rounded-lg overflow-hidden bg-black group cursor-pointer">
+                      {videoId ? (
+                        <>
+                          <img 
+                            src={`https://img.youtube.com/vi/${videoId}/0.jpg`} 
+                            alt="Thumbnail" 
+                            className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity"
+                          />
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center group-hover:scale-110 transition-transform">
+                              <Play className="h-6 w-6 text-white fill-current" />
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-slate-800">
+                          <YoutubeIcon className="h-12 w-12 text-slate-600" />
+                        </div>
+                      )}
                     </div>
-                    <h4 className="font-display text-2xl font-bold">Resumo dos Trabalhos</h4>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div className="p-3 rounded-lg bg-secondary/50 border border-border/50 text-center">
-                        <div className="text-lg font-bold text-primary">{s.pauta}</div>
-                        <div className="text-[10px] uppercase font-bold text-muted-foreground">Pautas</div>
-                      </div>
-                      <div className="p-3 rounded-lg bg-secondary/50 border border-border/50 text-center">
-                        <div className="text-lg font-bold text-primary">{s.presenca}</div>
-                        <div className="text-[10px] uppercase font-bold text-muted-foreground">Presenças</div>
-                      </div>
-                      <div className="p-3 rounded-lg bg-secondary/50 border border-border/50 text-center">
-                        <div className="text-lg font-bold text-primary">{s.votacoes}</div>
-                        <div className="text-[10px] uppercase font-bold text-muted-foreground">Votações</div>
-                      </div>
-                      <div className="p-3 rounded-lg bg-secondary/50 border border-border/50 text-center">
-                        <div className="text-lg font-bold text-emerald-600">ATA</div>
-                        <div className="text-[10px] uppercase font-bold text-muted-foreground">Publicada</div>
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className="w-full lg:w-auto flex flex-col gap-2">
-                    <Button variant="outline" className="w-full lg:w-40 justify-between">
-                      <FileText className="h-4 w-4" /> Ata em PDF
-                    </Button>
-                    <Button variant="outline" className="w-full lg:w-40 justify-between">
-                      <ClipboardList className="h-4 w-4" /> Lista Presença
-                    </Button>
-                    <Button variant="outline" className="w-full lg:w-40 justify-between">
-                      <Vote className="h-4 w-4" /> Resumo Votos
-                    </Button>
+                    <div className="flex-1 space-y-4">
+                      <div className="flex flex-wrap items-center gap-3">
+                        <Badge variant="secondary" className="bg-primary/5 text-primary">
+                          {s.tipo}
+                        </Badge>
+                        <span className="text-sm font-bold text-muted-foreground">{dateStr}</span>
+                      </div>
+                      <h4 className="font-display text-2xl font-bold">Resumo dos Trabalhos</h4>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="p-3 rounded-lg bg-secondary/50 border border-border/50 text-center">
+                          <div className="text-lg font-bold text-primary">{s.qtd_pautas}</div>
+                          <div className="text-[10px] uppercase font-bold text-muted-foreground">Pautas</div>
+                        </div>
+                        <div className="p-3 rounded-lg bg-secondary/50 border border-border/50 text-center">
+                          <div className="text-lg font-bold text-primary">{s.qtd_presencas}</div>
+                          <div className="text-[10px] uppercase font-bold text-muted-foreground">Presenças</div>
+                        </div>
+                        <div className="p-3 rounded-lg bg-secondary/50 border border-border/50 text-center">
+                          <div className="text-lg font-bold text-primary">{s.qtd_votacoes}</div>
+                          <div className="text-[10px] uppercase font-bold text-muted-foreground">Votações</div>
+                        </div>
+                        <div className="p-3 rounded-lg bg-secondary/50 border border-border/50 text-center">
+                          <div className={`text-lg font-bold ${s.ata_publicada ? "text-emerald-600" : "text-amber-500"}`}>
+                            ATA
+                          </div>
+                          <div className="text-[10px] uppercase font-bold text-muted-foreground">
+                            {s.ata_publicada ? "Publicada" : "Pendente"}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="w-full lg:w-auto flex flex-col gap-2">
+                      <Button variant="outline" className="w-full lg:w-40 justify-between" disabled={!s.ata_url} asChild={!!s.ata_url}>
+                        {s.ata_url ? (
+                          <a href={s.ata_url} target="_blank" rel="noopener noreferrer">
+                            <FileText className="h-4 w-4" /> Ata em PDF
+                          </a>
+                        ) : (
+                          <span>
+                            <FileText className="h-4 w-4" /> Ata em PDF
+                          </span>
+                        )}
+                      </Button>
+                      <Button variant="outline" className="w-full lg:w-40 justify-between" disabled={!s.lista_presenca_url} asChild={!!s.lista_presenca_url}>
+                        {s.lista_presenca_url ? (
+                          <a href={s.lista_presenca_url} target="_blank" rel="noopener noreferrer">
+                            <ClipboardList className="h-4 w-4" /> Lista Presença
+                          </a>
+                        ) : (
+                          <span>
+                            <ClipboardList className="h-4 w-4" /> Lista Presença
+                          </span>
+                        )}
+                      </Button>
+                      <Button variant="outline" className="w-full lg:w-40 justify-between" disabled={!s.resumo_votos_url} asChild={!!s.resumo_votos_url}>
+                        {s.resumo_votos_url ? (
+                          <a href={s.resumo_votos_url} target="_blank" rel="noopener noreferrer">
+                            <Vote className="h-4 w-4" /> Resumo Votos
+                          </a>
+                        ) : (
+                          <span>
+                            <Vote className="h-4 w-4" /> Resumo Votos
+                          </span>
+                        )}
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
               <Button variant="ghost" className="w-full py-8 text-muted-foreground hover:text-primary">
                 Carregar mais sessões anteriores...
               </Button>
