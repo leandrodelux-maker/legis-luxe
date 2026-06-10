@@ -280,7 +280,7 @@ export function CrudPage<T extends { id: string }>({
                 <TableRow key={row.id}>
                   {columns.map((c) => (
                     <TableCell key={String(c.key)}>
-                      {c.render ? c.render(row) : String((row as Record<string, any>)[c.key as string] ?? "—")}
+                      {c.render ? c.render(row) : (String((row as Record<string, any>)[c.key as string] ?? "—") as React.ReactNode)}
                     </TableCell>
                   ))}
                   <TableCell className="text-right">
