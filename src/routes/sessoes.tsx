@@ -50,13 +50,57 @@ type DbSessao = {
   video_url: string | null;
   pauta: string | null;
   ata_url: string | null;
+  qtd_pautas: number;
+  qtd_presencas: number;
+  qtd_votacoes: number;
+  ata_publicada: boolean;
+  lista_presenca_url: string | null;
+  resumo_votos_url: string | null;
 };
 
-const historicoSessoes = [
-  { id: 101, tipo: "Sessão Ordinária", data: "09 Jun 2026", videoId: "dQw4w9WgXcQ", pauta: 12, ata: true, presenca: 19, votacoes: 5 },
-  { id: 102, tipo: "Sessão Ordinária", data: "02 Jun 2026", videoId: "dQw4w9WgXcQ", pauta: 8, ata: true, presenca: 21, votacoes: 3 },
-  { id: 103, tipo: "Audiência Pública", data: "28 Mai 2026", videoId: "dQw4w9WgXcQ", pauta: 1, ata: true, presenca: 15, votacoes: 0 },
-];
+function SessoesPage() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedType, setSelectedType] = useState("Todos");
+  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [proximasSessoes, setProximasSessoes] = useState<DbSessao[]>([]);
+  const [historicoSessoes, setHistoricoSessoes] = useState<DbSessao[]>([]);
+  const [liveUrl, setLiveUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      // Fetch Next Sessions
+      const { data: proximas } = await supabase
+        .from("sessoes")
+        .select("*")
+        .gte("data_sessao", new Date().toISOString())
+        .eq("status", "agendada")
+        .order("data_sessao", { ascending: true });
+      
+      setProximasSessoes(proximas || []);
+
+      // Fetch History
+      const { data: historico } = await supabase
+        .from("sessoes")
+        .select("*")
+        .lt("data_sessao", new Date().toISOString())
+        .order("data_sessao", { ascending: false });
+      
+      setHistoricoSessoes(historico || []);
+
+      // Fetch Live URL
+      const { data: settings } = await supabase
+        .from("site_settings")
+        .select("live_broadcast_url")
+        .limit(1)
+        .maybeSingle();
+      
+      setLiveUrl(settings?.live_broadcast_url || null);
+      setLoading(false);
+    }
+    loadData();
+  }, []);
+
 
 const tiposMateria = [
   "Projeto de Lei",
