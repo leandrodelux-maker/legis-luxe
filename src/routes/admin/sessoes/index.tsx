@@ -13,6 +13,10 @@ type Sessao = {
   data_sessao: string;
   local: string | null;
   status: string;
+  qtd_pautas: number;
+  qtd_presencas: number;
+  qtd_votacoes: number;
+  ata_publicada: boolean;
 };
 
 function AdminSessoes() {
