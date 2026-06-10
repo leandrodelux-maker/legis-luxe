@@ -87,14 +87,25 @@ type DbNoticia = {
   slug: string;
 };
 
+type DbSessao = {
+  id: string;
+  titulo: string;
+  tipo: string | null;
+  data_sessao: string;
+  local: string | null;
+  status: string;
+};
+
 function HomePage() {
   const [hero, setHero] = useState<HeroData | null>(null);
   const [vereadores, setVereadores] = useState<Vereador[]>([]);
   const [mesaDiretora, setMesaDiretora] = useState<MesaMember[]>([]);
   const [noticias, setNoticias] = useState<DbNoticia[]>([]);
+  const [proximasSessoes, setProximasSessoes] = useState<DbSessao[]>([]);
   const [loadingVereadores, setLoadingVereadores] = useState(true);
   const [loadingMesa, setLoadingMesa] = useState(true);
   const [loadingNoticias, setLoadingNoticias] = useState(true);
+  const [loadingSessoes, setLoadingSessoes] = useState(true);
 
   useEffect(() => {
     // Fetch Hero settings
@@ -138,6 +149,19 @@ function HomePage() {
       .then(({ data }) => {
         setNoticias((data as DbNoticia[]) || []);
         setLoadingNoticias(false);
+      });
+
+    // Fetch Next Sessions
+    supabase
+      .from("sessoes")
+      .select("id, titulo, tipo, data_sessao, local, status")
+      .gte("data_sessao", new Date().toISOString())
+      .eq("status", "agendada")
+      .order("data_sessao", { ascending: true })
+      .limit(3)
+      .then(({ data }) => {
+        setProximasSessoes((data as DbSessao[]) || []);
+        setLoadingSessoes(false);
       });
   }, []);
 
@@ -332,61 +356,96 @@ function HomePage() {
               description="Acompanhe as próximas sessões ordinárias, solenes e audiências públicas."
             />
             <div className="mt-10 space-y-4">
-              {[
-                { date: "15 Jun", time: "14:00", type: "Sessão Ordinária", title: "Votação de projetos de infraestrutura urbana" },
-                { date: "17 Jun", time: "19:00", type: "Audiência Pública", title: "Debate sobre o novo plano de mobilidade" },
-                { date: "22 Jun", time: "14:00", type: "Sessão Solene", title: "Entrega de títulos de cidadão honorário" },
-              ].map((item, i) => (
-                <div key={i} className="flex gap-6 p-5 rounded-xl border border-border bg-card hover:border-primary/30 transition-colors group">
-                  <div className="flex flex-col items-center justify-center w-20 h-20 rounded-lg bg-secondary text-primary font-display border border-border/50">
-                    <span className="text-xl font-bold">{item.date.split(" ")[0]}</span>
-                    <span className="text-xs uppercase font-medium">{item.date.split(" ")[1]}</span>
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs font-semibold uppercase tracking-wider text-gold">{item.type}</span>
-                      <span className="text-xs text-muted-foreground">•</span>
-                      <span className="text-xs text-muted-foreground">{item.time}</span>
-                    </div>
-                    <h4 className="mt-1 font-display text-lg font-semibold group-hover:text-primary transition-colors">{item.title}</h4>
-                    <Link to="/sessoes" className="mt-2 inline-flex items-center text-sm font-medium text-primary/70 hover:text-primary transition-colors">
-                      Detalhes da pauta <ArrowRight className="ml-1 h-3 w-3" />
-                    </Link>
-                  </div>
+              {loadingSessoes ? (
+                <div className="flex justify-center py-10">
+                  <Loader2 className="w-8 h-8 animate-spin text-gold" />
                 </div>
-              ))}
+              ) : proximasSessoes.length > 0 ? (
+                proximasSessoes.map((item, i) => {
+                  const dateObj = new Date(item.data_sessao);
+                  const day = dateObj.toLocaleDateString("pt-BR", { day: "2-digit" });
+                  const month = dateObj.toLocaleDateString("pt-BR", { month: "short" }).replace(".", "").toUpperCase();
+                  const time = dateObj.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+                  
+                  return (
+                    <div key={item.id} className="flex gap-6 p-5 rounded-xl border border-border bg-card hover:border-primary/30 transition-colors group">
+                      <div className="flex flex-col items-center justify-center w-20 h-20 rounded-lg bg-secondary text-primary font-display border border-border/50 shrink-0">
+                        <span className="text-xl font-bold">{day}</span>
+                        <span className="text-xs uppercase font-medium">{month}</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3">
+                          <span className="text-xs font-semibold uppercase tracking-wider text-gold truncate">
+                            {item.tipo || "Sessão"}
+                          </span>
+                          <span className="text-xs text-muted-foreground shrink-0">•</span>
+                          <span className="text-xs text-muted-foreground shrink-0">{time}</span>
+                        </div>
+                        <h4 className="mt-1 font-display text-lg font-semibold group-hover:text-primary transition-colors truncate">
+                          {item.titulo}
+                        </h4>
+                        <Link to="/sessoes" className="mt-2 inline-flex items-center text-sm font-medium text-primary/70 hover:text-primary transition-colors">
+                          Detalhes da pauta <ArrowRight className="ml-1 h-3 w-3" />
+                        </Link>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="p-8 text-center bg-secondary/20 rounded-xl border border-dashed border-border text-muted-foreground">
+                  Nenhuma sessão agendada para os próximos dias.
+                </div>
+              )}
             </div>
           </div>
           <div className="card-premium p-8 bg-primary-deep text-primary-foreground relative overflow-hidden">
             <div className="absolute top-0 right-0 p-4 opacity-10">
               <Calendar className="h-32 w-32" />
             </div>
-            <h3 className="font-display text-2xl font-bold mb-6">Mês de Junho</h3>
+            <h3 className="font-display text-2xl font-bold mb-6">
+              Mês de {new Date().toLocaleDateString("pt-BR", { month: "long" })}
+            </h3>
             <div className="grid grid-cols-7 gap-2 text-center text-xs font-bold text-primary-foreground/60 mb-4">
               {["D", "S", "T", "Q", "Q", "S", "S"].map(d => <div key={d}>{d}</div>)}
             </div>
             <div className="grid grid-cols-7 gap-2 text-center">
-              {Array.from({ length: 30 }).map((_, i) => {
-                const day = i + 1;
-                const isMeeting = [15, 17, 22].includes(day);
-                return (
-                  <div 
-                    key={i} 
-                    className={`aspect-square flex items-center justify-center rounded-md text-sm transition-colors
-                      ${isMeeting ? "bg-gold text-gold-foreground font-bold" : "hover:bg-white/10"}`}
-                  >
-                    {day}
-                  </div>
-                );
-              })}
+              {(() => {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = now.getMonth();
+                const firstDay = new Date(year, month, 1).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                
+                return Array.from({ length: 42 }).map((_, i) => {
+                  const day = i - firstDay + 1;
+                  const isValidDay = day > 0 && day <= daysInMonth;
+                  
+                  if (!isValidDay) return <div key={i} />;
+                  
+                  const isMeeting = proximasSessoes.some(s => {
+                    const sDate = new Date(s.data_sessao);
+                    return sDate.getDate() === day && sDate.getMonth() === month && sDate.getFullYear() === year;
+                  });
+
+                  return (
+                    <div 
+                      key={i} 
+                      className={`aspect-square flex items-center justify-center rounded-md text-sm transition-colors
+                        ${isMeeting ? "bg-gold text-gold-foreground font-bold" : "hover:bg-white/10"}`}
+                    >
+                      {day}
+                    </div>
+                  );
+                });
+              })()}
             </div>
             <div className="mt-8 pt-6 border-t border-white/10 space-y-3">
               <div className="flex items-center gap-3 text-sm">
                 <div className="h-2 w-2 rounded-full bg-gold" />
                 Sessão Agendada
               </div>
-              <Button variant="outline" className="w-full mt-4 border-white/20 hover:bg-white/10 text-white">
-                Ver calendário completo
+              <Button asChild variant="outline" className="w-full mt-4 border-white/20 hover:bg-white/10 text-white">
+                <Link to="/sessoes">Ver calendário completo</Link>
               </Button>
             </div>
           </div>
