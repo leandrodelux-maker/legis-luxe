@@ -22,6 +22,7 @@ type Settings = {
   contact_phone: string | null;
   contact_email: string | null;
   contact_hours: string | null;
+  live_broadcast_url: string | null;
 };
 
 function SiteSettingsAdmin() {
@@ -58,6 +59,7 @@ function SiteSettingsAdmin() {
         contact_phone: settings.contact_phone,
         contact_email: settings.contact_email,
         contact_hours: settings.contact_hours,
+        live_broadcast_url: settings.live_broadcast_url,
       })
       .eq("id", settings.id);
     setSaving(false);
@@ -211,7 +213,19 @@ function SiteSettingsAdmin() {
             <Input value={settings.contact_hours ?? ""} onChange={(e) => setSettings({ ...settings, contact_hours: e.target.value })} />
           </div>
         </div>
+      {/* TRANSMISSÃO AO VIVO */}
+      <section className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4">
+        <h3 className="font-display font-bold text-lg text-slate-900">Transmissão Ao Vivo</h3>
+        <div>
+          <Label>URL do Canal de Transmissão (YouTube/Facebook)</Label>
+          <Input 
+            value={settings.live_broadcast_url ?? ""} 
+            placeholder="https://youtube.com/@seucanal/live"
+            onChange={(e) => setSettings({ ...settings, live_broadcast_url: e.target.value })} 
+          />
+        </div>
       </section>
+
 
       <div className="flex justify-end">
         <Button type="submit" disabled={saving} className="bg-primary-deep">

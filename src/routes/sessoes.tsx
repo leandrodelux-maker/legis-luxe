@@ -40,12 +40,17 @@ export const Route = createFileRoute("/sessoes")({
   component: SessoesPage,
 });
 
-const proximasSessoes = [
-  { id: 1, tipo: "Sessão Ordinária", data: "16 Jun 2026", hora: "14h00", local: "Plenário Principal", pauta: 7, videoId: "dQw4w9WgXcQ" },
-  { id: 2, tipo: "Audiência Pública", data: "18 Jun 2026", hora: "19h00", local: "Auditório", pauta: 3, videoId: "dQw4w9WgXcQ" },
-  { id: 3, tipo: "Sessão Extraordinária", data: "23 Jun 2026", hora: "10h00", local: "Plenário Principal", pauta: 4, videoId: null },
-  { id: 4, tipo: "Sessão Solene", data: "25 Jun 2026", hora: "19h30", local: "Plenário Principal", pauta: 2, videoId: null },
-];
+type DbSessao = {
+  id: string;
+  titulo: string;
+  tipo: string | null;
+  data_sessao: string;
+  local: string | null;
+  status: string;
+  video_url: string | null;
+  pauta: string | null;
+  ata_url: string | null;
+};
 
 const historicoSessoes = [
   { id: 101, tipo: "Sessão Ordinária", data: "09 Jun 2026", videoId: "dQw4w9WgXcQ", pauta: 12, ata: true, presenca: 19, votacoes: 5 },
@@ -116,10 +121,42 @@ function LegislativeTimeline({ currentFase }: { currentFase: number }) {
   );
 }
 
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect } from "react";
+import { Loader2 } from "lucide-react";
+
 function SessoesPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("Todos");
   const [date, setDate] = useState<Date | undefined>(new Date());
+  const [proximasSessoes, setProximasSessoes] = useState<DbSessao[]>([]);
+  const [liveUrl, setLiveUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      // Fetch Next Sessions
+      const { data: sessoes } = await supabase
+        .from("sessoes")
+        .select("*")
+        .gte("data_sessao", new Date().toISOString())
+        .eq("status", "agendada")
+        .order("data_sessao", { ascending: true });
+      
+      setProximasSessoes(sessoes || []);
+
+      // Fetch Live URL
+      const { data: settings } = await supabase
+        .from("site_settings")
+        .select("live_broadcast_url")
+        .limit(1)
+        .maybeSingle();
+      
+      setLiveUrl(settings?.live_broadcast_url || null);
+      setLoading(false);
+    }
+    loadData();
+  }, []);
 
   const filteredProjetos = projetos.filter(p => {
     const matchesSearch = p.titulo.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -129,6 +166,7 @@ function SessoesPage() {
   });
 
   return (
+
     <>
       <section className="bg-gradient-to-br from-primary-deep to-primary text-primary-foreground relative overflow-hidden">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-gold/5 skew-x-12 translate-x-1/2" />
@@ -160,46 +198,66 @@ function SessoesPage() {
               </TabsTrigger>
             </TabsList>
             
-            <Button className="bg-red-600 hover:bg-red-700 text-white animate-pulse">
-              <YoutubeIcon className="mr-2 h-4 w-4" /> Assista Ao Vivo
-            </Button>
+            {liveUrl && (
+              <Button asChild className="bg-red-600 hover:bg-red-700 text-white animate-pulse">
+                <a href={liveUrl} target="_blank" rel="noopener noreferrer">
+                  <YoutubeIcon className="mr-2 h-4 w-4" /> Assista Ao Vivo
+                </a>
+              </Button>
+            )}
           </div>
 
           <TabsContent value="proximas" className="animate-[fade-up_0.5s_ease-out]">
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-              {proximasSessoes.map((s, i) => (
-                <article
-                  key={s.id}
-                  className="card-premium card-premium-hover p-6 flex flex-col group"
-                  style={{ animationDelay: `${i * 100}ms` }}
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <Badge variant="outline" className="text-[10px] uppercase font-bold tracking-wider">
-                      {s.tipo}
-                    </Badge>
-                    {s.videoId && (
-                      <Badge className="bg-red-100 text-red-600 border-red-200">
-                        <Play className="h-3 w-3 mr-1 fill-current" /> LIVE
-                      </Badge>
-                    )}
-                  </div>
-                  <h3 className="font-display text-xl font-bold mb-4">{s.data}</h3>
-                  <div className="space-y-2 mb-6 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-gold" /> {s.hora}</div>
-                    <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-gold" /> {s.local}</div>
-                    <div className="flex items-center gap-2"><FileText className="h-4 w-4 text-gold" /> {s.pauta} matérias na pauta</div>
-                  </div>
-                  <div className="mt-auto pt-4 border-t border-border/50 space-y-2">
-                    <Button variant="outline" size="sm" className="w-full justify-between group-hover:border-primary">
-                      Ver Pauta <ChevronRight className="h-3 w-3" />
-                    </Button>
-                    <Button variant="ghost" size="sm" className="w-full text-xs text-muted-foreground">
-                      Baixar Editais
-                    </Button>
-                  </div>
-                </article>
-              ))}
-            </div>
+            {loading ? (
+              <div className="flex justify-center py-20">
+                <Loader2 className="w-10 h-10 animate-spin text-gold" />
+              </div>
+            ) : proximasSessoes.length > 0 ? (
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+                {proximasSessoes.map((s, i) => {
+                  const dateObj = new Date(s.data_sessao);
+                  const dateStr = dateObj.toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" });
+                  const hourStr = dateObj.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }).replace(":", "h");
+                  
+                  return (
+                    <article
+                      key={s.id}
+                      className="card-premium card-premium-hover p-6 flex flex-col group"
+                      style={{ animationDelay: `${i * 100}ms` }}
+                    >
+                      <div className="flex items-center justify-between mb-4">
+                        <Badge variant="outline" className="text-[10px] uppercase font-bold tracking-wider">
+                          {s.tipo || "Sessão"}
+                        </Badge>
+                        {s.video_url && (
+                          <Badge className="bg-red-100 text-red-600 border-red-200">
+                            <Play className="h-3 w-3 mr-1 fill-current" /> LIVE
+                          </Badge>
+                        )}
+                      </div>
+                      <h3 className="font-display text-xl font-bold mb-4">{dateStr}</h3>
+                      <div className="space-y-2 mb-6 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-gold" /> {hourStr}</div>
+                        <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-gold" /> {s.local || "Plenário"}</div>
+                        <div className="flex items-center gap-2"><FileText className="h-4 w-4 text-gold" /> Pauta disponível</div>
+                      </div>
+                      <div className="mt-auto pt-4 border-t border-border/50 space-y-2">
+                        <Button variant="outline" size="sm" className="w-full justify-between group-hover:border-primary">
+                          Ver Pauta <ChevronRight className="h-3 w-3" />
+                        </Button>
+                        <Button variant="ghost" size="sm" className="w-full text-xs text-muted-foreground">
+                          Baixar Editais
+                        </Button>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-center py-20 bg-secondary/20 rounded-2xl border border-dashed border-border text-muted-foreground font-medium">
+                Nenhuma sessão agendada para os próximos dias.
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="historico" className="animate-[fade-up_0.5s_ease-out]">
