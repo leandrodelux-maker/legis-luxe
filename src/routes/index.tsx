@@ -11,6 +11,8 @@ import {
   Search,
   Sparkles,
   Newspaper,
+  User,
+  Loader2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import heroImg from "@/assets/hero-camara.jpg";
@@ -18,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { SectionHeading } from "@/components/section-heading";
 import { QuickAccess } from "@/components/quick-access";
 import { supabase } from "@/integrations/supabase/client";
+import type { Tables } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -61,16 +64,33 @@ type HeroData = {
   hero_eyebrow: string;
 };
 
+type Vereador = Tables<"vereadores">;
+
 function HomePage() {
   const [hero, setHero] = useState<HeroData | null>(null);
+  const [vereadores, setVereadores] = useState<Vereador[]>([]);
+  const [loadingVereadores, setLoadingVereadores] = useState(true);
 
   useEffect(() => {
+    // Fetch Hero settings
     supabase
       .from("site_settings")
       .select("hero_media_url, hero_media_type, hero_title, hero_subtitle, hero_eyebrow")
       .limit(1)
       .maybeSingle()
       .then(({ data }) => setHero(data as HeroData | null));
+
+    // Fetch active vereadores
+    supabase
+      .from("vereadores")
+      .select("*")
+      .eq("ativo", true)
+      .order("ordem", { ascending: true })
+      .limit(6)
+      .then(({ data }) => {
+        setVereadores(data || []);
+        setLoadingVereadores(false);
+      });
   }, []);
 
   const mediaUrl = hero?.hero_media_url || null;
@@ -373,23 +393,31 @@ function HomePage() {
             </Link>
           </Button>
         </div>
-        <div className="mt-12 grid gap-6 grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
-          {[
-            { name: "Luciana Costa", party: "PT", img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=200" },
-            { name: "Ricardo Silva", party: "PP", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200" },
-            { name: "Mariana Alves", party: "PSDB", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200" },
-            { name: "João Pereira", party: "DEM", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200" },
-            { name: "Sonia Regina", party: "PSB", img: "https://images.unsplash.com/photo-1554151228-14d9def656e4?auto=format&fit=crop&q=80&w=200" },
-            { name: "Marcos Paulo", party: "REP", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=200" },
-          ].map((v, i) => (
-            <Link key={i} to="/vereadores" className="group block text-center">
-              <div className="relative aspect-square rounded-full overflow-hidden border-2 border-transparent group-hover:border-gold transition-colors mx-auto mb-4 grayscale group-hover:grayscale-0 transition-all duration-300">
-                <img src={v.img} alt={v.name} className="h-full w-full object-cover" />
-              </div>
-              <h5 className="font-display font-bold text-sm leading-tight group-hover:text-primary transition-colors">{v.name}</h5>
-              <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">{v.party}</p>
-            </Link>
-          ))}
+        <div className="mt-12 grid gap-6 grid-cols-2 md:grid-cols-4 lg:grid-cols-6 min-h-[160px]">
+          {loadingVereadores ? (
+            <div className="col-span-full flex flex-col items-center justify-center py-10 gap-2">
+              <Loader2 className="w-8 h-8 text-gold animate-spin" />
+              <p className="text-sm text-muted-foreground font-medium">Carregando vereadores...</p>
+            </div>
+          ) : (
+            vereadores.map((v) => (
+              <Link key={v.id} to="/vereadores" className="group block text-center animate-[fade-up_0.5s_ease-out_both]">
+                <div className="relative aspect-square rounded-full overflow-hidden border-2 border-transparent group-hover:border-gold transition-colors mx-auto mb-4 grayscale group-hover:grayscale-0 transition-all duration-300 bg-secondary/30 flex items-center justify-center">
+                  {v.foto_url ? (
+                    <img src={v.foto_url} alt={v.nome} className="h-full w-full object-cover" />
+                  ) : (
+                    <User className="w-1/2 h-1/2 text-primary/20" />
+                  )}
+                </div>
+                <h5 className="font-display font-bold text-sm leading-tight group-hover:text-primary transition-colors line-clamp-2 px-1">
+                  {v.nome}
+                </h5>
+                <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">
+                  {v.partido || "-"}
+                </p>
+              </Link>
+            ))
+          )}
         </div>
       </section>
       <section className="container-page py-20 md:py-28">
