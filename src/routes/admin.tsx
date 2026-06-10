@@ -49,7 +49,7 @@ const menuItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard", roles: ["all"] },
   { label: "Painel Executivo", icon: BarChart3, path: "/admin/executivo", roles: ["admin", "presidente"] },
   { label: "Vereadores", icon: Users, path: "/admin/vereadores", roles: ["admin", "presidente", "legislativo"] },
-  { label: "Processo Legislativo", icon: Gavel, path: "/admin/projetos", roles: ["admin", "legislativo"] },
+  { label: "Fluxo Legislativo", icon: Gavel, path: "/admin/projetos", roles: ["admin", "legislativo"] },
   { label: "Sessões", icon: Calendar, path: "/admin/sessoes", roles: ["admin", "legislativo"] },
   { label: "Notícias e Banners", icon: Newspaper, path: "/admin/comunicacao", roles: ["admin", "comunicacao"] },
   { label: "Acesso Rápido", icon: Globe, path: "/admin/acesso-rapido", roles: ["admin", "comunicacao"] },

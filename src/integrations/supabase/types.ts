@@ -161,6 +161,7 @@ export type Database = {
         Row: {
           ano: number
           autor: string | null
+          autor_id: string | null
           created_at: string
           data_apresentacao: string | null
           documento_url: string | null
@@ -170,11 +171,13 @@ export type Database = {
           observacoes: string | null
           status: string
           tipo: string
+          tramitacao: string | null
           updated_at: string
         }
         Insert: {
           ano: number
           autor?: string | null
+          autor_id?: string | null
           created_at?: string
           data_apresentacao?: string | null
           documento_url?: string | null
@@ -184,11 +187,13 @@ export type Database = {
           observacoes?: string | null
           status?: string
           tipo: string
+          tramitacao?: string | null
           updated_at?: string
         }
         Update: {
           ano?: number
           autor?: string | null
+          autor_id?: string | null
           created_at?: string
           data_apresentacao?: string | null
           documento_url?: string | null
@@ -198,9 +203,18 @@ export type Database = {
           observacoes?: string | null
           status?: string
           tipo?: string
+          tramitacao?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "projetos_legislativos_autor_id_fkey"
+            columns: ["autor_id"]
+            isOneToOne: false
+            referencedRelation: "vereadores"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       sessoes: {
         Row: {
@@ -436,6 +450,12 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "editor"
+      legislative_status:
+        | "protocolado"
+        | "comissao"
+        | "plenario"
+        | "aprovado"
+        | "sancionado"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -564,6 +584,13 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "editor"],
+      legislative_status: [
+        "protocolado",
+        "comissao",
+        "plenario",
+        "aprovado",
+        "sancionado",
+      ],
     },
   },
 } as const

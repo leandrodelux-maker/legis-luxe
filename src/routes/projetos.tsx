@@ -7,13 +7,15 @@ import {
   Users2,
   CheckCircle2,
   Stamp,
-  ChevronRight
+  ChevronRight,
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionHeading } from "@/components/section-heading";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/projetos")({
   head: () => ({
@@ -30,19 +32,35 @@ export const Route = createFileRoute("/projetos")({
 
 const tiposMateria = [
   "Projeto de Lei",
-  "Projeto Complementar",
-  "Emenda",
-  "Moção",
+  "Projeto de Lei Complementar",
+  "Indicação",
   "Requerimento",
-  "Indicação"
+  "Moção",
+  "Projeto de Decreto Legislativo",
+  "Emenda",
 ];
 
-const projetos = [
-  { id: "pl-124-2026", num: "124", ano: "2026", tipo: "Projeto de Lei", titulo: "Institui o programa municipal de incentivo à leitura", autor: "Ver. Mariana Souza", status: "Comissão", fase: 2 },
-  { id: "pl-118-2026", num: "118", ano: "2026", tipo: "Projeto de Lei", titulo: "Cria a semana de prevenção à violência doméstica", autor: "Ver. Patrícia Ribeiro", status: "Plenário", fase: 3 },
-  { id: "ind-045-2026", num: "045", ano: "2026", tipo: "Indicação", titulo: "Manutenção asfáltica na Rua das Palmeiras", autor: "Ver. Roberto Mendes", status: "Protocolado", fase: 1 },
-  { id: "pl-097-2026", num: "097", ano: "2026", tipo: "Projeto de Lei", titulo: "Regulamenta horta comunitária em áreas municipais", autor: "Ver. Juliana Martins", status: "Sancionado", fase: 5 },
-];
+type Projeto = {
+  id: string;
+  numero: string;
+  ano: number;
+  tipo: string;
+  ementa: string;
+  autor: string | null;
+  status: string;
+  documento_url: string | null;
+  vereadores?: {
+    nome: string;
+  };
+};
+
+const statusMap: Record<string, number> = {
+  "protocolado": 1,
+  "comissao": 2,
+  "plenario": 3,
+  "aprovado": 4,
+  "sancionado": 5,
+};
 
 const fases = [
   { label: "Protocolado", icon: FileText },
@@ -94,10 +112,29 @@ function LegislativeTimeline({ currentFase }: { currentFase: number }) {
 function ProjetosPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("Todos");
+  const [projetos, setProjetos] = useState<Projeto[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProjetos = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("projetos_legislativos")
+        .select("*, vereadores(nome)")
+        .order("created_at", { ascending: false });
+      
+      if (!error && data) {
+        setProjetos(data as Projeto[]);
+      }
+      setLoading(false);
+    };
+
+    fetchProjetos();
+  }, []);
 
   const filteredProjetos = projetos.filter(p => {
-    const matchesSearch = p.titulo.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                         p.num.includes(searchTerm);
+    const matchesSearch = p.ementa.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         p.numero.includes(searchTerm);
     const matchesType = selectedType === "Todos" || p.tipo === selectedType;
     return matchesSearch && matchesType;
   });
@@ -148,45 +185,59 @@ function ProjetosPage() {
           </div>
 
           <div className="space-y-6">
-            {filteredProjetos.map((p, i) => (
-              <div 
-                key={p.id}
-                className="group bg-background border border-border/60 rounded-xl p-6 hover:border-primary/30 hover:shadow-md transition-all animate-[fade-up_0.5s_ease-out_both]"
-                style={{ animationDelay: `${i * 50}ms` }}
-              >
-                <div className="flex flex-col lg:flex-row lg:items-center gap-6">
-                  <div className="flex-1">
-                    <div className="flex flex-wrap items-center gap-3 mb-3">
-                      <span className="text-xs font-mono font-bold text-primary bg-primary/5 px-2 py-1 rounded">
-                        {p.tipo.toUpperCase()} {p.num}/{p.ano}
-                      </span>
-                      <Badge variant="outline" className="text-[10px] uppercase font-bold tracking-wider">
-                        {p.status}
-                      </Badge>
+            {loading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+              </div>
+            ) : filteredProjetos.length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground">
+                Nenhuma matéria legislativa encontrada.
+              </div>
+            ) : (
+              filteredProjetos.map((p, i) => (
+                <div 
+                  key={p.id}
+                  className="group bg-background border border-border/60 rounded-xl p-6 hover:border-primary/30 hover:shadow-md transition-all animate-[fade-up_0.5s_ease-out_both]"
+                  style={{ animationDelay: `${i * 50}ms` }}
+                >
+                  <div className="flex flex-col lg:flex-row lg:items-center gap-6">
+                    <div className="flex-1">
+                      <div className="flex flex-wrap items-center gap-3 mb-3">
+                        <span className="text-xs font-mono font-bold text-primary bg-primary/5 px-2 py-1 rounded">
+                          {p.tipo.toUpperCase()} {p.numero}/{p.ano}
+                        </span>
+                        <Badge variant="outline" className="text-[10px] uppercase font-bold tracking-wider">
+                          {p.status.toUpperCase()}
+                        </Badge>
+                      </div>
+                      <h4 className="font-display text-xl font-bold text-foreground group-hover:text-primary transition-colors mb-2">
+                        {p.ementa}
+                      </h4>
+                      <p className="text-sm text-muted-foreground flex items-center gap-2">
+                        <Users2 className="h-3.5 w-3.5 text-gold" /> {p.vereadores?.nome || p.autor || "Não informado"}
+                      </p>
                     </div>
-                    <h4 className="font-display text-xl font-bold text-foreground group-hover:text-primary transition-colors mb-2">
-                      {p.titulo}
-                    </h4>
-                    <p className="text-sm text-muted-foreground flex items-center gap-2">
-                      <Users2 className="h-3.5 w-3.5 text-gold" /> {p.autor}
-                    </p>
-                  </div>
-                  
-                  <div className="lg:w-[400px]">
-                    <LegislativeTimeline currentFase={p.fase} />
-                  </div>
+                    
+                    <div className="lg:w-[400px]">
+                      <LegislativeTimeline currentFase={statusMap[p.status] || 1} />
+                    </div>
 
-                  <div className="flex items-center gap-3">
-                    <Button variant="outline" size="sm" className="h-10">
-                      <FileText className="h-4 w-4 mr-2" /> PDF
-                    </Button>
-                    <Button size="sm" className="h-10">
-                      Tramitação
-                    </Button>
+                    <div className="flex items-center gap-3">
+                      {p.documento_url && (
+                        <Button variant="outline" size="sm" className="h-10" asChild>
+                          <a href={p.documento_url} target="_blank" rel="noopener noreferrer">
+                            <FileText className="h-4 w-4 mr-2" /> PDF
+                          </a>
+                        </Button>
+                      )}
+                      <Button size="sm" className="h-10">
+                        Tramitação
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </section>
