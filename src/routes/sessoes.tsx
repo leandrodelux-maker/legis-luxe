@@ -50,10 +50,10 @@ type DbSessao = {
   video_url: string | null;
   pauta: string | null;
   ata_url: string | null;
-  qtd_pautas: number;
-  qtd_presencas: number;
-  qtd_votacoes: number;
-  ata_publicada: boolean;
+  qtd_pautas: number | null;
+  qtd_presencas: number | null;
+  qtd_votacoes: number | null;
+  ata_publicada: boolean | null;
   lista_presenca_url: string | null;
   resumo_votos_url: string | null;
 };
