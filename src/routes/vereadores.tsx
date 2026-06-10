@@ -79,19 +79,10 @@ function VereadoresPage() {
     participacao: [...vereadores].slice(0, 3),
   };
 
-
-function VereadoresPage() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-
-  const filteredVereadores = vereadores.filter(v => 
-    v.nome.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    v.partido.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
     <>
       <section className="bg-gradient-to-br from-primary-deep to-primary text-primary-foreground relative overflow-hidden">
+
         <div className="absolute top-0 right-0 w-1/4 h-full bg-gold/5 -skew-x-12 translate-x-1/2" />
         <div className="container-page py-16 md:py-24 relative z-10">
           <div className="text-xs uppercase tracking-[0.2em] text-gold flex items-center gap-3">
