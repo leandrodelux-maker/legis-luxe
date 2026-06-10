@@ -27,7 +27,7 @@ const mainNav = [
   { to: "/", label: "INÍCIO" },
   { to: "/vereadores", label: "VEREADORES" },
   { to: "/sessoes", label: "SESSÕES" },
-  { to: "/projetos", label: "PROCESSO LEGISLATIVO" },
+  { to: "/projetos", label: "FLUXO LEGISLATIVO" },
   { to: "/noticias", label: "NOTÍCIAS" },
   { to: "/contato", label: "CONTATO" },
 ] as const;
