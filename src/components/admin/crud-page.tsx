@@ -27,6 +27,9 @@ export type FieldDef = {
   required?: boolean;
   placeholder?: string;
   options?: { label: string; value: string }[];
+  table?: string;
+  optionLabel?: string;
+  optionValue?: string;
 };
 
 export type ColumnDef<T> = {
@@ -54,10 +57,12 @@ export function CrudPage<T extends { id: string }>({
   const [editing, setEditing] = useState<T | null>(null);
   const [form, setForm] = useState<Record<string, unknown>>({});
   const [saving, setSaving] = useState(false);
+  const [externalOptions, setExternalOptions] = useState<Record<string, { label: string; value: string }[]>>({});
 
   const load = async () => {
     setLoading(true);
-    let q = (supabase as any).from(table).select("*");
+    // Expand query to include joined tables if necessary (simple join for 1 level)
+    let q = (supabase as any).from(table).select("*, vereadores(nome)");
     if (orderBy) q = q.order(orderBy.column, { ascending: orderBy.ascending ?? false });
     const { data, error } = await q;
     if (error) toast.error(error.message);
@@ -65,7 +70,31 @@ export function CrudPage<T extends { id: string }>({
     setLoading(false);
   };
 
-  useEffect(() => { load(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [table]);
+  const loadExternal = async () => {
+    for (const field of fields) {
+      if (field.table && field.optionLabel && field.optionValue) {
+        const { data, error } = await (supabase as any)
+          .from(field.table)
+          .select(`${field.optionValue}, ${field.optionLabel}`);
+        
+        if (!error && data) {
+          setExternalOptions(prev => ({
+            ...prev,
+            [field.name]: data.map((d: any) => ({
+              label: d[field.optionLabel!],
+              value: String(d[field.optionValue!])
+            }))
+          }));
+        }
+      }
+    }
+  };
+
+  useEffect(() => { 
+    load(); 
+    loadExternal();
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */ 
+  }, [table]);
 
   const startNew = () => {
     setEditing(null);
@@ -160,7 +189,7 @@ export function CrudPage<T extends { id: string }>({
                         <SelectValue placeholder={f.placeholder || "Selecione..."} />
                       </SelectTrigger>
                       <SelectContent>
-                        {f.options?.map((opt) => (
+                        {(f.options || externalOptions[f.name])?.map((opt) => (
                           <SelectItem key={opt.value} value={opt.value}>
                             {opt.label}
                           </SelectItem>
