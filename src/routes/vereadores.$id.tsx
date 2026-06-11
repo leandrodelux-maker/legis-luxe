@@ -4,9 +4,9 @@ import {
   Phone, 
   User, 
   ChevronLeft, 
-  Instagram as InstagramIcon, 
-  Facebook as FacebookIcon, 
-  Twitter as TwitterIcon,
+  Instagram, 
+  Facebook, 
+  Twitter,
   Calendar,
   MapPin,
   GraduationCap,
@@ -128,21 +128,21 @@ function VereadorDetailPage() {
                 {redes.instagram && (
                   <a href={`https://instagram.com/${redes.instagram.replace('@', '')}`} target="_blank" rel="noopener noreferrer">
                     <Button size="icon" variant="outline" className="rounded-full bg-white/5 border-white/20 text-white hover:bg-gold hover:text-primary-deep">
-                      <InstagramIcon className="w-5 h-5" />
+                      <Instagram className="w-5 h-5" />
                     </Button>
                   </a>
                 )}
                 {redes.facebook && (
                   <a href={redes.facebook} target="_blank" rel="noopener noreferrer">
                     <Button size="icon" variant="outline" className="rounded-full bg-white/5 border-white/20 text-white hover:bg-gold hover:text-primary-deep">
-                      <FacebookIcon className="w-5 h-5" />
+                      <Facebook className="w-5 h-5" />
                     </Button>
                   </a>
                 )}
                 {redes.twitter && (
                   <a href={redes.twitter} target="_blank" rel="noopener noreferrer">
                     <Button size="icon" variant="outline" className="rounded-full bg-white/5 border-white/20 text-white hover:bg-gold hover:text-primary-deep">
-                      <TwitterIcon className="w-5 h-5" />
+                      <Twitter className="w-5 h-5" />
                     </Button>
                   </a>
                 )}
