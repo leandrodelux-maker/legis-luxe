@@ -155,7 +155,7 @@ export function SiteHeader() {
                     "relative inline-flex items-center gap-1.5 px-4 py-4 text-[12px] font-semibold tracking-wide text-white/85 hover:text-white hover:bg-white/5 transition-colors uppercase whitespace-nowrap first:pl-0"
                   )}
                   activeProps={{
-                    className: "text-white after:absolute after:left-3 after:right-3 after:bottom-0 after:h-[3px] after:bg-white",
+                    className: "text-white after:absolute after:left-4 after:right-4 after:bottom-0 after:h-[3px] after:bg-white first:after:left-0",
                   }}
                 >
                   {item.label}
