@@ -475,15 +475,21 @@ export type Database = {
           biografia: string | null
           cargo: string | null
           created_at: string
+          data_nascimento: string | null
           email: string | null
+          escolaridade: string | null
           foto_url: string | null
           gabinete: string | null
           id: string
           mandato_fim: string | null
           mandato_inicio: string | null
+          naturalidade: string | null
           nome: string
           ordem: number | null
           partido: string | null
+          profissao: string | null
+          redes_sociais: Json | null
+          stats: Json | null
           telefone: string | null
           updated_at: string
         }
@@ -492,15 +498,21 @@ export type Database = {
           biografia?: string | null
           cargo?: string | null
           created_at?: string
+          data_nascimento?: string | null
           email?: string | null
+          escolaridade?: string | null
           foto_url?: string | null
           gabinete?: string | null
           id?: string
           mandato_fim?: string | null
           mandato_inicio?: string | null
+          naturalidade?: string | null
           nome: string
           ordem?: number | null
           partido?: string | null
+          profissao?: string | null
+          redes_sociais?: Json | null
+          stats?: Json | null
           telefone?: string | null
           updated_at?: string
         }
@@ -509,15 +521,21 @@ export type Database = {
           biografia?: string | null
           cargo?: string | null
           created_at?: string
+          data_nascimento?: string | null
           email?: string | null
+          escolaridade?: string | null
           foto_url?: string | null
           gabinete?: string | null
           id?: string
           mandato_fim?: string | null
           mandato_inicio?: string | null
+          naturalidade?: string | null
           nome?: string
           ordem?: number | null
           partido?: string | null
+          profissao?: string | null
+          redes_sociais?: Json | null
+          stats?: Json | null
           telefone?: string | null
           updated_at?: string
         }
