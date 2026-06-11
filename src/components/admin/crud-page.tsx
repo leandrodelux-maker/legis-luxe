@@ -131,8 +131,8 @@ export function CrudPage<T extends { id: string }>({
 
     try {
       const op = editing
-        ? supabase.from(table).update(payload).eq("id", editing.id)
-        : supabase.from(table).insert(payload);
+        ? (supabase as any).from(table).update(payload).eq("id", editing.id)
+        : (supabase as any).from(table).insert(payload);
       
       const { error } = await op;
       if (error) throw error;
