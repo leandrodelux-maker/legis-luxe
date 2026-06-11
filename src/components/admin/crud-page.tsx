@@ -276,7 +276,12 @@ export function CrudPage<T extends { id: string }>({
                       />
                       {form[f.name] ? (
                         <div className="mt-2 relative w-20 h-20 rounded-lg overflow-hidden border border-slate-200">
-                          <img src={String(form[f.name])} alt="Preview" className="w-full h-full object-cover" />
+                          <img 
+                            src={`${String(form[f.name])}${String(form[f.name]).includes('?') ? '&' : '?'}t=${Date.now()}`} 
+                            alt="Preview" 
+                            className="w-full h-full object-cover" 
+                          />
+
                         </div>
                       ) : null}
                     </div>
