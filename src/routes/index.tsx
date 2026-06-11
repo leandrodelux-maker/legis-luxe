@@ -488,9 +488,11 @@ function HomePage() {
                         <span className="sr-only">Mensagem</span>
                         <MessageSquare className="h-3.5 w-3.5" />
                       </Button>
-                      <Button size="sm" variant="outline" className="h-8 w-8 p-0 rounded-full">
-                        <span className="sr-only">Perfil</span>
-                        <Users className="h-3.5 w-3.5" />
+                      <Button size="sm" variant="outline" asChild className="h-8 w-8 p-0 rounded-full">
+                        <Link to={`/vereadores/${member.vereadores.id}`}>
+                          <span className="sr-only">Perfil</span>
+                          <Users className="h-3.5 w-3.5" />
+                        </Link>
                       </Button>
                     </div>
                   </div>
