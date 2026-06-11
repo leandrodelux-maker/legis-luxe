@@ -213,7 +213,7 @@ export function CrudPage<T extends { id: string }>({
                           const filePath = `${table}/${fileName}`;
 
                           const { error: uploadError } = await supabase.storage
-                            .from('documentos')
+                            .from('vereadores')
                             .upload(filePath, file);
 
                           if (uploadError) {
@@ -223,7 +223,7 @@ export function CrudPage<T extends { id: string }>({
                           }
 
                           const { data: { publicUrl } } = supabase.storage
-                            .from('documentos')
+                            .from('vereadores')
                             .getPublicUrl(filePath);
 
                           setForm({ ...form, [f.name]: publicUrl });
