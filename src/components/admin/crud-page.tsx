@@ -210,11 +210,14 @@ export function CrudPage<T extends { id: string }>({
                           setSaving(true);
                           const fileExt = file.name.split('.').pop();
                           const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
-                          const filePath = `${table}/${fileName}`;
+                          const filePath = `${fileName}`; // Removendo o prefixo da tabela para evitar subpastas confusas se não necessário
 
                           const { error: uploadError } = await supabase.storage
                             .from('vereadores')
-                            .upload(filePath, file);
+                            .upload(filePath, file, {
+                              cacheControl: '3600',
+                              upsert: true
+                            });
 
                           if (uploadError) {
                             toast.error("Erro no upload: " + uploadError.message);
