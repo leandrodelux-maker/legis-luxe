@@ -63,7 +63,7 @@ export function CrudPage<T extends { id: string }>({
   const load = async () => {
     setLoading(true);
     // Expand query to include joined tables if necessary (simple join for 1 level)
-    let q = (supabase as any).from(table).select("*, vereadores(nome)");
+    let q = (supabase as any).from(table).select("*");
     if (orderBy) q = q.order(orderBy.column, { ascending: orderBy.ascending ?? false });
     const { data, error } = await q;
     if (error) toast.error(error.message);
