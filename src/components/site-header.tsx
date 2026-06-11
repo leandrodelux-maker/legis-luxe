@@ -144,7 +144,7 @@ export function SiteHeader() {
 
       {/* BLUE NAV BAR */}
       <nav aria-label="Principal" className="hidden lg:block bg-primary-deep border-t border-white/10 sticky top-0 z-40">
-        <div className="container-page flex items-center justify-between gap-2 px-0 md:px-4 lg:px-8">
+        <div className="container-page flex items-center justify-between gap-2">
           <ul className="flex items-stretch">
             {mainNav.map((item) => (
               <li key={item.to}>
