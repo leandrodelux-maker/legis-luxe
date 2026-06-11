@@ -70,6 +70,7 @@ type MesaMember = {
   id: string;
   cargo: string;
   vereadores: {
+    id: string;
     nome: string;
     partido: string | null;
     foto_url: string | null;
@@ -131,7 +132,7 @@ function HomePage() {
     // Fetch Mesa Diretora
     supabase
       .from("mesa_diretora")
-      .select("id, cargo, vereadores(nome, partido, foto_url)")
+      .select("id, cargo, vereadores(id, nome, partido, foto_url)")
       .eq("ativo", true)
       .order("ordem", { ascending: true })
       .then(({ data }) => {
