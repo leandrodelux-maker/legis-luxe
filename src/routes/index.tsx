@@ -527,7 +527,7 @@ function HomePage() {
             </div>
           ) : (
             vereadores.map((v) => (
-              <Link key={v.id} to="/vereadores" className="group block text-center animate-[fade-up_0.5s_ease-out_both]">
+              <Link key={v.id} to={`/vereadores/${v.id}`} className="group block text-center animate-[fade-up_0.5s_ease-out_both]">
                 <div className="relative aspect-square rounded-full overflow-hidden border-2 border-transparent group-hover:border-gold transition-colors mx-auto mb-4 grayscale group-hover:grayscale-0 transition-all duration-300 bg-secondary/30 flex items-center justify-center">
                   {v.foto_url ? (
                     <img src={v.foto_url} alt={v.nome} className="h-full w-full object-cover" />
