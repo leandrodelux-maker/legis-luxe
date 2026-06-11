@@ -144,7 +144,7 @@ export function SiteHeader() {
 
       {/* BLUE NAV BAR */}
       <nav aria-label="Principal" className="hidden lg:block bg-primary-deep border-t border-white/10 sticky top-0 z-40">
-        <div className="container-page flex items-center justify-between gap-2 px-0 md:px-4 lg:px-8">
+        <div className="container-page flex items-center justify-between gap-2">
           <ul className="flex items-stretch">
             {mainNav.map((item) => (
               <li key={item.to}>
@@ -152,10 +152,10 @@ export function SiteHeader() {
                   to={item.to}
                   activeOptions={{ exact: item.to === "/" }}
                   className={cn(
-                    "relative inline-flex items-center gap-1.5 px-3 py-4 text-[12px] font-semibold tracking-wide text-white/85 hover:text-white hover:bg-white/5 transition-colors uppercase whitespace-nowrap"
+                    "relative inline-flex items-center gap-1.5 px-4 py-4 text-[12px] font-semibold tracking-wide text-white/85 hover:text-white hover:bg-white/5 transition-colors uppercase whitespace-nowrap first:pl-0"
                   )}
                   activeProps={{
-                    className: "text-white after:absolute after:left-3 after:right-3 after:bottom-0 after:h-[3px] after:bg-white",
+                    className: "text-white after:absolute after:left-4 after:right-4 after:bottom-0 after:h-[3px] after:bg-white first:after:left-0",
                   }}
                 >
                   {item.label}
