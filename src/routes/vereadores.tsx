@@ -183,20 +183,27 @@ function VereadoresPage() {
                       viewMode === "list" ? "w-full md:w-48 aspect-square md:aspect-auto" : "aspect-square"
                     }`}>
                       {v.foto_url ? (
-                        <img 
-                          src={v.foto_url} 
-                          alt={v.nome} 
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                          onError={(e) => {
-                            // Se a imagem falhar (403 ou 404), mostramos o fallback
-                            (e.target as HTMLImageElement).style.display = 'none';
-                            (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
-                          }}
-                        />
-                      ) : null}
-                      <div className={`w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/20 ${v.foto_url ? 'hidden' : ''}`}>
-                        <User className="w-20 h-20 text-primary/20" />
-                      </div>
+                        <div className="w-full h-full relative">
+                          <img 
+                            src={v.foto_url} 
+                            alt={v.nome} 
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                              const fallback = target.nextElementSibling as HTMLElement;
+                              if (fallback) fallback.classList.remove('hidden');
+                            }}
+                          />
+                          <div className="hidden w-full h-full absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/20">
+                            <User className="w-20 h-20 text-primary/20" />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/20">
+                          <User className="w-20 h-20 text-primary/20" />
+                        </div>
+                      )}
                       {v.partido && (
                         <div className="absolute top-4 left-4">
                           <Badge className="bg-white/90 backdrop-blur-sm text-primary border-none shadow-sm">
