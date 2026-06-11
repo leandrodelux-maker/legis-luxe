@@ -73,10 +73,17 @@ function VereadoresPage() {
     (v.partido?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false)
   );
 
+  // Ordenar vereadores para o ranking baseado em projetos (se disponível)
   const rankings = {
-    projetos: [...vereadores].slice(0, 3), // Simplificando rankings já que a tabela vereadores não tem stats
-    presenca: [...vereadores].slice(0, 3),
-    participacao: [...vereadores].slice(0, 3),
+    projetos: [...vereadores]
+      .sort((a, b) => ((b.stats as any)?.projetos || 0) - ((a.stats as any)?.projetos || 0))
+      .slice(0, 3),
+    presenca: [...vereadores]
+      .sort((a, b) => ((b.stats as any)?.presencas || 0) - ((a.stats as any)?.presencas || 0))
+      .slice(0, 3),
+    participacao: [...vereadores]
+      .sort((a, b) => ((b.stats as any)?.participacoes || 0) - ((a.stats as any)?.participacoes || 0))
+      .slice(0, 3),
   };
 
   return (

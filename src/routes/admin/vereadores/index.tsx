@@ -44,7 +44,7 @@ function AdminVereadores() {
       defaultValues={{ 
         ativo: true, 
         ordem: 0, 
-        redes_sociais: {}, 
+        redes_sociais: { instagram: "", facebook: "", twitter: "" }, 
         stats: { projetos: 0, presencas: 0, participacoes: 0 } 
       }}
       columns={[
