@@ -70,6 +70,7 @@ type MesaMember = {
   id: string;
   cargo: string;
   vereadores: {
+    id: string;
     nome: string;
     partido: string | null;
     foto_url: string | null;
@@ -131,7 +132,7 @@ function HomePage() {
     // Fetch Mesa Diretora
     supabase
       .from("mesa_diretora")
-      .select("id, cargo, vereadores(nome, partido, foto_url)")
+      .select("id, cargo, vereadores(id, nome, partido, foto_url)")
       .eq("ativo", true)
       .order("ordem", { ascending: true })
       .then(({ data }) => {
@@ -488,9 +489,11 @@ function HomePage() {
                         <span className="sr-only">Mensagem</span>
                         <MessageSquare className="h-3.5 w-3.5" />
                       </Button>
-                      <Button size="sm" variant="outline" className="h-8 w-8 p-0 rounded-full">
-                        <span className="sr-only">Perfil</span>
-                        <Users className="h-3.5 w-3.5" />
+                      <Button size="sm" variant="outline" asChild className="h-8 w-8 p-0 rounded-full">
+                        <Link to={`/vereadores/${member.vereadores.id}`}>
+                          <span className="sr-only">Perfil</span>
+                          <Users className="h-3.5 w-3.5" />
+                        </Link>
                       </Button>
                     </div>
                   </div>
@@ -527,7 +530,7 @@ function HomePage() {
             </div>
           ) : (
             vereadores.map((v) => (
-              <Link key={v.id} to="/vereadores" className="group block text-center animate-[fade-up_0.5s_ease-out_both]">
+              <Link key={v.id} to={`/vereadores/${v.id}`} className="group block text-center animate-[fade-up_0.5s_ease-out_both]">
                 <div className="relative aspect-square rounded-full overflow-hidden border-2 border-transparent group-hover:border-gold transition-colors mx-auto mb-4 grayscale group-hover:grayscale-0 transition-all duration-300 bg-secondary/30 flex items-center justify-center">
                   {v.foto_url ? (
                     <img src={v.foto_url} alt={v.nome} className="h-full w-full object-cover" />
