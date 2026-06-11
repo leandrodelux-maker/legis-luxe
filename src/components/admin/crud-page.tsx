@@ -215,19 +215,41 @@ export function CrudPage<T extends { id: string }>({
                         onChange={async (e) => {
                           const file = e.target.files?.[0];
                           if (!file) return;
+
+                          // Validação de tipo
+                          const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+                          if (!allowedTypes.includes(file.type)) {
+                            toast.error("Formato de imagem inválido. Use JPG, PNG ou WebP.");
+                            return;
+                          }
+
+                          // Validação de tamanho (máximo 2MB)
+                          const maxSize = 2 * 1024 * 1024;
+                          if (file.size > maxSize) {
+                            toast.error("Imagem muito grande. O tamanho máximo permitido é 2MB.");
+                            return;
+                          }
                           
                           setSaving(true);
-                          const fileExt = file.name.split('.').pop();
-                          // Usar um nome de arquivo mais limpo e timestamp para evitar cache
-                          const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
+                          const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+                          
+                          // Normalização do nome do arquivo (apenas caracteres alfanuméricos e hífens)
+                          const safeFileName = file.name
+                            .split('.')[0]
+                            .normalize('NFD')
+                            .replace(/[\u0300-\u036f]/g, '')
+                            .replace(/[^a-z0-9]/gi, '-')
+                            .toLowerCase();
+
+                          const fileName = `${Date.now()}-${safeFileName}.${fileExt}`;
                           const filePath = fileName;
 
-                          console.log("Iniciando upload para o bucket 'vereadores'...", filePath);
+                          console.log(`Iniciando upload para o bucket '${table}'...`, filePath);
 
                           const { data, error: uploadError } = await supabase.storage
                             .from('vereadores')
                             .upload(filePath, file, {
-                              cacheControl: '0', // Desabilitar cache para garantir atualização imediata
+                              cacheControl: '3600',
                               upsert: true
                             });
 
@@ -244,16 +266,13 @@ export function CrudPage<T extends { id: string }>({
                             .from('vereadores')
                             .getPublicUrl(filePath);
 
-                          // Garantir que a URL não tenha parâmetros extras que possam quebrar a exibição, 
-                          // mas adicionar um timestamp para evitar cache do navegador se necessário
-                          const finalUrl = `${publicUrl}?t=${Date.now()}`;
-                          
-                          console.log("URL final gerada:", finalUrl);
-
-                          setForm((prev) => ({ ...prev, [f.name]: finalUrl }));
+                          // Salvar apenas a URL pública sem parâmetros de timestamp para o banco de dados
+                          // O timestamp é usado apenas no preview para forçar atualização visual
+                          setForm((prev) => ({ ...prev, [f.name]: publicUrl }));
                           setSaving(false);
                           toast.success("Foto enviada com sucesso!");
                         }}
+
                       />
                       {form[f.name] ? (
                         <div className="mt-2 relative w-20 h-20 rounded-lg overflow-hidden border border-slate-200">
