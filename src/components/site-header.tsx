@@ -152,7 +152,7 @@ export function SiteHeader() {
                   to={item.to}
                   activeOptions={{ exact: item.to === "/" }}
                   className={cn(
-                    "relative inline-flex items-center gap-1.5 px-3 py-4 text-[12px] font-semibold tracking-wide text-white/85 hover:text-white hover:bg-white/5 transition-colors uppercase whitespace-nowrap"
+                    "relative inline-flex items-center gap-1.5 px-4 py-4 text-[12px] font-semibold tracking-wide text-white/85 hover:text-white hover:bg-white/5 transition-colors uppercase whitespace-nowrap first:pl-0"
                   )}
                   activeProps={{
                     className: "text-white after:absolute after:left-3 after:right-3 after:bottom-0 after:h-[3px] after:bg-white",
