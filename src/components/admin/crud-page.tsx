@@ -128,15 +128,24 @@ export function CrudPage<T extends { id: string }>({
       if (v === "" || v === undefined) v = null;
       payload[f.name] = v;
     });
-    const op = editing
-      ? (supabase as any).from(table).update(payload).eq("id", editing.id)
-      : (supabase as any).from(table).insert(payload);
-    const { error } = await op;
-    setSaving(false);
-    if (error) return toast.error(error.message);
-    toast.success(editing ? "Atualizado" : "Criado");
-    setOpen(false);
-    load();
+
+    try {
+      const op = editing
+        ? (supabase as any).from(table).update(payload).eq("id", editing.id)
+        : (supabase as any).from(table).insert(payload);
+      
+      const { error } = await op;
+      if (error) throw error;
+
+      toast.success(editing ? "Atualizado com sucesso" : "Criado com sucesso");
+      setOpen(false);
+      load();
+    } catch (error: any) {
+      console.error("Erro ao salvar:", error);
+      toast.error("Erro ao salvar: " + (error.message || "Erro desconhecido"));
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
