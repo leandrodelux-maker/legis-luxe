@@ -227,8 +227,10 @@ function VereadoresPage() {
                       </div>
 
                       <div className="mt-auto flex items-center justify-end">
-                        <Button variant="link" className="p-0 h-auto font-bold text-sm group-hover:text-primary">
-                          Perfil Completo <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                        <Button variant="link" asChild className="p-0 h-auto font-bold text-sm group-hover:text-primary">
+                          <Link to={`/vereadores/${v.id}`}>
+                            Perfil Completo <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                          </Link>
                         </Button>
                       </div>
                     </div>
