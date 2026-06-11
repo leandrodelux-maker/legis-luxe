@@ -209,10 +209,13 @@ export function CrudPage<T extends { id: string }>({
                           
                           setSaving(true);
                           const fileExt = file.name.split('.').pop();
-                          const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
-                          const filePath = `${fileName}`; // Removendo o prefixo da tabela para evitar subpastas confusas se não necessário
+                          // Usar um nome de arquivo mais limpo e timestamp para evitar cache
+                          const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
+                          const filePath = fileName;
 
-                          const { error: uploadError } = await supabase.storage
+                          console.log("Iniciando upload para o bucket 'vereadores'...", filePath);
+
+                          const { data, error: uploadError } = await supabase.storage
                             .from('vereadores')
                             .upload(filePath, file, {
                               cacheControl: '3600',
@@ -220,16 +223,21 @@ export function CrudPage<T extends { id: string }>({
                             });
 
                           if (uploadError) {
+                            console.error("Erro no upload:", uploadError);
                             toast.error("Erro no upload: " + uploadError.message);
                             setSaving(false);
                             return;
                           }
 
+                          console.log("Upload concluído com sucesso:", data);
+
                           const { data: { publicUrl } } = supabase.storage
                             .from('vereadores')
                             .getPublicUrl(filePath);
 
-                          setForm({ ...form, [f.name]: publicUrl });
+                          console.log("URL pública gerada:", publicUrl);
+
+                          setForm((prev) => ({ ...prev, [f.name]: publicUrl }));
                           setSaving(false);
                           toast.success("Foto enviada com sucesso!");
                         }}
