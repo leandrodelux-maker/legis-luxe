@@ -227,7 +227,7 @@ export function CrudPage<T extends { id: string }>({
                           const { data, error: uploadError } = await supabase.storage
                             .from('vereadores')
                             .upload(filePath, file, {
-                              cacheControl: '3600',
+                              cacheControl: '0', // Desabilitar cache para garantir atualização imediata
                               upsert: true
                             });
 
@@ -244,9 +244,13 @@ export function CrudPage<T extends { id: string }>({
                             .from('vereadores')
                             .getPublicUrl(filePath);
 
-                          console.log("URL pública gerada:", publicUrl);
+                          // Garantir que a URL não tenha parâmetros extras que possam quebrar a exibição, 
+                          // mas adicionar um timestamp para evitar cache do navegador se necessário
+                          const finalUrl = `${publicUrl}?t=${Date.now()}`;
+                          
+                          console.log("URL final gerada:", finalUrl);
 
-                          setForm((prev) => ({ ...prev, [f.name]: publicUrl }));
+                          setForm((prev) => ({ ...prev, [f.name]: finalUrl }));
                           setSaving(false);
                           toast.success("Foto enviada com sucesso!");
                         }}
