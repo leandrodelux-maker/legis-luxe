@@ -195,16 +195,14 @@ function VereadoresPage() {
                             src={v.foto_url} 
                             alt={v.nome} 
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            loading="eager"
                             onError={(e) => {
                               const target = e.target as HTMLImageElement;
-                              target.style.display = 'none';
-                              const fallback = target.nextElementSibling as HTMLElement;
-                              if (fallback) fallback.classList.remove('hidden');
+                              console.error("Erro ao carregar imagem:", v.foto_url);
+                              // Fallback visual
+                              target.src = "https://via.placeholder.com/400x400?text=Sem+Foto";
                             }}
                           />
-                          <div className="hidden w-full h-full absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/20">
-                            <User className="w-20 h-20 text-primary/20" />
-                          </div>
                         </div>
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/20">
