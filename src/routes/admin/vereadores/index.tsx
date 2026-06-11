@@ -12,6 +12,7 @@ type Vereador = {
   id: string;
   nome: string;
   partido: string | null;
+  foto_url: string | null;
   cargo: string | null;
   email: string | null;
   telefone: string | null;
