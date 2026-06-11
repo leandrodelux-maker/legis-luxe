@@ -202,6 +202,7 @@ export function CrudPage<T extends { id: string }>({
                       <Input
                         id={f.name}
                         type="file"
+                        accept="image/*"
                         onChange={async (e) => {
                           const file = e.target.files?.[0];
                           if (!file) return;
@@ -211,7 +212,7 @@ export function CrudPage<T extends { id: string }>({
                           const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
                           const filePath = `${table}/${fileName}`;
 
-                          const { error: uploadError, data } = await supabase.storage
+                          const { error: uploadError } = await supabase.storage
                             .from('documentos')
                             .upload(filePath, file);
 
@@ -227,13 +228,13 @@ export function CrudPage<T extends { id: string }>({
 
                           setForm({ ...form, [f.name]: publicUrl });
                           setSaving(false);
-                          toast.success("Documento enviado com sucesso!");
+                          toast.success("Foto enviada com sucesso!");
                         }}
                       />
                       {form[f.name] ? (
-                        <p className="text-xs text-emerald-600 font-medium">
-                          ✓ Arquivo carregado
-                        </p>
+                        <div className="mt-2 relative w-20 h-20 rounded-lg overflow-hidden border border-slate-200">
+                          <img src={String(form[f.name])} alt="Preview" className="w-full h-full object-cover" />
+                        </div>
                       ) : null}
                     </div>
                   ) : f.type === "custom" ? (

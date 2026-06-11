@@ -47,6 +47,19 @@ function AdminVereadores() {
         stats: { projetos: 0, presencas: 0, participacoes: 0 } 
       }}
       columns={[
+        { 
+          key: "foto_url", 
+          label: "Foto",
+          render: (r) => (
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-slate-100 border border-slate-200">
+              {r.foto_url ? (
+                <img src={r.foto_url} alt={r.nome} className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-slate-400">?</div>
+              )}
+            </div>
+          )
+        },
         { key: "nome", label: "Nome" },
         { key: "partido", label: "Partido" },
         { key: "cargo", label: "Cargo" },
