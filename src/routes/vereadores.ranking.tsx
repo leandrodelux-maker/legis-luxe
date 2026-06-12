@@ -126,7 +126,7 @@ function RankingPage() {
                         >
                           {i + 1}
                         </span>
-                        <VereadorAvatar nome={v.nome} foto={v.foto_url} size={48} />
+                        <VereadorAvatar nome={v.nome} foto={v.foto_url} partido={v.partido} size={48} />
                         <div className="flex-1 min-w-0">
                           <Link
                             to="/vereadores/$id"
