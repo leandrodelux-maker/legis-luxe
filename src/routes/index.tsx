@@ -536,6 +536,7 @@ function HomePage() {
                   <VereadorAvatar
                     nome={v.nome}
                     foto={v.foto_url}
+                    partido={v.partido}
                     size={112}
                     className="border-2 border-transparent group-hover:border-gold transition-colors grayscale group-hover:grayscale-0"
                   />

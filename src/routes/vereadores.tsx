@@ -193,8 +193,10 @@ function VereadoresPage() {
                       <VereadorAvatar
                         nome={v.nome}
                         foto={v.foto_url}
+                        partido={v.partido}
                         size={viewMode === "list" ? 192 : 320}
                         rounded="lg"
+                        showLabelOnError
                         className="!rounded-none w-full h-full"
                       />
                       {v.partido && (

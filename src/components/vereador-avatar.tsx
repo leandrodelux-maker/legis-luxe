@@ -1,6 +1,9 @@
-import { useState } from "react";
-import { User } from "lucide-react";
+import { useEffect, useState } from "react";
+import { User, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useSupabaseAuth } from "@/hooks/use-supabase-auth";
+
+const PLACEHOLDER = "/placeholder-vereador.webp";
 
 function initials(nome: string) {
   return nome
@@ -14,27 +17,46 @@ function initials(nome: string) {
 type Props = {
   nome: string;
   foto?: string | null;
+  partido?: string | null;
   size?: number;
   className?: string;
   rounded?: "full" | "lg" | "xl" | "2xl";
+  /** Mostra rótulo com nome + partido sobre o avatar quando há erro */
+  showLabelOnError?: boolean;
 };
 
 /**
- * Avatar institucional para vereadores, com fallback em cascata:
- * 1) foto (signed/public URL)
- * 2) iniciais do nome
- * 3) ícone genérico (User)
+ * Avatar institucional de vereador com fallback em cascata:
+ * 1) foto remota
+ * 2) placeholder institucional (/placeholder-vereador.webp)
+ * 3) iniciais do nome
+ * 4) ícone genérico
  *
- * Erros de carregamento são reportados em console.error.
+ * - Loga toda falha de carregamento (console.error + window event "vereador-image-error")
+ * - Exibe alerta visual de erro apenas para usuários admin
+ * - Quando `showLabelOnError`, mostra nome + partido sobre o placeholder
  */
 export function VereadorAvatar({
   nome,
   foto,
+  partido,
   size = 64,
   className,
   rounded = "full",
+  showLabelOnError = false,
 }: Props) {
-  const [errored, setErrored] = useState(false);
+  const { isAdmin } = useSupabaseAuth();
+  const [state, setState] = useState<"loading" | "ok" | "placeholder" | "initials">(
+    foto ? "loading" : "initials",
+  );
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  // Reset quando a foto muda
+  useEffect(() => {
+    setState(foto ? "loading" : "initials");
+    setErrorMsg(null);
+  }, [foto]);
+
   const ini = initials(nome || "?");
   const radius = {
     full: "rounded-full",
@@ -43,7 +65,20 @@ export function VereadorAvatar({
     "2xl": "rounded-2xl",
   }[rounded];
 
-  const showImage = foto && !errored;
+  const reportError = (stage: string, url: string) => {
+    const msg = `[VereadorAvatar] Falha ao carregar (${stage}) — ${nome}: ${url}`;
+    console.error(msg);
+    setErrorMsg(`Imagem indisponível (${stage})`);
+    try {
+      window.dispatchEvent(
+        new CustomEvent("vereador-image-error", {
+          detail: { nome, partido, url, stage, at: new Date().toISOString() },
+        }),
+      );
+    } catch {
+      /* ignore */
+    }
+  };
 
   return (
     <div
@@ -54,27 +89,64 @@ export function VereadorAvatar({
       )}
       style={{ width: size, height: size }}
       aria-label={nome}
+      title={nome}
     >
-      {showImage ? (
+      {(state === "loading" || state === "ok") && foto && (
         <img
-          src={foto!}
+          src={foto}
           alt={nome}
           loading="lazy"
+          width={size}
+          height={size}
           className="w-full h-full object-cover"
-          onError={() => {
-            console.error("[VereadorAvatar] Falha ao carregar imagem", { nome, foto });
-            setErrored(true);
+          onLoad={() => setState("ok")}
+          onError={(e) => {
+            reportError("remote", foto);
+            // troca para o placeholder local conforme solicitado
+            e.currentTarget.onerror = () => {
+              reportError("placeholder", PLACEHOLDER);
+              setState("initials");
+            };
+            e.currentTarget.src = PLACEHOLDER;
+            setState("placeholder");
           }}
         />
-      ) : ini ? (
+      )}
+
+      {state === "initials" &&
+        (ini ? (
+          <span
+            className="font-display font-bold text-primary"
+            style={{ fontSize: Math.max(12, size * 0.36) }}
+          >
+            {ini}
+          </span>
+        ) : (
+          <User
+            className="text-primary/40"
+            style={{ width: size * 0.5, height: size * 0.5 }}
+          />
+        ))}
+
+      {/* Rótulo sobreposto quando há erro e o componente foi pedido para mostrá-lo */}
+      {showLabelOnError && state !== "ok" && state !== "loading" && (
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-2 py-1.5 text-white text-center">
+          <p className="text-[10px] font-semibold leading-tight line-clamp-1">{nome}</p>
+          {partido && (
+            <p className="text-[9px] uppercase tracking-widest opacity-80">{partido}</p>
+          )}
+        </div>
+      )}
+
+      {/* Indicador de erro APENAS para administradores */}
+      {isAdmin && errorMsg && (
         <span
-          className="font-display font-bold text-primary"
-          style={{ fontSize: Math.max(12, size * 0.36) }}
+          className="absolute top-1 right-1 bg-red-500/95 text-white rounded-full p-1 shadow-md"
+          title={errorMsg}
+          aria-label={errorMsg}
         >
-          {ini}
+          <AlertCircle className="w-3 h-3" />
         </span>
-      ) : (
-        <User className="text-primary/40" style={{ width: size * 0.5, height: size * 0.5 }} />
       )}
     </div>
   );

@@ -95,6 +95,7 @@ function VereadorDetailPage() {
             <VereadorAvatar
               nome={vereador.nome}
               foto={vereador.foto_url}
+              partido={vereador.partido}
               size={256}
               rounded="2xl"
               className="border-4 border-white/20 shadow-2xl"
