@@ -34,6 +34,8 @@ import { Route as AdminConfiguracoesSiteIndexRouteImport } from './routes/admin/
 import { Route as AdminConfigIndexRouteImport } from './routes/admin/config/index'
 import { Route as AdminComunicacaoIndexRouteImport } from './routes/admin/comunicacao/index'
 import { Route as AdminAcessoRapidoIndexRouteImport } from './routes/admin/acesso-rapido/index'
+import { Route as AdminVereadoresMandatosRouteImport } from './routes/admin/vereadores/mandatos'
+import { Route as AdminVereadoresGaleriaRouteImport } from './routes/admin/vereadores/galeria'
 import { Route as AdminConfiguracoesSeoRouteImport } from './routes/admin/configuracoes/seo'
 import { Route as AdminConfiguracoesMenuRouteImport } from './routes/admin/configuracoes/menu'
 import { Route as AdminConfiguracoesLgpdRouteImport } from './routes/admin/configuracoes/lgpd'
@@ -168,6 +170,16 @@ const AdminAcessoRapidoIndexRoute = AdminAcessoRapidoIndexRouteImport.update({
   path: '/acesso-rapido/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminVereadoresMandatosRoute = AdminVereadoresMandatosRouteImport.update({
+  id: '/vereadores/mandatos',
+  path: '/vereadores/mandatos',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminVereadoresGaleriaRoute = AdminVereadoresGaleriaRouteImport.update({
+  id: '/vereadores/galeria',
+  path: '/vereadores/galeria',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminConfiguracoesSeoRoute = AdminConfiguracoesSeoRouteImport.update({
   id: '/configuracoes/seo',
   path: '/configuracoes/seo',
@@ -229,6 +241,8 @@ export interface FileRoutesByFullPath {
   '/admin/configuracoes/lgpd': typeof AdminConfiguracoesLgpdRoute
   '/admin/configuracoes/menu': typeof AdminConfiguracoesMenuRoute
   '/admin/configuracoes/seo': typeof AdminConfiguracoesSeoRoute
+  '/admin/vereadores/galeria': typeof AdminVereadoresGaleriaRoute
+  '/admin/vereadores/mandatos': typeof AdminVereadoresMandatosRoute
   '/admin/acesso-rapido/': typeof AdminAcessoRapidoIndexRoute
   '/admin/comunicacao/': typeof AdminComunicacaoIndexRoute
   '/admin/config/': typeof AdminConfigIndexRoute
@@ -261,6 +275,8 @@ export interface FileRoutesByTo {
   '/admin/configuracoes/lgpd': typeof AdminConfiguracoesLgpdRoute
   '/admin/configuracoes/menu': typeof AdminConfiguracoesMenuRoute
   '/admin/configuracoes/seo': typeof AdminConfiguracoesSeoRoute
+  '/admin/vereadores/galeria': typeof AdminVereadoresGaleriaRoute
+  '/admin/vereadores/mandatos': typeof AdminVereadoresMandatosRoute
   '/admin/acesso-rapido': typeof AdminAcessoRapidoIndexRoute
   '/admin/comunicacao': typeof AdminComunicacaoIndexRoute
   '/admin/config': typeof AdminConfigIndexRoute
@@ -296,6 +312,8 @@ export interface FileRoutesById {
   '/admin/configuracoes/lgpd': typeof AdminConfiguracoesLgpdRoute
   '/admin/configuracoes/menu': typeof AdminConfiguracoesMenuRoute
   '/admin/configuracoes/seo': typeof AdminConfiguracoesSeoRoute
+  '/admin/vereadores/galeria': typeof AdminVereadoresGaleriaRoute
+  '/admin/vereadores/mandatos': typeof AdminVereadoresMandatosRoute
   '/admin/acesso-rapido/': typeof AdminAcessoRapidoIndexRoute
   '/admin/comunicacao/': typeof AdminComunicacaoIndexRoute
   '/admin/config/': typeof AdminConfigIndexRoute
@@ -332,6 +350,8 @@ export interface FileRouteTypes {
     | '/admin/configuracoes/lgpd'
     | '/admin/configuracoes/menu'
     | '/admin/configuracoes/seo'
+    | '/admin/vereadores/galeria'
+    | '/admin/vereadores/mandatos'
     | '/admin/acesso-rapido/'
     | '/admin/comunicacao/'
     | '/admin/config/'
@@ -364,6 +384,8 @@ export interface FileRouteTypes {
     | '/admin/configuracoes/lgpd'
     | '/admin/configuracoes/menu'
     | '/admin/configuracoes/seo'
+    | '/admin/vereadores/galeria'
+    | '/admin/vereadores/mandatos'
     | '/admin/acesso-rapido'
     | '/admin/comunicacao'
     | '/admin/config'
@@ -398,6 +420,8 @@ export interface FileRouteTypes {
     | '/admin/configuracoes/lgpd'
     | '/admin/configuracoes/menu'
     | '/admin/configuracoes/seo'
+    | '/admin/vereadores/galeria'
+    | '/admin/vereadores/mandatos'
     | '/admin/acesso-rapido/'
     | '/admin/comunicacao/'
     | '/admin/config/'
@@ -599,6 +623,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAcessoRapidoIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/vereadores/mandatos': {
+      id: '/admin/vereadores/mandatos'
+      path: '/vereadores/mandatos'
+      fullPath: '/admin/vereadores/mandatos'
+      preLoaderRoute: typeof AdminVereadoresMandatosRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/vereadores/galeria': {
+      id: '/admin/vereadores/galeria'
+      path: '/vereadores/galeria'
+      fullPath: '/admin/vereadores/galeria'
+      preLoaderRoute: typeof AdminVereadoresGaleriaRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/configuracoes/seo': {
       id: '/admin/configuracoes/seo'
       path: '/configuracoes/seo'
@@ -662,6 +700,8 @@ interface AdminRouteChildren {
   AdminConfiguracoesLgpdRoute: typeof AdminConfiguracoesLgpdRoute
   AdminConfiguracoesMenuRoute: typeof AdminConfiguracoesMenuRoute
   AdminConfiguracoesSeoRoute: typeof AdminConfiguracoesSeoRoute
+  AdminVereadoresGaleriaRoute: typeof AdminVereadoresGaleriaRoute
+  AdminVereadoresMandatosRoute: typeof AdminVereadoresMandatosRoute
   AdminAcessoRapidoIndexRoute: typeof AdminAcessoRapidoIndexRoute
   AdminComunicacaoIndexRoute: typeof AdminComunicacaoIndexRoute
   AdminConfigIndexRoute: typeof AdminConfigIndexRoute
@@ -684,6 +724,8 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminConfiguracoesLgpdRoute: AdminConfiguracoesLgpdRoute,
   AdminConfiguracoesMenuRoute: AdminConfiguracoesMenuRoute,
   AdminConfiguracoesSeoRoute: AdminConfiguracoesSeoRoute,
+  AdminVereadoresGaleriaRoute: AdminVereadoresGaleriaRoute,
+  AdminVereadoresMandatosRoute: AdminVereadoresMandatosRoute,
   AdminAcessoRapidoIndexRoute: AdminAcessoRapidoIndexRoute,
   AdminComunicacaoIndexRoute: AdminComunicacaoIndexRoute,
   AdminConfigIndexRoute: AdminConfigIndexRoute,
@@ -737,3 +779,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
