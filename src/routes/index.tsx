@@ -558,8 +558,8 @@ function VereadorCard({ v, delay }: { v: Vereador; delay: number }) {
           foto={v.foto_url}
           partido={v.partido}
           size={400}
-          rounded="none"
-          className="!h-full !w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          rounded="lg"
+          className="!h-full !w-full !rounded-none object-cover transition-transform duration-700 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-primary-deep via-primary-deep/30 to-transparent opacity-90" />
 
@@ -584,7 +584,7 @@ function VereadorCard({ v, delay }: { v: Vereador; delay: number }) {
                 className="h-8 w-8 rounded-full bg-white/15 hover:bg-gold hover:text-gold-foreground flex items-center justify-center transition-colors"
                 aria-label="Instagram"
               >
-                <Instagram className="h-3.5 w-3.5" />
+                <InstagramIcon className="h-3.5 w-3.5" />
               </a>
             )}
             {facebook && (
@@ -595,7 +595,7 @@ function VereadorCard({ v, delay }: { v: Vereador; delay: number }) {
                 className="h-8 w-8 rounded-full bg-white/15 hover:bg-gold hover:text-gold-foreground flex items-center justify-center transition-colors"
                 aria-label="Facebook"
               >
-                <Facebook className="h-3.5 w-3.5" />
+                <FacebookIcon className="h-3.5 w-3.5" />
               </a>
             )}
             {twitter && (
@@ -606,7 +606,7 @@ function VereadorCard({ v, delay }: { v: Vereador; delay: number }) {
                 className="h-8 w-8 rounded-full bg-white/15 hover:bg-gold hover:text-gold-foreground flex items-center justify-center transition-colors"
                 aria-label="Twitter"
               >
-                <Twitter className="h-3.5 w-3.5" />
+                <TwitterIcon className="h-3.5 w-3.5" />
               </a>
             )}
             {v.email && (
