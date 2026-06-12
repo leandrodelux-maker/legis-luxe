@@ -23,6 +23,10 @@ type Settings = {
   contact_email: string | null;
   contact_hours: string | null;
   live_broadcast_url: string | null;
+  header_logo_url: string | null;
+  header_logo_height: number;
+  footer_logo_url: string | null;
+  footer_logo_height: number;
 };
 
 function SiteSettingsAdmin() {
@@ -30,7 +34,10 @@ function SiteSettingsAdmin() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState<"header" | "footer" | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const headerLogoRef = useRef<HTMLInputElement>(null);
+  const footerLogoRef = useRef<HTMLInputElement>(null);
 
   const load = async () => {
     setLoading(true);
@@ -60,6 +67,10 @@ function SiteSettingsAdmin() {
         contact_email: settings.contact_email,
         contact_hours: settings.contact_hours,
         live_broadcast_url: settings.live_broadcast_url,
+        header_logo_url: settings.header_logo_url,
+        header_logo_height: settings.header_logo_height,
+        footer_logo_url: settings.footer_logo_url,
+        footer_logo_height: settings.footer_logo_height,
       })
       .eq("id", settings.id);
     setSaving(false);
@@ -85,6 +96,31 @@ function SiteSettingsAdmin() {
     setSettings({ ...settings, hero_media_url: data.publicUrl, hero_media_type: type });
     setUploading(false);
     toast.success("Mídia enviada. Clique em Salvar para aplicar.");
+  };
+
+  const handleLogoUpload = async (file: File, type: "header" | "footer") => {
+    if (!settings) return;
+    setUploadingLogo(type);
+    const ext = file.name.split(".").pop();
+    const path = `logos/${type}-${Date.now()}.${ext}`;
+    const { error: upErr } = await supabase.storage.from("site-media").upload(path, file, {
+      upsert: false,
+      contentType: file.type,
+    });
+    
+    if (upErr) {
+      setUploadingLogo(null);
+      return toast.error(upErr.message);
+    }
+    
+    const { data } = supabase.storage.from("site-media").getPublicUrl(path);
+    if (type === "header") {
+      setSettings({ ...settings, header_logo_url: data.publicUrl });
+    } else {
+      setSettings({ ...settings, footer_logo_url: data.publicUrl });
+    }
+    setUploadingLogo(null);
+    toast.success(`Logotipo do ${type === "header" ? "cabeçalho" : "rodapé"} enviado.`);
   };
 
   if (loading || !settings) {
@@ -172,6 +208,162 @@ function SiteSettingsAdmin() {
             <option value="image">Imagem</option>
             <option value="video">Vídeo</option>
           </select>
+        </div>
+      </section>
+
+      {/* LOGOTIPOS */}
+      <section className="bg-white rounded-2xl border border-slate-200 p-6 space-y-6">
+        <div>
+          <h3 className="font-display font-bold text-lg text-slate-900">Logotipos do Site</h3>
+          <p className="text-sm text-slate-500">Personalize a identidade visual no cabeçalho e rodapé.</p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Header Logo */}
+          <div className="space-y-4 p-4 border rounded-xl bg-slate-50/50">
+            <Label className="text-base font-bold">Logotipo do Cabeçalho</Label>
+            
+            <div className="h-32 flex items-center justify-center border-2 border-dashed rounded-lg bg-white overflow-hidden">
+              {settings.header_logo_url ? (
+                <div className="relative group w-full h-full flex items-center justify-center p-4">
+                  <img 
+                    src={settings.header_logo_url} 
+                    alt="Logo Header" 
+                    className="max-h-full max-w-full object-contain"
+                  />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                    <Button 
+                      type="button" 
+                      variant="destructive" 
+                      size="sm"
+                      onClick={() => setSettings({ ...settings, header_logo_url: null })}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center p-4">
+                  <ImageIcon className="w-8 h-8 mx-auto text-slate-300 mb-2" />
+                  <p className="text-xs text-slate-400">Sem logotipo</p>
+                </div>
+              )}
+            </div>
+
+            <input
+              ref={headerLogoRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) handleLogoUpload(f, "header");
+                e.target.value = "";
+              }}
+            />
+
+            <div className="space-y-3">
+              <Button 
+                type="button" 
+                variant="outline" 
+                className="w-full"
+                onClick={() => headerLogoRef.current?.click()}
+                disabled={uploadingLogo === "header"}
+              >
+                {uploadingLogo === "header" ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Upload className="w-4 h-4 mr-2" />}
+                {settings.header_logo_url ? "Trocar Logotipo" : "Enviar Logotipo"}
+              </Button>
+
+              <div>
+                <Label className="text-xs">Altura do Logotipo (px)</Label>
+                <div className="flex items-center gap-4">
+                  <Input 
+                    type="range" 
+                    min="30" 
+                    max="120" 
+                    step="1"
+                    value={settings.header_logo_height}
+                    onChange={(e) => setSettings({ ...settings, header_logo_height: parseInt(e.target.value) })}
+                    className="flex-1"
+                  />
+                  <span className="text-sm font-mono w-10">{settings.header_logo_height}px</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer Logo */}
+          <div className="space-y-4 p-4 border rounded-xl bg-slate-50/50">
+            <Label className="text-base font-bold">Logotipo do Rodapé</Label>
+            
+            <div className="h-32 flex items-center justify-center border-2 border-dashed rounded-lg bg-white overflow-hidden">
+              {settings.footer_logo_url ? (
+                <div className="relative group w-full h-full flex items-center justify-center p-4">
+                  <img 
+                    src={settings.footer_logo_url} 
+                    alt="Logo Footer" 
+                    className="max-h-full max-w-full object-contain"
+                  />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                    <Button 
+                      type="button" 
+                      variant="destructive" 
+                      size="sm"
+                      onClick={() => setSettings({ ...settings, footer_logo_url: null })}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center p-4">
+                  <ImageIcon className="w-8 h-8 mx-auto text-slate-300 mb-2" />
+                  <p className="text-xs text-slate-400">Sem logotipo</p>
+                </div>
+              )}
+            </div>
+
+            <input
+              ref={footerLogoRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) handleLogoUpload(f, "footer");
+                e.target.value = "";
+              }}
+            />
+
+            <div className="space-y-3">
+              <Button 
+                type="button" 
+                variant="outline" 
+                className="w-full"
+                onClick={() => footerLogoRef.current?.click()}
+                disabled={uploadingLogo === "footer"}
+              >
+                {uploadingLogo === "footer" ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Upload className="w-4 h-4 mr-2" />}
+                {settings.footer_logo_url ? "Trocar Logotipo" : "Enviar Logotipo"}
+              </Button>
+
+              <div>
+                <Label className="text-xs">Altura do Logotipo (px)</Label>
+                <div className="flex items-center gap-4">
+                  <Input 
+                    type="range" 
+                    min="20" 
+                    max="100" 
+                    step="1"
+                    value={settings.footer_logo_height}
+                    onChange={(e) => setSettings({ ...settings, footer_logo_height: parseInt(e.target.value) })}
+                    className="flex-1"
+                  />
+                  <span className="text-sm font-mono w-10">{settings.footer_logo_height}px</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

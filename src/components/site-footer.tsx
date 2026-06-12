@@ -1,21 +1,51 @@
 import { Link } from "@tanstack/react-router";
 import { Landmark, Mail, MapPin, Phone, MessageSquare as FacebookIcon, Camera as InstagramIcon, PlayCircle as YoutubeIcon } from "lucide-react";
 
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+
+type SiteSettings = {
+  footer_logo_url: string | null;
+  footer_logo_height: number;
+};
+
 export function SiteFooter() {
+  const [settings, setSettings] = useState<SiteSettings | null>(null);
+
+  useEffect(() => {
+    supabase
+      .from("site_settings")
+      .select("footer_logo_url, footer_logo_height")
+      .limit(1)
+      .maybeSingle()
+      .then(({ data }) => setSettings(data ?? null));
+  }, []);
+
   return (
     <footer className="mt-24 border-t border-border bg-primary-deep text-primary-foreground">
       <div className="container-page py-14 grid gap-10 md:grid-cols-4">
         <div className="md:col-span-1">
           <div className="flex items-center gap-3">
-            <div className="grid h-11 w-11 place-items-center rounded-md bg-white/10 ring-1 ring-gold/40">
-              <Landmark className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="font-display text-lg font-semibold">Câmara Municipal</div>
-              <div className="text-[10px] uppercase tracking-[0.18em] text-primary-foreground/70">
-                Poder Legislativo
-              </div>
-            </div>
+            {settings?.footer_logo_url ? (
+              <img 
+                src={settings.footer_logo_url} 
+                alt="Logo Câmara Municipal" 
+                style={{ height: `${settings.footer_logo_height}px` }}
+                className="w-auto object-contain"
+              />
+            ) : (
+              <>
+                <div className="grid h-11 w-11 place-items-center rounded-md bg-white/10 ring-1 ring-gold/40">
+                  <Landmark className="h-5 w-5" />
+                </div>
+                <div>
+                  <div className="font-display text-lg font-semibold">Câmara Municipal</div>
+                  <div className="text-[10px] uppercase tracking-[0.18em] text-primary-foreground/70">
+                    Poder Legislativo
+                  </div>
+                </div>
+              </>
+            )}
           </div>
           <p className="mt-4 text-sm text-primary-foreground/75 leading-relaxed">
             O portal oficial do legislativo municipal. Transparência, participação e cidadania.

@@ -57,7 +57,7 @@ const menuItems = [
   { label: "Documentos e Atas", icon: FileText, path: "/admin/documentos", roles: ["admin", "legislativo"] },
   { label: "Logs e Histórico", icon: History, path: "/admin/logs", roles: ["admin", "controle"] },
   { label: "Configurações do Site", icon: Globe, path: "/admin/configuracoes-site", roles: ["admin"] },
-  { label: "Configurações", icon: Settings, path: "/admin/config", roles: ["admin"] },
+  { label: "Configurações Globais", icon: Settings, path: "/admin/config", roles: ["admin"] },
 ];
 
 function AdminLayout() {

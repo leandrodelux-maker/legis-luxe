@@ -21,6 +21,8 @@ type SiteSettings = {
   contact_phone: string | null;
   contact_email: string | null;
   contact_hours: string | null;
+  header_logo_url: string | null;
+  header_logo_height: number;
 };
 
 const mainNav = [
@@ -39,7 +41,7 @@ export function SiteHeader() {
   useEffect(() => {
     supabase
       .from("site_settings")
-      .select("contact_phone, contact_email, contact_hours")
+      .select("contact_phone, contact_email, contact_hours, header_logo_url, header_logo_height")
       .limit(1)
       .maybeSingle()
       .then(({ data }) => setSettings(data ?? null));
@@ -93,17 +95,28 @@ export function SiteHeader() {
       <div className="bg-white border-b border-slate-100">
         <div className="container-page py-5 flex items-center justify-between gap-6">
           <Link to="/" className="flex items-center gap-3 shrink-0">
-            <div className="grid h-14 w-14 place-items-center rounded-lg bg-gradient-to-br from-primary-deep to-primary text-white shadow-md ring-1 ring-gold/30">
-              <Landmark className="h-7 w-7" />
-            </div>
-            <div className="leading-tight">
-              <div className="font-display font-extrabold text-xl md:text-2xl text-primary-deep tracking-tight uppercase">
-                Câmara Municipal
-              </div>
-              <div className="text-[10px] md:text-[11px] uppercase tracking-[0.2em] text-slate-500 font-semibold">
-                Governo · Poder Legislativo
-              </div>
-            </div>
+            {settings?.header_logo_url ? (
+              <img 
+                src={settings.header_logo_url} 
+                alt="Logo Câmara Municipal" 
+                style={{ height: `${settings.header_logo_height}px` }}
+                className="w-auto object-contain"
+              />
+            ) : (
+              <>
+                <div className="grid h-14 w-14 place-items-center rounded-lg bg-gradient-to-br from-primary-deep to-primary text-white shadow-md ring-1 ring-gold/30">
+                  <Landmark className="h-7 w-7" />
+                </div>
+                <div className="leading-tight">
+                  <div className="font-display font-extrabold text-xl md:text-2xl text-primary-deep tracking-tight uppercase">
+                    Câmara Municipal
+                  </div>
+                  <div className="text-[10px] md:text-[11px] uppercase tracking-[0.2em] text-slate-500 font-semibold">
+                    Governo · Poder Legislativo
+                  </div>
+                </div>
+              </>
+            )}
           </Link>
 
           <div className="hidden lg:flex flex-1 max-w-xs">
