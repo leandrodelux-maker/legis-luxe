@@ -92,9 +92,12 @@ function SiteSettingsAdmin() {
       setUploading(false);
       return toast.error(upErr.message);
     }
-    const { data } = supabase.storage.from("site-media").getPublicUrl(path);
+    const { data } = await supabase.storage.from("site-media").createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
+    if (!data?.signedUrl) { setUploading(false); return toast.error("Falha ao gerar URL"); }
+
     const type = file.type.startsWith("video/") ? "video" : "image";
-    setSettings({ ...settings, hero_media_url: data.publicUrl, hero_media_type: type });
+    setSettings({ ...settings, hero_media_url: data.signedUrl, hero_media_type: type });
+
     setUploading(false);
     toast.success("Mídia enviada. Clique em Salvar para aplicar.");
   };
@@ -115,11 +118,12 @@ function SiteSettingsAdmin() {
       return toast.error(upErr.message);
     }
     
-    const { data } = supabase.storage.from("site-media").getPublicUrl(path);
+    const { data } = await supabase.storage.from("site-media").createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
+    if (!data?.signedUrl) { setUploadingLogo(null); return toast.error("Falha ao gerar URL"); }
     if (type === "header") {
-      setSettings({ ...settings, header_logo_url: data.publicUrl });
+      setSettings({ ...settings, header_logo_url: data.signedUrl });
     } else {
-      setSettings({ ...settings, footer_logo_url: data.publicUrl });
+      setSettings({ ...settings, footer_logo_url: data.signedUrl });
     }
     setUploadingLogo(null);
     toast.success(`Logotipo do ${type === "header" ? "cabeçalho" : "rodapé"} enviado.`);
