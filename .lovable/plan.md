@@ -1,63 +1,58 @@
-# Painel Administrativo Master — Portal da Câmara
+# Módulo de Gestão de Vereadores
 
-Reestruturação completa do `/admin` com layout moderno, sidebar recolhível e 7 módulos novos/expandidos.
+Vou entregar em **3 fases** porque o escopo é grande. Confirma se aprovo tudo ou se prefere parar em alguma fase.
 
-## Arquitetura
+## Fase 1 — Cadastro completo + Imagens (essencial)
 
-```text
-src/routes/admin/
-  route.tsx                 -> layout com AdminSidebar + header + Outlet
-  dashboard.tsx             -> KPIs + gráficos + últimas publicações
-  configuracoes/
-    geral.tsx               -> dados institucionais
-    identidade.tsx          -> cores, fontes, favicon, logos
-    home.tsx                -> banner, textos, atalhos, ordem dos blocos
-    menu.tsx                -> menus do site com drag-and-drop
-    seo.tsx                 -> meta tags, OG, Analytics, GTM
-    lgpd.tsx                -> cookies, privacidade, termos
-  (mantém) vereadores, sessoes, projetos, comunicacao, transparencia, acesso-rapido
-src/components/admin/
-  AdminSidebar.tsx          -> sidebar recolhível com grupos e submenus
-  AdminTopbar.tsx           -> breadcrumb + user menu + toggle
-  StatCard.tsx, ChartCard.tsx
-  ColorPicker.tsx, LogoUploader.tsx, MenuBuilder.tsx
-```
+### Banco de dados
+Adicionar à tabela `vereadores` colunas faltantes:
+- `cargo`, `telefone`, `email`, `redes_sociais` (jsonb: instagram, facebook, twitter, youtube), `data_posse`, `mandato_atual` (texto, ex: "2025–2028")
+- `foto_url` já existe — vamos padronizar URL pública
 
-## Módulos
+Nova tabela `vereadores_mandatos` (histórico):
+- `vereador_id`, `mandato` (ex "2021–2024"), `cargo_mesa` (presidente/vice/1º sec/2º sec/null), `partido`, `data_inicio`, `data_fim`
 
-**Dashboard** — Cards com totais (vereadores, notícias, sessões, documentos, projetos), gráfico de linha de publicações por mês (Recharts), lista de últimas 5 publicações de cada tipo. Acessos serão um placeholder (não há tabela de analytics ainda — usa contagens reais do banco).
+### Upload de imagens
+- Bucket `vereadores` já existe — torná-lo **público** e padronizar uso de `getPublicUrl()` em **todos os componentes** (lista pública, detalhe, admin, mesa diretora)
+- Componente `<VereadorAvatar>` com fallback em cascata: foto → iniciais → ícone institucional, com `onError` que loga via `console.error`
+- Upload com:
+  - **Compressão automática** via `browser-image-compression` (max 1MB, 1024px)
+  - **Crop quadrado** via `react-easy-crop` antes do upload
+  - **Remoção de fundo opcional** via `@imgly/background-removal` (rodando no browser, WASM)
 
-**Configurações Gerais** — Estende `site_settings` com: nome_camara, whatsapp, endereco, redes_sociais (jsonb), footer_text. Formulário em seções.
+### Admin `/admin/vereadores`
+Formulário completo com todos os campos acima, preview da foto, abas: "Dados", "Redes sociais", "Mandato".
 
-**Identidade Visual** — Novas colunas em `site_settings`: cor_primaria, cor_secundaria, cor_destaque, cor_menu, cor_botoes, cor_cards, fonte_titulo, fonte_corpo, favicon_url, logo_claro_url, logo_escuro_url. Color pickers + previews. Aplica via CSS vars no root.
+### Mesa Diretora `/admin/mesa-diretora`
+Já existe a tabela `mesa_diretora`. Refinar UI: selecionar vereador + cargo (Presidente, Vice, 1º Secretário, 2º Secretário), ordem.
 
-**Home Page** — Já existe hero; adiciona: botao_texto, botao_url, ordem_blocos (jsonb array de IDs). Reaproveita `acesso_rapido` para atalhos.
+## Fase 2 — Ranking automático
 
-**Menu do Site** — Nova tabela `site_menus` (id, label, url, parent_id, ordem, ativo). Builder com drag-and-drop usando `@dnd-kit` (já no projeto via shadcn? — instalar se faltar). Suporta submenu ilimitado via parent_id.
+View SQL `vereadores_ranking` calculando por vereador:
+- `total_projetos` (count em `projetos_legislativos` por autor)
+- `total_indicacoes` (count filtrando `tipo = 'indicacao'`)
+- `total_requerimentos` (count filtrando `tipo = 'requerimento'`)
+- `presencas` (count em `sessoes_presencas` com `presente = true`)
+- `total_sessoes` e `percentual_presenca`
 
-**SEO** — Novas colunas: seo_title, seo_description, og_image_url, google_analytics_id, gtm_id. Injetados em `__root.tsx` via head().
+Página pública `/vereadores/ranking` com tabela ordenável e admin equivalente.
 
-**LGPD** — Novas colunas: cookies_enabled, cookies_text, privacy_policy (text rich), terms_of_use (text rich). Banner de cookies no site público.
+**Pré-requisito:** `projetos_legislativos` precisa de coluna `autor_id` referenciando vereadores (verificar; se faltar, adicionar). Senão o ranking de projetos não funciona.
 
-## Migrações de banco
+## Fase 3 — Galeria e histórico
 
-1. ALTER `site_settings` adicionando ~25 colunas novas (defaults seguros)
-2. CREATE `site_menus` com RLS (read público, write admin via has_role)
-3. Grants padrão
+- Galeria de imagens por vereador: nova tabela `vereadores_galeria` (vereador_id, url, legenda, ordem) + UI no admin
+- Histórico de mandatos: CRUD em `vereadores_mandatos` na aba "Histórico" do admin
 
-## UI/UX
-
-- Sidebar `collapsible="icon"` com grupos: Visão Geral, Conteúdo, Configurações, Sistema
-- Cores semânticas via tokens em `styles.css`
-- Cards com sombra suave, bordas arredondadas, animações fade-up
-- Responsivo (mobile drawer)
-- Loading states com Skeleton, empty states ilustrados
+## Detalhes técnicos
+- Páginas públicas `/vereadores` e `/vereadores/$id` reescritas para usar `getPublicUrl`, `<VereadorAvatar>`, e exibir todos os novos campos
+- Bucket de imagens público; RLS de write apenas para `admin`
+- Toda query de imagem usa `supabase.storage.from('vereadores').getPublicUrl(path)` — nunca URL crua
+- `_authenticated` para admin; ranking público
 
 ## Fora de escopo
+- Editor visual avançado (Photoshop-like) — apenas crop básico
+- Importação em massa (CSV)
+- Notificações de mudança de mandato
 
-- Sistema real de analytics de acessos (apenas placeholder)
-- Editor visual drag-and-drop da home (apenas reordenação de blocos por lista)
-- Versionamento/histórico de alterações
-- Tradução/multi-idioma
-
-Confirma para eu implementar? É um trabalho grande — vou em uma sequência de migrações + componentes + rotas.
+Confirma? Ou prefere começar só pela **Fase 1** e avaliar antes de seguir?
