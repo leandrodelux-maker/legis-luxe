@@ -1,8 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { CrudPage } from "@/components/admin/crud-page";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { VereadorAvatar } from "@/components/vereador-avatar";
+import { VereadorPhotoUploader } from "@/components/admin/VereadorPhotoUploader";
+import { History, Images } from "lucide-react";
 
 export const Route = createFileRoute("/admin/vereadores/")({
   component: AdminVereadores,
@@ -16,9 +20,15 @@ type Vereador = {
   cargo: string | null;
   email: string | null;
   telefone: string | null;
+  gabinete: string | null;
+  biografia: string | null;
   ativo: boolean;
   ordem: number | null;
   data_nascimento: string | null;
+  data_posse: string | null;
+  mandato_atual: string | null;
+  mandato_inicio: string | null;
+  mandato_fim: string | null;
   naturalidade: string | null;
   escolaridade: string | null;
   profissao: string | null;
@@ -26,155 +36,118 @@ type Vereador = {
     instagram?: string;
     facebook?: string;
     twitter?: string;
-  };
-  stats: {
-    projetos: number;
-    presencas: number;
-    participacoes: number;
+    youtube?: string;
   };
 };
 
 function AdminVereadores() {
   return (
-    <CrudPage<Vereador>
-      title="Vereadores"
-      description="Gerencie os parlamentares exibidos no site."
-      table="vereadores"
-      orderBy={{ column: "ordem", ascending: true }}
-      defaultValues={{ 
-        ativo: true, 
-        ordem: 0, 
-        redes_sociais: { instagram: "", facebook: "", twitter: "" }, 
-        stats: { projetos: 0, presencas: 0, participacoes: 0 } 
-      }}
-      columns={[
-        { 
-          key: "foto_url", 
-          label: "Foto",
-          render: (r) => (
-            <div className="w-10 h-10 rounded-full overflow-hidden bg-slate-100 border border-slate-200">
-              {r.foto_url ? (
-                <img src={r.foto_url} alt={r.nome} className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-slate-400">?</div>
-              )}
-            </div>
-          )
-        },
-        { key: "nome", label: "Nome" },
-        { key: "partido", label: "Partido" },
-        { key: "cargo", label: "Cargo" },
-        {
-          key: "ativo",
-          label: "Status",
-          render: (r) => (
-            <Badge variant={r.ativo ? "default" : "secondary"}>
-              {r.ativo ? "Ativo" : "Inativo"}
-            </Badge>
-          ),
-        },
-      ]}
-      fields={[
-        { name: "nome", label: "Nome completo", required: true },
-        { name: "partido", label: "Partido" },
-        { name: "cargo", label: "Cargo (ex: Presidente, Vereador)" },
-        { name: "foto_url", label: "Foto do Vereador", type: "file" },
-        { name: "biografia", label: "Biografia", type: "textarea" },
-        { name: "email", label: "E-mail", type: "email" },
-        { name: "telefone", label: "Telefone" },
-        { name: "gabinete", label: "Gabinete" },
-        { name: "data_nascimento", label: "Data de Nascimento", type: "date" },
-        { name: "naturalidade", label: "Naturalidade" },
-        { name: "escolaridade", label: "Escolaridade" },
-        { name: "profissao", label: "Profissão" },
-        {
-          name: "redes_sociais",
-          label: "Redes Sociais",
-          type: "custom",
-          renderCustom: (row, form, setForm) => {
-            const redes = (form.redes_sociais as Vereador["redes_sociais"]) || {};
-            const updateRede = (key: string, val: string) => {
-              setForm({
-                ...form,
-                redes_sociais: { ...redes, [key]: val }
-              });
-            };
-            return (
-              <div className="grid grid-cols-3 gap-2 mt-2">
-                <div className="space-y-1">
-                  <Label className="text-[10px] uppercase">Instagram</Label>
-                  <Input 
-                    placeholder="@perfil" 
-                    value={redes.instagram || ""} 
-                    onChange={(e) => updateRede("instagram", e.target.value)}
-                  />
+    <div className="space-y-4">
+      <div className="flex flex-wrap gap-2 justify-end">
+        <Button asChild variant="outline" size="sm">
+          <Link to="/admin/vereadores/mandatos">
+            <History className="w-3.5 h-3.5 mr-1" /> Histórico de mandatos
+          </Link>
+        </Button>
+        <Button asChild variant="outline" size="sm">
+          <Link to="/admin/vereadores/galeria">
+            <Images className="w-3.5 h-3.5 mr-1" /> Galeria
+          </Link>
+        </Button>
+      </div>
+      <CrudPage<Vereador>
+        title="Vereadores"
+        description="Cadastro completo: dados, contato, redes sociais e mandato."
+        table="vereadores"
+        orderBy={{ column: "ordem", ascending: true }}
+        defaultValues={{
+          ativo: true,
+          ordem: 0,
+          mandato_atual: "2025–2028",
+          redes_sociais: { instagram: "", facebook: "", twitter: "", youtube: "" },
+        }}
+        columns={[
+          {
+            key: "foto_url",
+            label: "Foto",
+            render: (r) => <VereadorAvatar nome={r.nome} foto={r.foto_url} size={40} />,
+          },
+          { key: "nome", label: "Nome" },
+          { key: "partido", label: "Partido" },
+          { key: "cargo", label: "Cargo" },
+          { key: "mandato_atual", label: "Mandato" },
+          {
+            key: "ativo",
+            label: "Status",
+            render: (r) => (
+              <Badge variant={r.ativo ? "default" : "secondary"}>
+                {r.ativo ? "Ativo" : "Inativo"}
+              </Badge>
+            ),
+          },
+        ]}
+        fields={[
+          {
+            name: "foto_url",
+            label: "Foto do Vereador (crop + compressão automática)",
+            type: "custom",
+            renderCustom: (_row, form, setForm) => (
+              <VereadorPhotoUploader
+                nome={String(form.nome || "")}
+                value={form.foto_url ?? null}
+                onChange={(url) => setForm({ ...form, foto_url: url })}
+              />
+            ),
+          },
+          { name: "nome", label: "Nome completo", required: true },
+          { name: "partido", label: "Partido", placeholder: "Ex: PSDB, PT, MDB" },
+          { name: "cargo", label: "Cargo", placeholder: "Vereador / Presidente / Líder" },
+          { name: "biografia", label: "Biografia", type: "textarea" },
+          { name: "email", label: "E-mail", type: "email" },
+          { name: "telefone", label: "Telefone", placeholder: "(00) 00000-0000" },
+          { name: "gabinete", label: "Gabinete" },
+          { name: "data_posse", label: "Data de posse", type: "date" },
+          { name: "mandato_atual", label: "Mandato atual", placeholder: "2025–2028" },
+          { name: "mandato_inicio", label: "Início do mandato", type: "date" },
+          { name: "mandato_fim", label: "Fim do mandato", type: "date" },
+          { name: "data_nascimento", label: "Data de nascimento", type: "date" },
+          { name: "naturalidade", label: "Naturalidade" },
+          { name: "escolaridade", label: "Escolaridade" },
+          { name: "profissao", label: "Profissão" },
+          {
+            name: "redes_sociais",
+            label: "Redes Sociais",
+            type: "custom",
+            renderCustom: (_row, form, setForm) => {
+              const redes = (form.redes_sociais as Vereador["redes_sociais"]) || {};
+              const update = (key: string, val: string) =>
+                setForm({ ...form, redes_sociais: { ...redes, [key]: val } });
+              const fields: [keyof typeof redes, string, string][] = [
+                ["instagram", "Instagram", "@perfil"],
+                ["facebook", "Facebook", "link"],
+                ["twitter", "Twitter / X", "link"],
+                ["youtube", "YouTube", "link"],
+              ];
+              return (
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  {fields.map(([k, lbl, ph]) => (
+                    <div key={k} className="space-y-1">
+                      <Label className="text-[10px] uppercase">{lbl}</Label>
+                      <Input
+                        placeholder={ph}
+                        value={redes[k] || ""}
+                        onChange={(e) => update(k, e.target.value)}
+                      />
+                    </div>
+                  ))}
                 </div>
-                <div className="space-y-1">
-                  <Label className="text-[10px] uppercase">Facebook</Label>
-                  <Input 
-                    placeholder="link" 
-                    value={redes.facebook || ""} 
-                    onChange={(e) => updateRede("facebook", e.target.value)}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-[10px] uppercase">Twitter</Label>
-                  <Input 
-                    placeholder="link" 
-                    value={redes.twitter || ""} 
-                    onChange={(e) => updateRede("twitter", e.target.value)}
-                  />
-                </div>
-              </div>
-            );
-          }
-        },
-        {
-          name: "stats",
-          label: "Estatísticas (Numérico)",
-          type: "custom",
-          renderCustom: (row, form, setForm) => {
-            const stats = (form.stats as Vereador["stats"]) || { projetos: 0, presencas: 0, participacoes: 0 };
-            const updateStat = (key: string, val: string) => {
-              setForm({
-                ...form,
-                stats: { ...stats, [key]: Number(val) || 0 }
-              });
-            };
-            return (
-              <div className="grid grid-cols-3 gap-2 mt-2">
-                <div className="space-y-1">
-                  <Label className="text-[10px] uppercase">Projetos</Label>
-                  <Input 
-                    type="number" 
-                    value={stats.projetos} 
-                    onChange={(e) => updateStat("projetos", e.target.value)}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-[10px] uppercase">Presenças</Label>
-                  <Input 
-                    type="number" 
-                    value={stats.presencas} 
-                    onChange={(e) => updateStat("presencas", e.target.value)}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-[10px] uppercase">Participações</Label>
-                  <Input 
-                    type="number" 
-                    value={stats.participacoes} 
-                    onChange={(e) => updateStat("participacoes", e.target.value)}
-                  />
-                </div>
-              </div>
-            );
-          }
-        },
-        { name: "ordem", label: "Ordem de exibição", type: "number" },
-        { name: "ativo", label: "Ativo", type: "checkbox", placeholder: "Mostrar no site" },
-      ]}
-    />
+              );
+            },
+          },
+          { name: "ordem", label: "Ordem de exibição", type: "number" },
+          { name: "ativo", label: "Ativo", type: "checkbox", placeholder: "Mostrar no site" },
+        ]}
+      />
+    </div>
   );
 }
-
