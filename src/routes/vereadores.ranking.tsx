@@ -63,7 +63,7 @@ function RankingPage() {
         .from("vereadores_ranking" as any)
         .select("*");
       if (error) console.error("[ranking] erro:", error);
-      setRows((data as Row[]) || []);
+      setRows(((data as unknown) as Row[]) || []);
       setLoading(false);
     })();
   }, []);
