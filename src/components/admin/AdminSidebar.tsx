@@ -59,6 +59,8 @@ const groups: Group[] = [
     label: "Conteúdo",
     items: [
       { label: "Vereadores", path: "/admin/vereadores", icon: Users },
+      { label: "Mandatos", path: "/admin/vereadores/mandatos", icon: Users },
+      { label: "Galeria", path: "/admin/vereadores/galeria", icon: Users },
       { label: "Projetos", path: "/admin/projetos", icon: Gavel },
       { label: "Sessões", path: "/admin/sessoes", icon: Calendar },
       { label: "Notícias", path: "/admin/comunicacao", icon: Newspaper },
