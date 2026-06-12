@@ -22,7 +22,7 @@ export function useSiteSettings() {
   const save = async (patch: Partial<SiteSettings>) => {
     if (!settings) return;
     setSaving(true);
-    const { error } = await supabase.from("site_settings").update(patch).eq("id", settings.id);
+    const { error } = await (supabase as any).from("site_settings").update(patch).eq("id", settings.id);
     setSaving(false);
     if (error) { toast.error(error.message); return false; }
     setSettings({ ...settings, ...patch });
