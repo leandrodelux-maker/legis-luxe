@@ -21,6 +21,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SessoesIndexRouteImport } from './routes/sessoes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as VereadoresRankingRouteImport } from './routes/vereadores.ranking'
 import { Route as VereadoresIdRouteImport } from './routes/vereadores.$id'
 import { Route as SessoesAoVivoRouteImport } from './routes/sessoes/ao-vivo'
 import { Route as AdminExecutivoRouteImport } from './routes/admin/executivo'
@@ -103,6 +104,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
+} as any)
+const VereadoresRankingRoute = VereadoresRankingRouteImport.update({
+  id: '/ranking',
+  path: '/ranking',
+  getParentRoute: () => VereadoresRoute,
 } as any)
 const VereadoresIdRoute = VereadoresIdRouteImport.update({
   id: '/$id',
@@ -232,6 +238,7 @@ export interface FileRoutesByFullPath {
   '/admin/executivo': typeof AdminExecutivoRoute
   '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
   '/vereadores/$id': typeof VereadoresIdRoute
+  '/vereadores/ranking': typeof VereadoresRankingRoute
   '/admin/': typeof AdminIndexRoute
   '/sessoes/': typeof SessoesIndexRoute
   '/admin/comunicacao/novo': typeof AdminComunicacaoNovoRoute
@@ -266,6 +273,7 @@ export interface FileRoutesByTo {
   '/admin/executivo': typeof AdminExecutivoRoute
   '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
   '/vereadores/$id': typeof VereadoresIdRoute
+  '/vereadores/ranking': typeof VereadoresRankingRoute
   '/admin': typeof AdminIndexRoute
   '/sessoes': typeof SessoesIndexRoute
   '/admin/comunicacao/novo': typeof AdminComunicacaoNovoRoute
@@ -303,6 +311,7 @@ export interface FileRoutesById {
   '/admin/executivo': typeof AdminExecutivoRoute
   '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
   '/vereadores/$id': typeof VereadoresIdRoute
+  '/vereadores/ranking': typeof VereadoresRankingRoute
   '/admin/': typeof AdminIndexRoute
   '/sessoes/': typeof SessoesIndexRoute
   '/admin/comunicacao/novo': typeof AdminComunicacaoNovoRoute
@@ -341,6 +350,7 @@ export interface FileRouteTypes {
     | '/admin/executivo'
     | '/sessoes/ao-vivo'
     | '/vereadores/$id'
+    | '/vereadores/ranking'
     | '/admin/'
     | '/sessoes/'
     | '/admin/comunicacao/novo'
@@ -375,6 +385,7 @@ export interface FileRouteTypes {
     | '/admin/executivo'
     | '/sessoes/ao-vivo'
     | '/vereadores/$id'
+    | '/vereadores/ranking'
     | '/admin'
     | '/sessoes'
     | '/admin/comunicacao/novo'
@@ -411,6 +422,7 @@ export interface FileRouteTypes {
     | '/admin/executivo'
     | '/sessoes/ao-vivo'
     | '/vereadores/$id'
+    | '/vereadores/ranking'
     | '/admin/'
     | '/sessoes/'
     | '/admin/comunicacao/novo'
@@ -531,6 +543,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/vereadores/ranking': {
+      id: '/vereadores/ranking'
+      path: '/ranking'
+      fullPath: '/vereadores/ranking'
+      preLoaderRoute: typeof VereadoresRankingRouteImport
+      parentRoute: typeof VereadoresRoute
     }
     '/vereadores/$id': {
       id: '/vereadores/$id'
@@ -754,10 +773,12 @@ const SessoesRouteWithChildren =
 
 interface VereadoresRouteChildren {
   VereadoresIdRoute: typeof VereadoresIdRoute
+  VereadoresRankingRoute: typeof VereadoresRankingRoute
 }
 
 const VereadoresRouteChildren: VereadoresRouteChildren = {
   VereadoresIdRoute: VereadoresIdRoute,
+  VereadoresRankingRoute: VereadoresRankingRoute,
 }
 
 const VereadoresRouteWithChildren = VereadoresRoute._addFileChildren(
