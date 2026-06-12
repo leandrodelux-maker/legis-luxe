@@ -110,6 +110,212 @@ export type Database = {
         }
         Relationships: []
       }
+      banners: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          fim_em: string | null
+          id: string
+          imagem_url: string
+          inicio_em: string | null
+          link_url: string | null
+          ordem: number
+          subtitulo: string | null
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          fim_em?: string | null
+          id?: string
+          imagem_url: string
+          inicio_em?: string | null
+          link_url?: string | null
+          ordem?: number
+          subtitulo?: string | null
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          fim_em?: string | null
+          id?: string
+          imagem_url?: string
+          inicio_em?: string | null
+          link_url?: string | null
+          ordem?: number
+          subtitulo?: string | null
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      diario_oficial: {
+        Row: {
+          conteudo: string | null
+          created_at: string
+          data_publicacao: string
+          id: string
+          numero_edicao: string
+          pdf_url: string | null
+          publicado: boolean
+          resumo: string | null
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          conteudo?: string | null
+          created_at?: string
+          data_publicacao: string
+          id?: string
+          numero_edicao: string
+          pdf_url?: string | null
+          publicado?: boolean
+          resumo?: string | null
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          conteudo?: string | null
+          created_at?: string
+          data_publicacao?: string
+          id?: string
+          numero_edicao?: string
+          pdf_url?: string | null
+          publicado?: boolean
+          resumo?: string | null
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      esic_solicitacoes: {
+        Row: {
+          cpf: string | null
+          created_at: string
+          email: string
+          id: string
+          nome: string
+          pedido: string
+          prazo_resposta: string
+          protocolo: string
+          respondido_em: string | null
+          respondido_por: string | null
+          resposta: string | null
+          status: string
+          telefone: string | null
+          updated_at: string
+        }
+        Insert: {
+          cpf?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          nome: string
+          pedido: string
+          prazo_resposta?: string
+          protocolo?: string
+          respondido_em?: string | null
+          respondido_por?: string | null
+          resposta?: string | null
+          status?: string
+          telefone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cpf?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          nome?: string
+          pedido?: string
+          prazo_resposta?: string
+          protocolo?: string
+          respondido_em?: string | null
+          respondido_por?: string | null
+          resposta?: string | null
+          status?: string
+          telefone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      galeria_albuns: {
+        Row: {
+          capa_url: string | null
+          created_at: string
+          descricao: string | null
+          evento_data: string | null
+          id: string
+          publicado: boolean
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          capa_url?: string | null
+          created_at?: string
+          descricao?: string | null
+          evento_data?: string | null
+          id?: string
+          publicado?: boolean
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          capa_url?: string | null
+          created_at?: string
+          descricao?: string | null
+          evento_data?: string | null
+          id?: string
+          publicado?: boolean
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      galeria_itens: {
+        Row: {
+          album_id: string | null
+          created_at: string
+          id: string
+          legenda: string | null
+          ordem: number
+          thumbnail_url: string | null
+          tipo: string
+          url: string
+        }
+        Insert: {
+          album_id?: string | null
+          created_at?: string
+          id?: string
+          legenda?: string | null
+          ordem?: number
+          thumbnail_url?: string | null
+          tipo?: string
+          url: string
+        }
+        Update: {
+          album_id?: string | null
+          created_at?: string
+          id?: string
+          legenda?: string | null
+          ordem?: number
+          thumbnail_url?: string | null
+          tipo?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "galeria_itens_album_id_fkey"
+            columns: ["album_id"]
+            isOneToOne: false
+            referencedRelation: "galeria_albuns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mesa_diretora: {
         Row: {
           ativo: boolean | null
@@ -157,8 +363,10 @@ export type Database = {
       }
       noticias: {
         Row: {
+          agendado_para: string | null
           autor: string | null
           categoria: string | null
+          categoria_id: string | null
           conteudo: string
           created_at: string
           destaque: boolean
@@ -172,8 +380,10 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          agendado_para?: string | null
           autor?: string | null
           categoria?: string | null
+          categoria_id?: string | null
           conteudo: string
           created_at?: string
           destaque?: boolean
@@ -187,8 +397,10 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          agendado_para?: string | null
           autor?: string | null
           categoria?: string | null
+          categoria_id?: string | null
           conteudo?: string
           created_at?: string
           destaque?: boolean
@@ -198,6 +410,211 @@ export type Database = {
           publicado_em?: string | null
           resumo?: string | null
           slug?: string
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "noticias_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "noticias_categorias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      noticias_categorias: {
+        Row: {
+          cor: string | null
+          created_at: string
+          id: string
+          nome: string
+          ordem: number
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          cor?: string | null
+          created_at?: string
+          id?: string
+          nome: string
+          ordem?: number
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          cor?: string | null
+          created_at?: string
+          id?: string
+          nome?: string
+          ordem?: number
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      ouvidoria_protocolos: {
+        Row: {
+          assunto: string
+          created_at: string
+          email: string | null
+          id: string
+          mensagem: string
+          nome: string
+          protocolo: string
+          respondido_em: string | null
+          respondido_por: string | null
+          resposta: string | null
+          status: string
+          telefone: string | null
+          tipo: string
+          updated_at: string
+        }
+        Insert: {
+          assunto: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          mensagem: string
+          nome: string
+          protocolo?: string
+          respondido_em?: string | null
+          respondido_por?: string | null
+          resposta?: string | null
+          status?: string
+          telefone?: string | null
+          tipo?: string
+          updated_at?: string
+        }
+        Update: {
+          assunto?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          mensagem?: string
+          nome?: string
+          protocolo?: string
+          respondido_em?: string | null
+          respondido_por?: string | null
+          resposta?: string | null
+          status?: string
+          telefone?: string | null
+          tipo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      paginas: {
+        Row: {
+          created_at: string
+          id: string
+          meta_descricao: string | null
+          ordem: number
+          publicado: boolean
+          slug: string
+          template: string
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          meta_descricao?: string | null
+          ordem?: number
+          publicado?: boolean
+          slug: string
+          template?: string
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          meta_descricao?: string | null
+          ordem?: number
+          publicado?: boolean
+          slug?: string
+          template?: string
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      paginas_blocos: {
+        Row: {
+          conteudo: Json
+          created_at: string
+          id: string
+          ordem: number
+          pagina_id: string
+          tipo: string
+          updated_at: string
+        }
+        Insert: {
+          conteudo?: Json
+          created_at?: string
+          id?: string
+          ordem?: number
+          pagina_id: string
+          tipo: string
+          updated_at?: string
+        }
+        Update: {
+          conteudo?: Json
+          created_at?: string
+          id?: string
+          ordem?: number
+          pagina_id?: string
+          tipo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "paginas_blocos_pagina_id_fkey"
+            columns: ["pagina_id"]
+            isOneToOne: false
+            referencedRelation: "paginas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      popups: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          fim_em: string | null
+          id: string
+          imagem_url: string | null
+          inicio_em: string | null
+          link_url: string | null
+          mensagem: string | null
+          tipo: string
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          fim_em?: string | null
+          id?: string
+          imagem_url?: string | null
+          inicio_em?: string | null
+          link_url?: string | null
+          mensagem?: string | null
+          tipo?: string
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          fim_em?: string | null
+          id?: string
+          imagem_url?: string | null
+          inicio_em?: string | null
+          link_url?: string | null
+          mensagem?: string | null
+          tipo?: string
           titulo?: string
           updated_at?: string
         }
@@ -646,6 +1063,48 @@ export type Database = {
         }
         Relationships: []
       }
+      transparencia_contratos: {
+        Row: {
+          contratado: string
+          created_at: string
+          data_assinatura: string | null
+          data_vigencia_fim: string | null
+          documento_url: string | null
+          id: string
+          numero: string
+          objeto: string
+          publicado: boolean
+          updated_at: string
+          valor: number | null
+        }
+        Insert: {
+          contratado: string
+          created_at?: string
+          data_assinatura?: string | null
+          data_vigencia_fim?: string | null
+          documento_url?: string | null
+          id?: string
+          numero: string
+          objeto: string
+          publicado?: boolean
+          updated_at?: string
+          valor?: number | null
+        }
+        Update: {
+          contratado?: string
+          created_at?: string
+          data_assinatura?: string | null
+          data_vigencia_fim?: string | null
+          documento_url?: string | null
+          id?: string
+          numero?: string
+          objeto?: string
+          publicado?: boolean
+          updated_at?: string
+          valor?: number | null
+        }
+        Relationships: []
+      }
       transparencia_documentos: {
         Row: {
           ano: number | null
@@ -679,6 +1138,126 @@ export type Database = {
           descricao?: string | null
           id?: string
           mes?: number | null
+          publicado?: boolean
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      transparencia_folha: {
+        Row: {
+          cargo: string
+          created_at: string
+          descontos: number | null
+          id: string
+          mes_referencia: string
+          publicado: boolean
+          remuneracao_bruta: number | null
+          remuneracao_liquida: number | null
+          servidor: string
+          updated_at: string
+          vinculo: string | null
+        }
+        Insert: {
+          cargo: string
+          created_at?: string
+          descontos?: number | null
+          id?: string
+          mes_referencia: string
+          publicado?: boolean
+          remuneracao_bruta?: number | null
+          remuneracao_liquida?: number | null
+          servidor: string
+          updated_at?: string
+          vinculo?: string | null
+        }
+        Update: {
+          cargo?: string
+          created_at?: string
+          descontos?: number | null
+          id?: string
+          mes_referencia?: string
+          publicado?: boolean
+          remuneracao_bruta?: number | null
+          remuneracao_liquida?: number | null
+          servidor?: string
+          updated_at?: string
+          vinculo?: string | null
+        }
+        Relationships: []
+      }
+      transparencia_licitacoes: {
+        Row: {
+          created_at: string
+          data_abertura: string | null
+          edital_url: string | null
+          id: string
+          modalidade: string
+          numero: string
+          objeto: string
+          publicado: boolean
+          status: string
+          updated_at: string
+          valor_estimado: number | null
+        }
+        Insert: {
+          created_at?: string
+          data_abertura?: string | null
+          edital_url?: string | null
+          id?: string
+          modalidade: string
+          numero: string
+          objeto: string
+          publicado?: boolean
+          status?: string
+          updated_at?: string
+          valor_estimado?: number | null
+        }
+        Update: {
+          created_at?: string
+          data_abertura?: string | null
+          edital_url?: string | null
+          id?: string
+          modalidade?: string
+          numero?: string
+          objeto?: string
+          publicado?: boolean
+          status?: string
+          updated_at?: string
+          valor_estimado?: number | null
+        }
+        Relationships: []
+      }
+      transparencia_prestacao_contas: {
+        Row: {
+          created_at: string
+          descricao: string | null
+          documento_url: string | null
+          exercicio: number | null
+          id: string
+          periodo: string
+          publicado: boolean
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          descricao?: string | null
+          documento_url?: string | null
+          exercicio?: number | null
+          id?: string
+          periodo: string
+          publicado?: boolean
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          descricao?: string | null
+          documento_url?: string | null
+          exercicio?: number | null
+          id?: string
+          periodo?: string
           publicado?: boolean
           titulo?: string
           updated_at?: string
