@@ -22,7 +22,7 @@ export const Route = createFileRoute("/admin/cms/esic")({
       { name: "resposta", label: "Resposta", type: "textarea" },
     ];
     return (
-      <CrudPage
+      <CrudPage<any>
         title="e-SIC — Solicitações de Informação"
         description="Pedidos de acesso à informação (Lei nº 12.527/2011)."
         table="esic_solicitacoes"

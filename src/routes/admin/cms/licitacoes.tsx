@@ -28,7 +28,7 @@ export const Route = createFileRoute("/admin/cms/licitacoes")({
       { name: "publicado", label: "Publicado", type: "checkbox" },
     ];
     return (
-      <CrudPage
+      <CrudPage<any>
         title="Licitações"
         description="Processos licitatórios da Câmara."
         table="transparencia_licitacoes"

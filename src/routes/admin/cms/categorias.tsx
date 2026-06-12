@@ -11,7 +11,7 @@ export const Route = createFileRoute("/admin/cms/categorias")({
       { name: "ordem", label: "Ordem", type: "number" },
     ];
     return (
-      <CrudPage
+      <CrudPage<any>
         title="Categorias de Notícias"
         description="Organize as notícias por categoria."
         table="noticias_categorias"

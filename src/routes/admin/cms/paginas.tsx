@@ -21,7 +21,7 @@ export const Route = createFileRoute("/admin/cms/paginas")({
       { name: "publicado", label: "Publicado", type: "checkbox" },
     ];
     return (
-      <CrudPage
+      <CrudPage<any>
         title="Páginas"
         description="Páginas dinâmicas do site. Use o editor de blocos para montar o conteúdo."
         table="paginas"

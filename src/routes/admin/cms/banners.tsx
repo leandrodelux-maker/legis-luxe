@@ -15,7 +15,7 @@ export const Route = createFileRoute("/admin/cms/banners")({
       { name: "ativo", label: "Ativo", type: "checkbox" },
     ];
     return (
-      <CrudPage
+      <CrudPage<any>
         title="Banners"
         description="Banners do site com upload, agendamento e ordenação."
         table="banners"

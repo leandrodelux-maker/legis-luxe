@@ -13,7 +13,7 @@ export const Route = createFileRoute("/admin/cms/diario-oficial")({
       { name: "publicado", label: "Publicado", type: "checkbox" },
     ];
     return (
-      <CrudPage
+      <CrudPage<any>
         title="Diário Oficial"
         description="Edições do Diário Oficial da Câmara."
         table="diario_oficial"

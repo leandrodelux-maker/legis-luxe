@@ -14,7 +14,7 @@ export const Route = createFileRoute("/admin/cms/contratos")({
       { name: "publicado", label: "Publicado", type: "checkbox" },
     ];
     return (
-      <CrudPage
+      <CrudPage<any>
         title="Contratos"
         description="Contratos firmados pela Câmara."
         table="transparencia_contratos"

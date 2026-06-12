@@ -12,7 +12,7 @@ export const Route = createFileRoute("/admin/cms/galeria")({
       { name: "publicado", label: "Publicado", type: "checkbox" },
     ];
     return (
-      <CrudPage
+      <CrudPage<any>
         title="Galeria"
         description="Álbuns de fotos e vídeos de eventos."
         table="galeria_albuns"

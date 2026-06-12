@@ -18,7 +18,7 @@ export const Route = createFileRoute("/admin/cms/sessoes-extras")({
       { name: "publicado", label: "Publicado", type: "checkbox" },
     ];
     return (
-      <CrudPage
+      <CrudPage<any>
         title="Sessões — Vídeos, Pautas e Atas"
         description="Gestão completa de sessões com vídeos, pautas, atas e presenças."
         table="sessoes"

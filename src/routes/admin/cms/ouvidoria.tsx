@@ -34,7 +34,7 @@ export const Route = createFileRoute("/admin/cms/ouvidoria")({
       { name: "resposta", label: "Resposta", type: "textarea" },
     ];
     return (
-      <CrudPage
+      <CrudPage<any>
         title="Ouvidoria"
         description="Protocolos e respostas da ouvidoria."
         table="ouvidoria_protocolos"

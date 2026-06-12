@@ -18,7 +18,7 @@ export const Route = createFileRoute("/admin/cms/folha")({
       { name: "publicado", label: "Publicado", type: "checkbox" },
     ];
     return (
-      <CrudPage
+      <CrudPage<any>
         title="Folha de Pagamento"
         description="Transparência salarial dos servidores."
         table="transparencia_folha"

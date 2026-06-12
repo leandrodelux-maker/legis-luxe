@@ -19,7 +19,7 @@ export const Route = createFileRoute("/admin/cms/popups")({
       { name: "ativo", label: "Ativo", type: "checkbox" },
     ];
     return (
-      <CrudPage
+      <CrudPage<any>
         title="Popups"
         description="Avisos, campanhas e comunicados em popup."
         table="popups"

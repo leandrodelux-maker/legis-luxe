@@ -12,7 +12,7 @@ export const Route = createFileRoute("/admin/cms/prestacao-contas")({
       { name: "publicado", label: "Publicado", type: "checkbox" },
     ];
     return (
-      <CrudPage
+      <CrudPage<any>
         title="Prestação de Contas"
         description="Documentos de prestação de contas."
         table="transparencia_prestacao_contas"
