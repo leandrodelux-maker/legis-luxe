@@ -21,6 +21,7 @@ import { SectionHeading } from "@/components/section-heading";
 import { QuickAccess } from "@/components/quick-access";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
+import { VereadorAvatar } from "@/components/vereador-avatar";
 
 export const Route = createFileRoute("/")({
   head: () => ({
