@@ -84,7 +84,8 @@ function SiteSettingsAdmin() {
     const ext = file.name.split(".").pop();
     const path = `hero/${Date.now()}.${ext}`;
     const { error: upErr } = await supabase.storage.from("site-media").upload(path, file, {
-      upsert: false,
+      cacheControl: '3600',
+      upsert: true,
       contentType: file.type,
     });
     if (upErr) {
@@ -104,7 +105,8 @@ function SiteSettingsAdmin() {
     const ext = file.name.split(".").pop();
     const path = `logos/${type}-${Date.now()}.${ext}`;
     const { error: upErr } = await supabase.storage.from("site-media").upload(path, file, {
-      upsert: false,
+      cacheControl: '3600',
+      upsert: true,
       contentType: file.type,
     });
     

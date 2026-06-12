@@ -244,13 +244,14 @@ export function CrudPage<T extends { id: string }>({
                           const fileName = `${Date.now()}-${safeFileName}.${fileExt}`;
                           const filePath = fileName;
 
-                          console.log(`Iniciando upload para o bucket '${table}'...`, filePath);
+                          console.log(`Iniciando upload para o bucket 'vereadores'...`, filePath);
 
                           const { data, error: uploadError } = await supabase.storage
                             .from('vereadores')
                             .upload(filePath, file, {
                               cacheControl: '3600',
-                              upsert: true
+                              upsert: true,
+                              contentType: file.type
                             });
 
                           if (uploadError) {
