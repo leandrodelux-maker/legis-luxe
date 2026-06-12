@@ -21,6 +21,17 @@ import {
   ScrollText,
   Crown,
   Image as ImageIcon,
+  FileEdit,
+  FileBarChart,
+  Wallet,
+  Receipt,
+  Megaphone,
+  MessageSquare,
+  Mail,
+  BookOpen,
+  Images,
+  GalleryHorizontalEnd,
+  Video,
 } from "lucide-react";
 import {
   Sidebar,
@@ -73,6 +84,12 @@ const groups: Group[] = [
     label: "Comunicação",
     items: [
       { label: "Notícias", path: "/admin/comunicacao", icon: Newspaper },
+      { label: "Categorias", path: "/admin/cms/categorias", icon: FileEdit },
+      { label: "Páginas", path: "/admin/cms/paginas", icon: FileText },
+      { label: "Banners", path: "/admin/cms/banners", icon: GalleryHorizontalEnd },
+      { label: "Popups", path: "/admin/cms/popups", icon: Megaphone },
+      { label: "Galeria", path: "/admin/cms/galeria", icon: Images },
+      { label: "Diário Oficial", path: "/admin/cms/diario-oficial", icon: BookOpen },
       { label: "Acesso Rápido", path: "/admin/acesso-rapido", icon: Globe },
     ],
   },
@@ -80,6 +97,17 @@ const groups: Group[] = [
     label: "Transparência",
     items: [
       { label: "Documentos", path: "/admin/transparencia", icon: ShieldCheck },
+      { label: "Licitações", path: "/admin/cms/licitacoes", icon: Gavel },
+      { label: "Contratos", path: "/admin/cms/contratos", icon: FileBarChart },
+      { label: "Folha de Pagamento", path: "/admin/cms/folha", icon: Wallet },
+      { label: "Prestação de Contas", path: "/admin/cms/prestacao-contas", icon: Receipt },
+    ],
+  },
+  {
+    label: "Atendimento",
+    items: [
+      { label: "Ouvidoria", path: "/admin/cms/ouvidoria", icon: MessageSquare },
+      { label: "e-SIC", path: "/admin/cms/esic", icon: Mail },
     ],
   },
   {
