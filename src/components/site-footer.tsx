@@ -18,7 +18,7 @@ export function SiteFooter() {
       .select("footer_logo_url, footer_logo_height")
       .limit(1)
       .maybeSingle()
-      .then(({ data }) => setSettings(data ?? null));
+      .then(({ data }) => setSettings(data as SiteSettings | null));
   }, []);
 
   return (

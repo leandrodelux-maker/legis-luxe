@@ -44,7 +44,7 @@ export function SiteHeader() {
       .select("contact_phone, contact_email, contact_hours, header_logo_url, header_logo_height")
       .limit(1)
       .maybeSingle()
-      .then(({ data }) => setSettings(data ?? null));
+      .then(({ data }) => setSettings(data as SiteSettings | null));
   }, []);
 
   const phone = settings?.contact_phone ?? "(64) 9482-1176";
