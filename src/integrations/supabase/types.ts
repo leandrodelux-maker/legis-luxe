@@ -370,6 +370,10 @@ export type Database = {
           contact_hours: string | null
           contact_phone: string | null
           created_at: string
+          footer_logo_height: number | null
+          footer_logo_url: string | null
+          header_logo_height: number | null
+          header_logo_url: string | null
           hero_eyebrow: string
           hero_media_type: string
           hero_media_url: string | null
@@ -384,6 +388,10 @@ export type Database = {
           contact_hours?: string | null
           contact_phone?: string | null
           created_at?: string
+          footer_logo_height?: number | null
+          footer_logo_url?: string | null
+          header_logo_height?: number | null
+          header_logo_url?: string | null
           hero_eyebrow?: string
           hero_media_type?: string
           hero_media_url?: string | null
@@ -398,6 +406,10 @@ export type Database = {
           contact_hours?: string | null
           contact_phone?: string | null
           created_at?: string
+          footer_logo_height?: number | null
+          footer_logo_url?: string | null
+          header_logo_height?: number | null
+          header_logo_url?: string | null
           hero_eyebrow?: string
           hero_media_type?: string
           hero_media_url?: string | null
