@@ -263,13 +263,17 @@ export function CrudPage<T extends { id: string }>({
 
                           console.log("Upload concluído com sucesso:", data);
 
-                          const { data: { publicUrl } } = supabase.storage
+                          const { data: signed } = await supabase.storage
                             .from('vereadores')
-                            .getPublicUrl(filePath);
+                            .createSignedUrl(filePath, 60 * 60 * 24 * 365 * 10);
 
-                          // Salvar apenas a URL pública sem parâmetros de timestamp para o banco de dados
-                          // O timestamp é usado apenas no preview para forçar atualização visual
-                          setForm((prev) => ({ ...prev, [f.name]: publicUrl }));
+                          if (!signed?.signedUrl) {
+                            toast.error("Falha ao gerar URL assinada");
+                            setSaving(false);
+                            return;
+                          }
+
+                          setForm((prev) => ({ ...prev, [f.name]: signed.signedUrl }));
                           setSaving(false);
                           toast.success("Foto enviada com sucesso!");
                         }}
