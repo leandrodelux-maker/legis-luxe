@@ -1,33 +1,27 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
-type Theme = "light" | "dark";
-type Ctx = { theme: Theme; toggle: () => void; setTheme: (t: Theme) => void };
+type Theme = "dark" | "light";
+type Ctx = { theme: Theme; toggleTheme: () => void; setTheme: (t: Theme) => void };
 
-const ThemeContext = createContext<Ctx | null>(null);
+const ThemeContext = createContext<Ctx | undefined>(undefined);
 
-export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("light");
-
-  useEffect(() => {
-    const stored = (typeof window !== "undefined" && localStorage.getItem("theme")) as Theme | null;
-    const prefersDark =
-      typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const initial: Theme = stored ?? (prefersDark ? "dark" : "light");
-    setTheme(initial);
-  }, []);
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const [theme, setThemeState] = useState<Theme>(() => {
+    if (typeof window === "undefined") return "light";
+    return (localStorage.getItem("admin-theme") as Theme) || "light";
+  });
 
   useEffect(() => {
     const root = document.documentElement;
     root.classList.toggle("dark", theme === "dark");
-    try {
-      localStorage.setItem("theme", theme);
-    } catch {}
+    localStorage.setItem("admin-theme", theme);
   }, [theme]);
 
+  const setTheme = (t: Theme) => setThemeState(t);
+  const toggleTheme = () => setThemeState((p) => (p === "dark" ? "light" : "dark"));
+
   return (
-    <ThemeContext.Provider
-      value={{ theme, setTheme, toggle: () => setTheme(theme === "dark" ? "light" : "dark") }}
-    >
+    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>
       {children}
     </ThemeContext.Provider>
   );
@@ -35,6 +29,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
 export function useTheme() {
   const ctx = useContext(ThemeContext);
-  if (!ctx) throw new Error("useTheme must be used within ThemeProvider");
+  if (!ctx) throw new Error("useTheme must be used inside ThemeProvider");
   return ctx;
 }

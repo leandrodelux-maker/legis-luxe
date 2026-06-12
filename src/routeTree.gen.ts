@@ -24,8 +24,10 @@ import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as VereadoresRankingRouteImport } from './routes/vereadores.ranking'
 import { Route as VereadoresIdRouteImport } from './routes/vereadores.$id'
 import { Route as SessoesAoVivoRouteImport } from './routes/sessoes/ao-vivo'
+import { Route as AdminMesaDiretoraRouteImport } from './routes/admin/mesa-diretora'
 import { Route as AdminExecutivoRouteImport } from './routes/admin/executivo'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
+import { Route as AdminAuditoriaRouteImport } from './routes/admin/auditoria'
 import { Route as AdminVereadoresIndexRouteImport } from './routes/admin/vereadores/index'
 import { Route as AdminTransparenciaIndexRouteImport } from './routes/admin/transparencia/index'
 import { Route as AdminSessoesIndexRouteImport } from './routes/admin/sessoes/index'
@@ -120,6 +122,11 @@ const SessoesAoVivoRoute = SessoesAoVivoRouteImport.update({
   path: '/ao-vivo',
   getParentRoute: () => SessoesRoute,
 } as any)
+const AdminMesaDiretoraRoute = AdminMesaDiretoraRouteImport.update({
+  id: '/mesa-diretora',
+  path: '/mesa-diretora',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminExecutivoRoute = AdminExecutivoRouteImport.update({
   id: '/executivo',
   path: '/executivo',
@@ -128,6 +135,11 @@ const AdminExecutivoRoute = AdminExecutivoRouteImport.update({
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAuditoriaRoute = AdminAuditoriaRouteImport.update({
+  id: '/auditoria',
+  path: '/auditoria',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminVereadoresIndexRoute = AdminVereadoresIndexRouteImport.update({
@@ -234,8 +246,10 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/transparencia': typeof TransparenciaRoute
   '/vereadores': typeof VereadoresRouteWithChildren
+  '/admin/auditoria': typeof AdminAuditoriaRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/executivo': typeof AdminExecutivoRoute
+  '/admin/mesa-diretora': typeof AdminMesaDiretoraRoute
   '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
   '/vereadores/$id': typeof VereadoresIdRoute
   '/vereadores/ranking': typeof VereadoresRankingRoute
@@ -269,8 +283,10 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/transparencia': typeof TransparenciaRoute
   '/vereadores': typeof VereadoresRouteWithChildren
+  '/admin/auditoria': typeof AdminAuditoriaRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/executivo': typeof AdminExecutivoRoute
+  '/admin/mesa-diretora': typeof AdminMesaDiretoraRoute
   '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
   '/vereadores/$id': typeof VereadoresIdRoute
   '/vereadores/ranking': typeof VereadoresRankingRoute
@@ -307,8 +323,10 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/transparencia': typeof TransparenciaRoute
   '/vereadores': typeof VereadoresRouteWithChildren
+  '/admin/auditoria': typeof AdminAuditoriaRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/executivo': typeof AdminExecutivoRoute
+  '/admin/mesa-diretora': typeof AdminMesaDiretoraRoute
   '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
   '/vereadores/$id': typeof VereadoresIdRoute
   '/vereadores/ranking': typeof VereadoresRankingRoute
@@ -346,8 +364,10 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/transparencia'
     | '/vereadores'
+    | '/admin/auditoria'
     | '/admin/dashboard'
     | '/admin/executivo'
+    | '/admin/mesa-diretora'
     | '/sessoes/ao-vivo'
     | '/vereadores/$id'
     | '/vereadores/ranking'
@@ -381,8 +401,10 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/transparencia'
     | '/vereadores'
+    | '/admin/auditoria'
     | '/admin/dashboard'
     | '/admin/executivo'
+    | '/admin/mesa-diretora'
     | '/sessoes/ao-vivo'
     | '/vereadores/$id'
     | '/vereadores/ranking'
@@ -418,8 +440,10 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/transparencia'
     | '/vereadores'
+    | '/admin/auditoria'
     | '/admin/dashboard'
     | '/admin/executivo'
+    | '/admin/mesa-diretora'
     | '/sessoes/ao-vivo'
     | '/vereadores/$id'
     | '/vereadores/ranking'
@@ -565,6 +589,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SessoesAoVivoRouteImport
       parentRoute: typeof SessoesRoute
     }
+    '/admin/mesa-diretora': {
+      id: '/admin/mesa-diretora'
+      path: '/mesa-diretora'
+      fullPath: '/admin/mesa-diretora'
+      preLoaderRoute: typeof AdminMesaDiretoraRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/executivo': {
       id: '/admin/executivo'
       path: '/executivo'
@@ -577,6 +608,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/admin/dashboard'
       preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/auditoria': {
+      id: '/admin/auditoria'
+      path: '/auditoria'
+      fullPath: '/admin/auditoria'
+      preLoaderRoute: typeof AdminAuditoriaRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/vereadores/': {
@@ -709,8 +747,10 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminAuditoriaRoute: typeof AdminAuditoriaRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminExecutivoRoute: typeof AdminExecutivoRoute
+  AdminMesaDiretoraRoute: typeof AdminMesaDiretoraRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminComunicacaoNovoRoute: typeof AdminComunicacaoNovoRoute
   AdminConfiguracoesGeralRoute: typeof AdminConfiguracoesGeralRoute
@@ -733,8 +773,10 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAuditoriaRoute: AdminAuditoriaRoute,
   AdminDashboardRoute: AdminDashboardRoute,
   AdminExecutivoRoute: AdminExecutivoRoute,
+  AdminMesaDiretoraRoute: AdminMesaDiretoraRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminComunicacaoNovoRoute: AdminComunicacaoNovoRoute,
   AdminConfiguracoesGeralRoute: AdminConfiguracoesGeralRoute,
