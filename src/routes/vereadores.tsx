@@ -189,26 +189,13 @@ function VereadoresPage() {
                     <div className={`relative bg-secondary/50 flex items-center justify-center overflow-hidden ${
                       viewMode === "list" ? "w-full md:w-48 aspect-square md:aspect-auto" : "aspect-square"
                     }`}>
-                      {v.foto_url ? (
-                        <div className="w-full h-full relative">
-                          <img 
-                            src={v.foto_url} 
-                            alt={v.nome} 
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            loading="eager"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              console.error("Erro ao carregar imagem:", v.foto_url);
-                              // Fallback visual
-                              target.src = "https://via.placeholder.com/400x400?text=Sem+Foto";
-                            }}
-                          />
-                        </div>
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/20">
-                          <User className="w-20 h-20 text-primary/20" />
-                        </div>
-                      )}
+                      <VereadorAvatar
+                        nome={v.nome}
+                        foto={v.foto_url}
+                        size={viewMode === "list" ? 192 : 320}
+                        rounded="lg"
+                        className="!rounded-none w-full h-full"
+                      />
                       {v.partido && (
                         <div className="absolute top-4 left-4">
                           <Badge className="bg-white/90 backdrop-blur-sm text-primary border-none shadow-sm">
