@@ -29,10 +29,17 @@ import { Route as AdminVereadoresIndexRouteImport } from './routes/admin/vereado
 import { Route as AdminTransparenciaIndexRouteImport } from './routes/admin/transparencia/index'
 import { Route as AdminSessoesIndexRouteImport } from './routes/admin/sessoes/index'
 import { Route as AdminProjetosIndexRouteImport } from './routes/admin/projetos/index'
+import { Route as AdminConfiguracoesIndexRouteImport } from './routes/admin/configuracoes/index'
 import { Route as AdminConfiguracoesSiteIndexRouteImport } from './routes/admin/configuracoes-site/index'
 import { Route as AdminConfigIndexRouteImport } from './routes/admin/config/index'
 import { Route as AdminComunicacaoIndexRouteImport } from './routes/admin/comunicacao/index'
 import { Route as AdminAcessoRapidoIndexRouteImport } from './routes/admin/acesso-rapido/index'
+import { Route as AdminConfiguracoesSeoRouteImport } from './routes/admin/configuracoes/seo'
+import { Route as AdminConfiguracoesMenuRouteImport } from './routes/admin/configuracoes/menu'
+import { Route as AdminConfiguracoesLgpdRouteImport } from './routes/admin/configuracoes/lgpd'
+import { Route as AdminConfiguracoesIdentidadeRouteImport } from './routes/admin/configuracoes/identidade'
+import { Route as AdminConfiguracoesHomeRouteImport } from './routes/admin/configuracoes/home'
+import { Route as AdminConfiguracoesGeralRouteImport } from './routes/admin/configuracoes/geral'
 import { Route as AdminComunicacaoNovoRouteImport } from './routes/admin/comunicacao/novo'
 
 const VereadoresRoute = VereadoresRouteImport.update({
@@ -135,6 +142,11 @@ const AdminProjetosIndexRoute = AdminProjetosIndexRouteImport.update({
   path: '/projetos/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminConfiguracoesIndexRoute = AdminConfiguracoesIndexRouteImport.update({
+  id: '/configuracoes/',
+  path: '/configuracoes/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminConfiguracoesSiteIndexRoute =
   AdminConfiguracoesSiteIndexRouteImport.update({
     id: '/configuracoes-site/',
@@ -154,6 +166,37 @@ const AdminComunicacaoIndexRoute = AdminComunicacaoIndexRouteImport.update({
 const AdminAcessoRapidoIndexRoute = AdminAcessoRapidoIndexRouteImport.update({
   id: '/acesso-rapido/',
   path: '/acesso-rapido/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminConfiguracoesSeoRoute = AdminConfiguracoesSeoRouteImport.update({
+  id: '/configuracoes/seo',
+  path: '/configuracoes/seo',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminConfiguracoesMenuRoute = AdminConfiguracoesMenuRouteImport.update({
+  id: '/configuracoes/menu',
+  path: '/configuracoes/menu',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminConfiguracoesLgpdRoute = AdminConfiguracoesLgpdRouteImport.update({
+  id: '/configuracoes/lgpd',
+  path: '/configuracoes/lgpd',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminConfiguracoesIdentidadeRoute =
+  AdminConfiguracoesIdentidadeRouteImport.update({
+    id: '/configuracoes/identidade',
+    path: '/configuracoes/identidade',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminConfiguracoesHomeRoute = AdminConfiguracoesHomeRouteImport.update({
+  id: '/configuracoes/home',
+  path: '/configuracoes/home',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminConfiguracoesGeralRoute = AdminConfiguracoesGeralRouteImport.update({
+  id: '/configuracoes/geral',
+  path: '/configuracoes/geral',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminComunicacaoNovoRoute = AdminComunicacaoNovoRouteImport.update({
@@ -180,10 +223,17 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/sessoes/': typeof SessoesIndexRoute
   '/admin/comunicacao/novo': typeof AdminComunicacaoNovoRoute
+  '/admin/configuracoes/geral': typeof AdminConfiguracoesGeralRoute
+  '/admin/configuracoes/home': typeof AdminConfiguracoesHomeRoute
+  '/admin/configuracoes/identidade': typeof AdminConfiguracoesIdentidadeRoute
+  '/admin/configuracoes/lgpd': typeof AdminConfiguracoesLgpdRoute
+  '/admin/configuracoes/menu': typeof AdminConfiguracoesMenuRoute
+  '/admin/configuracoes/seo': typeof AdminConfiguracoesSeoRoute
   '/admin/acesso-rapido/': typeof AdminAcessoRapidoIndexRoute
   '/admin/comunicacao/': typeof AdminComunicacaoIndexRoute
   '/admin/config/': typeof AdminConfigIndexRoute
   '/admin/configuracoes-site/': typeof AdminConfiguracoesSiteIndexRoute
+  '/admin/configuracoes/': typeof AdminConfiguracoesIndexRoute
   '/admin/projetos/': typeof AdminProjetosIndexRoute
   '/admin/sessoes/': typeof AdminSessoesIndexRoute
   '/admin/transparencia/': typeof AdminTransparenciaIndexRoute
@@ -205,10 +255,17 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/sessoes': typeof SessoesIndexRoute
   '/admin/comunicacao/novo': typeof AdminComunicacaoNovoRoute
+  '/admin/configuracoes/geral': typeof AdminConfiguracoesGeralRoute
+  '/admin/configuracoes/home': typeof AdminConfiguracoesHomeRoute
+  '/admin/configuracoes/identidade': typeof AdminConfiguracoesIdentidadeRoute
+  '/admin/configuracoes/lgpd': typeof AdminConfiguracoesLgpdRoute
+  '/admin/configuracoes/menu': typeof AdminConfiguracoesMenuRoute
+  '/admin/configuracoes/seo': typeof AdminConfiguracoesSeoRoute
   '/admin/acesso-rapido': typeof AdminAcessoRapidoIndexRoute
   '/admin/comunicacao': typeof AdminComunicacaoIndexRoute
   '/admin/config': typeof AdminConfigIndexRoute
   '/admin/configuracoes-site': typeof AdminConfiguracoesSiteIndexRoute
+  '/admin/configuracoes': typeof AdminConfiguracoesIndexRoute
   '/admin/projetos': typeof AdminProjetosIndexRoute
   '/admin/sessoes': typeof AdminSessoesIndexRoute
   '/admin/transparencia': typeof AdminTransparenciaIndexRoute
@@ -233,10 +290,17 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/sessoes/': typeof SessoesIndexRoute
   '/admin/comunicacao/novo': typeof AdminComunicacaoNovoRoute
+  '/admin/configuracoes/geral': typeof AdminConfiguracoesGeralRoute
+  '/admin/configuracoes/home': typeof AdminConfiguracoesHomeRoute
+  '/admin/configuracoes/identidade': typeof AdminConfiguracoesIdentidadeRoute
+  '/admin/configuracoes/lgpd': typeof AdminConfiguracoesLgpdRoute
+  '/admin/configuracoes/menu': typeof AdminConfiguracoesMenuRoute
+  '/admin/configuracoes/seo': typeof AdminConfiguracoesSeoRoute
   '/admin/acesso-rapido/': typeof AdminAcessoRapidoIndexRoute
   '/admin/comunicacao/': typeof AdminComunicacaoIndexRoute
   '/admin/config/': typeof AdminConfigIndexRoute
   '/admin/configuracoes-site/': typeof AdminConfiguracoesSiteIndexRoute
+  '/admin/configuracoes/': typeof AdminConfiguracoesIndexRoute
   '/admin/projetos/': typeof AdminProjetosIndexRoute
   '/admin/sessoes/': typeof AdminSessoesIndexRoute
   '/admin/transparencia/': typeof AdminTransparenciaIndexRoute
@@ -262,10 +326,17 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/sessoes/'
     | '/admin/comunicacao/novo'
+    | '/admin/configuracoes/geral'
+    | '/admin/configuracoes/home'
+    | '/admin/configuracoes/identidade'
+    | '/admin/configuracoes/lgpd'
+    | '/admin/configuracoes/menu'
+    | '/admin/configuracoes/seo'
     | '/admin/acesso-rapido/'
     | '/admin/comunicacao/'
     | '/admin/config/'
     | '/admin/configuracoes-site/'
+    | '/admin/configuracoes/'
     | '/admin/projetos/'
     | '/admin/sessoes/'
     | '/admin/transparencia/'
@@ -287,10 +358,17 @@ export interface FileRouteTypes {
     | '/admin'
     | '/sessoes'
     | '/admin/comunicacao/novo'
+    | '/admin/configuracoes/geral'
+    | '/admin/configuracoes/home'
+    | '/admin/configuracoes/identidade'
+    | '/admin/configuracoes/lgpd'
+    | '/admin/configuracoes/menu'
+    | '/admin/configuracoes/seo'
     | '/admin/acesso-rapido'
     | '/admin/comunicacao'
     | '/admin/config'
     | '/admin/configuracoes-site'
+    | '/admin/configuracoes'
     | '/admin/projetos'
     | '/admin/sessoes'
     | '/admin/transparencia'
@@ -314,10 +392,17 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/sessoes/'
     | '/admin/comunicacao/novo'
+    | '/admin/configuracoes/geral'
+    | '/admin/configuracoes/home'
+    | '/admin/configuracoes/identidade'
+    | '/admin/configuracoes/lgpd'
+    | '/admin/configuracoes/menu'
+    | '/admin/configuracoes/seo'
     | '/admin/acesso-rapido/'
     | '/admin/comunicacao/'
     | '/admin/config/'
     | '/admin/configuracoes-site/'
+    | '/admin/configuracoes/'
     | '/admin/projetos/'
     | '/admin/sessoes/'
     | '/admin/transparencia/'
@@ -479,6 +564,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProjetosIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/configuracoes/': {
+      id: '/admin/configuracoes/'
+      path: '/configuracoes'
+      fullPath: '/admin/configuracoes/'
+      preLoaderRoute: typeof AdminConfiguracoesIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/configuracoes-site/': {
       id: '/admin/configuracoes-site/'
       path: '/configuracoes-site'
@@ -507,6 +599,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAcessoRapidoIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/configuracoes/seo': {
+      id: '/admin/configuracoes/seo'
+      path: '/configuracoes/seo'
+      fullPath: '/admin/configuracoes/seo'
+      preLoaderRoute: typeof AdminConfiguracoesSeoRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/configuracoes/menu': {
+      id: '/admin/configuracoes/menu'
+      path: '/configuracoes/menu'
+      fullPath: '/admin/configuracoes/menu'
+      preLoaderRoute: typeof AdminConfiguracoesMenuRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/configuracoes/lgpd': {
+      id: '/admin/configuracoes/lgpd'
+      path: '/configuracoes/lgpd'
+      fullPath: '/admin/configuracoes/lgpd'
+      preLoaderRoute: typeof AdminConfiguracoesLgpdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/configuracoes/identidade': {
+      id: '/admin/configuracoes/identidade'
+      path: '/configuracoes/identidade'
+      fullPath: '/admin/configuracoes/identidade'
+      preLoaderRoute: typeof AdminConfiguracoesIdentidadeRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/configuracoes/home': {
+      id: '/admin/configuracoes/home'
+      path: '/configuracoes/home'
+      fullPath: '/admin/configuracoes/home'
+      preLoaderRoute: typeof AdminConfiguracoesHomeRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/configuracoes/geral': {
+      id: '/admin/configuracoes/geral'
+      path: '/configuracoes/geral'
+      fullPath: '/admin/configuracoes/geral'
+      preLoaderRoute: typeof AdminConfiguracoesGeralRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/comunicacao/novo': {
       id: '/admin/comunicacao/novo'
       path: '/comunicacao/novo'
@@ -522,10 +656,17 @@ interface AdminRouteChildren {
   AdminExecutivoRoute: typeof AdminExecutivoRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminComunicacaoNovoRoute: typeof AdminComunicacaoNovoRoute
+  AdminConfiguracoesGeralRoute: typeof AdminConfiguracoesGeralRoute
+  AdminConfiguracoesHomeRoute: typeof AdminConfiguracoesHomeRoute
+  AdminConfiguracoesIdentidadeRoute: typeof AdminConfiguracoesIdentidadeRoute
+  AdminConfiguracoesLgpdRoute: typeof AdminConfiguracoesLgpdRoute
+  AdminConfiguracoesMenuRoute: typeof AdminConfiguracoesMenuRoute
+  AdminConfiguracoesSeoRoute: typeof AdminConfiguracoesSeoRoute
   AdminAcessoRapidoIndexRoute: typeof AdminAcessoRapidoIndexRoute
   AdminComunicacaoIndexRoute: typeof AdminComunicacaoIndexRoute
   AdminConfigIndexRoute: typeof AdminConfigIndexRoute
   AdminConfiguracoesSiteIndexRoute: typeof AdminConfiguracoesSiteIndexRoute
+  AdminConfiguracoesIndexRoute: typeof AdminConfiguracoesIndexRoute
   AdminProjetosIndexRoute: typeof AdminProjetosIndexRoute
   AdminSessoesIndexRoute: typeof AdminSessoesIndexRoute
   AdminTransparenciaIndexRoute: typeof AdminTransparenciaIndexRoute
@@ -537,10 +678,17 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminExecutivoRoute: AdminExecutivoRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminComunicacaoNovoRoute: AdminComunicacaoNovoRoute,
+  AdminConfiguracoesGeralRoute: AdminConfiguracoesGeralRoute,
+  AdminConfiguracoesHomeRoute: AdminConfiguracoesHomeRoute,
+  AdminConfiguracoesIdentidadeRoute: AdminConfiguracoesIdentidadeRoute,
+  AdminConfiguracoesLgpdRoute: AdminConfiguracoesLgpdRoute,
+  AdminConfiguracoesMenuRoute: AdminConfiguracoesMenuRoute,
+  AdminConfiguracoesSeoRoute: AdminConfiguracoesSeoRoute,
   AdminAcessoRapidoIndexRoute: AdminAcessoRapidoIndexRoute,
   AdminComunicacaoIndexRoute: AdminComunicacaoIndexRoute,
   AdminConfigIndexRoute: AdminConfigIndexRoute,
   AdminConfiguracoesSiteIndexRoute: AdminConfiguracoesSiteIndexRoute,
+  AdminConfiguracoesIndexRoute: AdminConfiguracoesIndexRoute,
   AdminProjetosIndexRoute: AdminProjetosIndexRoute,
   AdminSessoesIndexRoute: AdminSessoesIndexRoute,
   AdminTransparenciaIndexRoute: AdminTransparenciaIndexRoute,

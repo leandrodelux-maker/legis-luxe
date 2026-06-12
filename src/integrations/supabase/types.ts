@@ -364,16 +364,81 @@ export type Database = {
           },
         ]
       }
+      site_menus: {
+        Row: {
+          abrir_nova_aba: boolean
+          ativo: boolean
+          created_at: string
+          icone: string | null
+          id: string
+          label: string
+          ordem: number
+          parent_id: string | null
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          abrir_nova_aba?: boolean
+          ativo?: boolean
+          created_at?: string
+          icone?: string | null
+          id?: string
+          label: string
+          ordem?: number
+          parent_id?: string | null
+          updated_at?: string
+          url?: string
+        }
+        Update: {
+          abrir_nova_aba?: boolean
+          ativo?: boolean
+          created_at?: string
+          icone?: string | null
+          id?: string
+          label?: string
+          ordem?: number
+          parent_id?: string | null
+          updated_at?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "site_menus_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "site_menus"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       site_settings: {
         Row: {
+          brasao_url: string | null
           contact_email: string | null
           contact_hours: string | null
           contact_phone: string | null
+          cookies_enabled: boolean | null
+          cookies_text: string | null
+          cor_botoes: string | null
+          cor_cards: string | null
+          cor_destaque: string | null
+          cor_menu: string | null
+          cor_primaria: string | null
+          cor_secundaria: string | null
           created_at: string
+          endereco: string | null
+          favicon_url: string | null
+          fonte_corpo: string | null
+          fonte_titulo: string | null
           footer_logo_height: number | null
           footer_logo_url: string | null
+          footer_text: string | null
+          google_analytics_id: string | null
+          gtm_id: string | null
           header_logo_height: number | null
           header_logo_url: string | null
+          hero_botao_texto: string | null
+          hero_botao_url: string | null
           hero_eyebrow: string
           hero_media_type: string
           hero_media_url: string | null
@@ -381,17 +446,46 @@ export type Database = {
           hero_title: string
           id: string
           live_broadcast_url: string | null
+          logo_claro_url: string | null
+          logo_escuro_url: string | null
+          nome_camara: string | null
+          og_image_url: string | null
+          ordem_blocos: Json | null
+          privacy_policy: string | null
+          redes_sociais: Json | null
+          seo_description: string | null
+          seo_title: string | null
+          terms_of_use: string | null
           updated_at: string
+          whatsapp: string | null
         }
         Insert: {
+          brasao_url?: string | null
           contact_email?: string | null
           contact_hours?: string | null
           contact_phone?: string | null
+          cookies_enabled?: boolean | null
+          cookies_text?: string | null
+          cor_botoes?: string | null
+          cor_cards?: string | null
+          cor_destaque?: string | null
+          cor_menu?: string | null
+          cor_primaria?: string | null
+          cor_secundaria?: string | null
           created_at?: string
+          endereco?: string | null
+          favicon_url?: string | null
+          fonte_corpo?: string | null
+          fonte_titulo?: string | null
           footer_logo_height?: number | null
           footer_logo_url?: string | null
+          footer_text?: string | null
+          google_analytics_id?: string | null
+          gtm_id?: string | null
           header_logo_height?: number | null
           header_logo_url?: string | null
+          hero_botao_texto?: string | null
+          hero_botao_url?: string | null
           hero_eyebrow?: string
           hero_media_type?: string
           hero_media_url?: string | null
@@ -399,17 +493,46 @@ export type Database = {
           hero_title?: string
           id?: string
           live_broadcast_url?: string | null
+          logo_claro_url?: string | null
+          logo_escuro_url?: string | null
+          nome_camara?: string | null
+          og_image_url?: string | null
+          ordem_blocos?: Json | null
+          privacy_policy?: string | null
+          redes_sociais?: Json | null
+          seo_description?: string | null
+          seo_title?: string | null
+          terms_of_use?: string | null
           updated_at?: string
+          whatsapp?: string | null
         }
         Update: {
+          brasao_url?: string | null
           contact_email?: string | null
           contact_hours?: string | null
           contact_phone?: string | null
+          cookies_enabled?: boolean | null
+          cookies_text?: string | null
+          cor_botoes?: string | null
+          cor_cards?: string | null
+          cor_destaque?: string | null
+          cor_menu?: string | null
+          cor_primaria?: string | null
+          cor_secundaria?: string | null
           created_at?: string
+          endereco?: string | null
+          favicon_url?: string | null
+          fonte_corpo?: string | null
+          fonte_titulo?: string | null
           footer_logo_height?: number | null
           footer_logo_url?: string | null
+          footer_text?: string | null
+          google_analytics_id?: string | null
+          gtm_id?: string | null
           header_logo_height?: number | null
           header_logo_url?: string | null
+          hero_botao_texto?: string | null
+          hero_botao_url?: string | null
           hero_eyebrow?: string
           hero_media_type?: string
           hero_media_url?: string | null
@@ -417,7 +540,18 @@ export type Database = {
           hero_title?: string
           id?: string
           live_broadcast_url?: string | null
+          logo_claro_url?: string | null
+          logo_escuro_url?: string | null
+          nome_camara?: string | null
+          og_image_url?: string | null
+          ordem_blocos?: Json | null
+          privacy_policy?: string | null
+          redes_sociais?: Json | null
+          seo_description?: string | null
+          seo_title?: string | null
+          terms_of_use?: string | null
           updated_at?: string
+          whatsapp?: string | null
         }
         Relationships: []
       }
