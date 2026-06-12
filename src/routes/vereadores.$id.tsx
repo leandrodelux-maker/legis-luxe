@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
+import { VereadorAvatar } from "@/components/vereador-avatar";
 
 export const Route = createFileRoute("/vereadores/$id")({
   component: VereadorDetailPage,
@@ -91,19 +92,13 @@ function VereadorDetailPage() {
           </Button>
 
           <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
-            <div className="w-48 h-48 md:w-64 md:h-64 rounded-2xl overflow-hidden border-4 border-white/20 shadow-2xl shrink-0 bg-white/10">
-              {vereador.foto_url ? (
-                <img 
-                  src={vereador.foto_url} 
-                  alt={vereador.nome} 
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <User className="w-24 h-24 text-white/20" />
-                </div>
-              )}
-            </div>
+            <VereadorAvatar
+              nome={vereador.nome}
+              foto={vereador.foto_url}
+              size={256}
+              rounded="2xl"
+              className="border-4 border-white/20 shadow-2xl"
+            />
 
             <div className="text-center md:text-left">
               <Badge className="bg-gold text-primary-deep mb-4 px-4 py-1">

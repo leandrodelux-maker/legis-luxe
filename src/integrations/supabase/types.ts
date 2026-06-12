@@ -83,6 +83,13 @@ export type Database = {
             referencedRelation: "vereadores"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "mesa_diretora_vereador_id_fkey"
+            columns: ["vereador_id"]
+            isOneToOne: false
+            referencedRelation: "vereadores_ranking"
+            referencedColumns: ["id"]
+          },
         ]
       }
       noticias: {
@@ -214,6 +221,13 @@ export type Database = {
             referencedRelation: "vereadores"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "projetos_legislativos_autor_id_fkey"
+            columns: ["autor_id"]
+            isOneToOne: false
+            referencedRelation: "vereadores_ranking"
+            referencedColumns: ["id"]
+          },
         ]
       }
       sessoes: {
@@ -313,6 +327,13 @@ export type Database = {
             referencedRelation: "vereadores"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "sessoes_presencas_vereador_id_fkey"
+            columns: ["vereador_id"]
+            isOneToOne: false
+            referencedRelation: "vereadores_ranking"
+            referencedColumns: ["id"]
+          },
         ]
       }
       sessoes_votacoes: {
@@ -360,6 +381,13 @@ export type Database = {
             columns: ["vereador_id"]
             isOneToOne: false
             referencedRelation: "vereadores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessoes_votacoes_vereador_id_fkey"
+            columns: ["vereador_id"]
+            isOneToOne: false
+            referencedRelation: "vereadores_ranking"
             referencedColumns: ["id"]
           },
         ]
@@ -622,11 +650,13 @@ export type Database = {
           cargo: string | null
           created_at: string
           data_nascimento: string | null
+          data_posse: string | null
           email: string | null
           escolaridade: string | null
           foto_url: string | null
           gabinete: string | null
           id: string
+          mandato_atual: string | null
           mandato_fim: string | null
           mandato_inicio: string | null
           naturalidade: string | null
@@ -645,11 +675,13 @@ export type Database = {
           cargo?: string | null
           created_at?: string
           data_nascimento?: string | null
+          data_posse?: string | null
           email?: string | null
           escolaridade?: string | null
           foto_url?: string | null
           gabinete?: string | null
           id?: string
+          mandato_atual?: string | null
           mandato_fim?: string | null
           mandato_inicio?: string | null
           naturalidade?: string | null
@@ -668,11 +700,13 @@ export type Database = {
           cargo?: string | null
           created_at?: string
           data_nascimento?: string | null
+          data_posse?: string | null
           email?: string | null
           escolaridade?: string | null
           foto_url?: string | null
           gabinete?: string | null
           id?: string
+          mandato_atual?: string | null
           mandato_fim?: string | null
           mandato_inicio?: string | null
           naturalidade?: string | null
@@ -687,9 +721,121 @@ export type Database = {
         }
         Relationships: []
       }
+      vereadores_galeria: {
+        Row: {
+          created_at: string
+          id: string
+          legenda: string | null
+          ordem: number | null
+          url: string
+          vereador_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          legenda?: string | null
+          ordem?: number | null
+          url: string
+          vereador_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          legenda?: string | null
+          ordem?: number | null
+          url?: string
+          vereador_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vereadores_galeria_vereador_id_fkey"
+            columns: ["vereador_id"]
+            isOneToOne: false
+            referencedRelation: "vereadores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vereadores_galeria_vereador_id_fkey"
+            columns: ["vereador_id"]
+            isOneToOne: false
+            referencedRelation: "vereadores_ranking"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vereadores_mandatos: {
+        Row: {
+          cargo_mesa: string | null
+          created_at: string
+          data_fim: string | null
+          data_inicio: string | null
+          id: string
+          mandato: string
+          observacoes: string | null
+          partido: string | null
+          updated_at: string
+          vereador_id: string
+        }
+        Insert: {
+          cargo_mesa?: string | null
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string | null
+          id?: string
+          mandato: string
+          observacoes?: string | null
+          partido?: string | null
+          updated_at?: string
+          vereador_id: string
+        }
+        Update: {
+          cargo_mesa?: string | null
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string | null
+          id?: string
+          mandato?: string
+          observacoes?: string | null
+          partido?: string | null
+          updated_at?: string
+          vereador_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vereadores_mandatos_vereador_id_fkey"
+            columns: ["vereador_id"]
+            isOneToOne: false
+            referencedRelation: "vereadores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vereadores_mandatos_vereador_id_fkey"
+            columns: ["vereador_id"]
+            isOneToOne: false
+            referencedRelation: "vereadores_ranking"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
-      [_ in never]: never
+      vereadores_ranking: {
+        Row: {
+          cargo: string | null
+          foto_url: string | null
+          id: string | null
+          nome: string | null
+          partido: string | null
+          percentual_presenca: number | null
+          pontuacao_total: number | null
+          presencas: number | null
+          total_indicacoes: number | null
+          total_projetos: number | null
+          total_requerimentos: number | null
+          total_sessoes: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {

@@ -21,6 +21,7 @@ import { SectionHeading } from "@/components/section-heading";
 import { QuickAccess } from "@/components/quick-access";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
+import { VereadorAvatar } from "@/components/vereador-avatar";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -531,12 +532,13 @@ function HomePage() {
           ) : (
             vereadores.map((v) => (
               <Link key={v.id} to={`/vereadores/${v.id}`} className="group block text-center animate-[fade-up_0.5s_ease-out_both]">
-                <div className="relative aspect-square rounded-full overflow-hidden border-2 border-transparent group-hover:border-gold transition-colors mx-auto mb-4 grayscale group-hover:grayscale-0 transition-all duration-300 bg-secondary/30 flex items-center justify-center">
-                  {v.foto_url ? (
-                    <img src={v.foto_url} alt={v.nome} className="h-full w-full object-cover" />
-                  ) : (
-                    <User className="w-1/2 h-1/2 text-primary/20" />
-                  )}
+                <div className="mx-auto mb-4">
+                  <VereadorAvatar
+                    nome={v.nome}
+                    foto={v.foto_url}
+                    size={112}
+                    className="border-2 border-transparent group-hover:border-gold transition-colors grayscale group-hover:grayscale-0"
+                  />
                 </div>
                 <h5 className="font-display font-bold text-sm leading-tight group-hover:text-primary transition-colors line-clamp-2 px-1">
                   {v.nome}

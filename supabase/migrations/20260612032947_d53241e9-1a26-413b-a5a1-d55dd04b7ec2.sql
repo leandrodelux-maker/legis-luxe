@@ -1,0 +1,1 @@
+ALTER VIEW public.vereadores_ranking SET (security_invoker = true);
