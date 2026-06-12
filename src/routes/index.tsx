@@ -11,17 +11,30 @@ import {
   Search,
   Sparkles,
   Newspaper,
-  User,
-  Loader2,
+  Camera as InstagramIcon,
+  Share2 as FacebookIcon,
+  AtSign as TwitterIcon,
+  Mail,
+  PlayCircle,
+  CheckCircle2,
+  Clock,
+  TrendingUp,
+  Eye,
+  HandCoins,
+  Megaphone,
+  HelpCircle,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import heroImg from "@/assets/hero-camara.jpg";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
 import { SectionHeading } from "@/components/section-heading";
 import { QuickAccess } from "@/components/quick-access";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { VereadorAvatar } from "@/components/vereador-avatar";
+import { AnimatedCounter } from "@/components/animated-counter";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -30,7 +43,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Acompanhe o trabalho dos vereadores, agenda de sessões, projetos de lei e dados de transparência da Câmara Municipal.",
+          "Acompanhe vereadores, sessões, projetos de lei, transparência, ouvidoria e e-SIC da Câmara Municipal.",
       },
       { property: "og:title", content: "Câmara Municipal — Portal Oficial" },
       { property: "og:description", content: "Transparência, legislação e participação cidadã." },
@@ -40,13 +53,6 @@ export const Route = createFileRoute("/")({
   }),
   component: HomePage,
 });
-
-const stats = [
-  { value: "21", label: "Vereadores" },
-  { value: "184", label: "Projetos em 2026" },
-  { value: "47", label: "Sessões realizadas" },
-  { value: "100%", label: "Transparência ativa" },
-];
 
 const heroPills = [
   { icon: Shield, label: "Transparência", to: "/transparencia" },
@@ -66,29 +72,11 @@ type HeroData = {
 };
 
 type Vereador = Tables<"vereadores">;
-
 type MesaMember = {
   id: string;
   cargo: string;
-  vereadores: {
-    id: string;
-    nome: string;
-    partido: string | null;
-    foto_url: string | null;
-  };
+  vereadores: { id: string; nome: string; partido: string | null; foto_url: string | null; cargo: string | null };
 };
-
-type DbNoticia = {
-  id: string;
-  titulo: string;
-  resumo: string | null;
-  categoria: string | null;
-  publicado_em: string | null;
-  created_at: string;
-  imagem_url: string | null;
-  slug: string;
-};
-
 type DbSessao = {
   id: string;
   titulo: string;
@@ -98,19 +86,38 @@ type DbSessao = {
   status: string;
 };
 
+type CamaraStats = {
+  vereadores: number;
+  sessoesRealizadas: number;
+  projetosTramitacao: number;
+  leisPublicadas: number;
+};
+
+type TransparenciaStats = {
+  licitacoes: number;
+  contratos: number;
+  documentos: number;
+  prestacoes: number;
+};
+
+function getSocial(redes: unknown, key: "instagram" | "facebook" | "twitter"): string | null {
+  if (!redes || typeof redes !== "object") return null;
+  const v = (redes as Record<string, unknown>)[key];
+  return typeof v === "string" && v.trim() ? v : null;
+}
+
 function HomePage() {
   const [hero, setHero] = useState<HeroData | null>(null);
   const [vereadores, setVereadores] = useState<Vereador[]>([]);
   const [mesaDiretora, setMesaDiretora] = useState<MesaMember[]>([]);
-  const [noticias, setNoticias] = useState<DbNoticia[]>([]);
-  const [proximasSessoes, setProximasSessoes] = useState<DbSessao[]>([]);
-  const [loadingVereadores, setLoadingVereadores] = useState(true);
+  const [ultimasSessoes, setUltimasSessoes] = useState<DbSessao[]>([]);
+  const [stats, setStats] = useState<CamaraStats | null>(null);
+  const [transparencia, setTransparencia] = useState<TransparenciaStats | null>(null);
+  const [loadingVer, setLoadingVer] = useState(true);
   const [loadingMesa, setLoadingMesa] = useState(true);
-  const [loadingNoticias, setLoadingNoticias] = useState(true);
-  const [loadingSessoes, setLoadingSessoes] = useState(true);
+  const [loadingSes, setLoadingSes] = useState(true);
 
   useEffect(() => {
-    // Fetch Hero settings
     supabase
       .from("site_settings")
       .select("hero_media_url, hero_media_type, hero_title, hero_subtitle, hero_eyebrow")
@@ -118,53 +125,65 @@ function HomePage() {
       .maybeSingle()
       .then(({ data }) => setHero(data as HeroData | null));
 
-    // Fetch active vereadores
     supabase
       .from("vereadores")
       .select("*")
       .eq("ativo", true)
       .order("ordem", { ascending: true })
-      .limit(6)
+      .limit(8)
       .then(({ data }) => {
         setVereadores(data || []);
-        setLoadingVereadores(false);
+        setLoadingVer(false);
       });
 
-    // Fetch Mesa Diretora
     supabase
       .from("mesa_diretora")
-      .select("id, cargo, vereadores(id, nome, partido, foto_url)")
+      .select("id, cargo, vereadores(id, nome, partido, foto_url, cargo)")
       .eq("ativo", true)
       .order("ordem", { ascending: true })
       .then(({ data }) => {
-        setMesaDiretora((data as any) || []);
+        setMesaDiretora((data as unknown as MesaMember[]) || []);
         setLoadingMesa(false);
       });
 
-    // Fetch Latest News
-    supabase
-      .from("noticias")
-      .select("id, titulo, resumo, categoria, publicado_em, created_at, imagem_url, slug")
-      .eq("publicado", true)
-      .order("publicado_em", { ascending: false, nullsFirst: false })
-      .limit(3)
-      .then(({ data }) => {
-        setNoticias((data as DbNoticia[]) || []);
-        setLoadingNoticias(false);
-      });
-
-    // Fetch Next Sessions
     supabase
       .from("sessoes")
       .select("id, titulo, tipo, data_sessao, local, status")
-      .gte("data_sessao", new Date().toISOString())
-      .eq("status", "agendada")
-      .order("data_sessao", { ascending: true })
-      .limit(3)
+      .order("data_sessao", { ascending: false })
+      .limit(4)
       .then(({ data }) => {
-        setProximasSessoes((data as DbSessao[]) || []);
-        setLoadingSessoes(false);
+        setUltimasSessoes((data as DbSessao[]) || []);
+        setLoadingSes(false);
       });
+
+    // Stats — counts in parallel
+    (async () => {
+      const [v, sR, pT, lP] = await Promise.all([
+        supabase.from("vereadores").select("id", { count: "exact", head: true }).eq("ativo", true),
+        supabase.from("sessoes").select("id", { count: "exact", head: true }).eq("status", "realizada"),
+        supabase.from("projetos_legislativos").select("id", { count: "exact", head: true }).neq("status", "arquivado"),
+        supabase.from("projetos_legislativos").select("id", { count: "exact", head: true }).eq("status", "aprovado"),
+      ]);
+      setStats({
+        vereadores: v.count ?? 0,
+        sessoesRealizadas: sR.count ?? 0,
+        projetosTramitacao: pT.count ?? 0,
+        leisPublicadas: lP.count ?? 0,
+      });
+
+      const [lic, con, doc, pre] = await Promise.all([
+        supabase.from("transparencia_licitacoes").select("id", { count: "exact", head: true }),
+        supabase.from("transparencia_contratos").select("id", { count: "exact", head: true }),
+        supabase.from("transparencia_documentos").select("id", { count: "exact", head: true }),
+        supabase.from("transparencia_prestacao_contas").select("id", { count: "exact", head: true }),
+      ]);
+      setTransparencia({
+        licitacoes: lic.count ?? 0,
+        contratos: con.count ?? 0,
+        documentos: doc.count ?? 0,
+        prestacoes: pre.count ?? 0,
+      });
+    })();
   }, []);
 
   const mediaUrl = hero?.hero_media_url || null;
@@ -175,35 +194,25 @@ function HomePage() {
 
   return (
     <>
-      {/* HERO — full-bleed media with overlay, centered content, search pill row */}
+      {/* ======================= HERO ======================= */}
       <section className="relative isolate overflow-hidden">
         <div className="absolute inset-0 -z-10">
           {isVideo && mediaUrl ? (
-            <video
-              src={mediaUrl}
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="h-full w-full object-cover"
-            />
+            <video src={mediaUrl} autoPlay muted loop playsInline className="h-full w-full object-cover" />
           ) : (
-            <img
-              src={mediaUrl || heroImg}
-              alt="Imagem do município"
-              className="h-full w-full object-cover"
-            />
+            <img src={mediaUrl || heroImg} alt="Município" className="h-full w-full object-cover" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-b from-primary-deep/85 via-primary-deep/75 to-primary-deep/85" />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-deep/90 via-primary-deep/80 to-primary/85" />
+          <div className="absolute -top-40 -right-40 h-[480px] w-[480px] rounded-full bg-gold/20 blur-3xl" />
+          <div className="absolute -bottom-40 -left-40 h-[420px] w-[420px] rounded-full bg-primary/40 blur-3xl" />
         </div>
 
-        <div className="container-page py-10 md:py-14 lg:py-16 text-white text-center">
+        <div className="container-page py-14 md:py-20 lg:py-24 text-white text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-white/10 backdrop-blur-sm px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-gold animate-[fade-up_0.6s_ease-out]">
             <Sparkles className="h-3.5 w-3.5" /> {eyebrow}
           </div>
 
-          <h1 className="mt-3 font-display text-3xl md:text-5xl lg:text-6xl font-extrabold leading-[1.02] tracking-tight animate-[fade-up_0.7s_ease-out]">
-
+          <h1 className="mt-4 font-display text-4xl md:text-6xl lg:text-7xl font-extrabold leading-[1.02] tracking-tight animate-[fade-up_0.7s_ease-out]">
             {title}
           </h1>
 
@@ -211,396 +220,427 @@ function HomePage() {
             {subtitle}
           </p>
 
-          {/* Search bar */}
           <form className="mt-10 max-w-2xl mx-auto animate-[fade-up_0.9s_ease-out]">
-            <div className="flex items-stretch rounded-2xl bg-white shadow-2xl shadow-primary-deep/30 overflow-hidden">
-              <div className="flex items-center pl-4 text-slate-400">
+            <div className="flex items-stretch rounded-2xl bg-white shadow-2xl shadow-primary-deep/40 overflow-hidden ring-1 ring-white/10">
+              <div className="flex items-center pl-5 text-slate-400">
                 <Search className="h-5 w-5" />
               </div>
               <input
                 type="search"
-                placeholder="O que você procura? Ex: IPTU, licitações..."
+                placeholder="O que você procura? Ex: IPTU, licitações, vereador..."
                 className="flex-1 px-3 h-14 text-slate-700 placeholder:text-slate-400 focus:outline-none text-base"
               />
-              <Button
-                type="submit"
-                className="h-14 rounded-none rounded-r-2xl px-6 md:px-8 bg-orange-500 hover:bg-orange-600 text-white font-bold text-base"
-              >
+              <Button type="submit" className="h-14 rounded-none rounded-r-2xl px-6 md:px-8 bg-gold hover:bg-gold/90 text-gold-foreground font-bold text-base">
                 Buscar
               </Button>
             </div>
           </form>
 
-          {/* Pill quick links */}
           <div className="mt-8 flex flex-wrap justify-center gap-3 animate-[fade-up_1s_ease-out]">
             {heroPills.map((p) => (
               <Link
                 key={p.label}
                 to={p.to}
-                className="inline-flex items-center gap-2 h-11 px-5 rounded-full border border-white/25 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white text-sm font-medium transition-colors"
+                className="inline-flex items-center gap-2 h-11 px-5 rounded-full border border-white/25 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white text-sm font-medium transition-all hover:-translate-y-0.5"
               >
                 <p.icon className="h-4 w-4 text-gold" /> {p.label}
               </Link>
             ))}
           </div>
-
         </div>
 
+        {/* Stats da Câmara — embutidas no fim do hero */}
+        <div className="container-page pb-16 md:pb-20 relative">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            {[
+              { icon: Users, label: "Vereadores", value: stats?.vereadores ?? 0 },
+              { icon: CheckCircle2, label: "Sessões realizadas", value: stats?.sessoesRealizadas ?? 0 },
+              { icon: Gavel, label: "Projetos em tramitação", value: stats?.projetosTramitacao ?? 0 },
+              { icon: BookOpen, label: "Leis publicadas", value: stats?.leisPublicadas ?? 0 },
+            ].map((s, i) => (
+              <div
+                key={s.label}
+                className="group rounded-2xl border border-white/15 bg-white/8 backdrop-blur-md p-5 md:p-6 text-white animate-[fade-up_0.6s_ease-out_both] hover:bg-white/12 hover:-translate-y-1 transition-all"
+                style={{ animationDelay: `${i * 80}ms` }}
+              >
+                <div className="flex items-center justify-between">
+                  <s.icon className="h-6 w-6 text-gold" />
+                  <TrendingUp className="h-4 w-4 text-white/30 group-hover:text-gold transition-colors" />
+                </div>
+                <div className="mt-4 font-display text-3xl md:text-4xl font-bold tracking-tight">
+                  {stats ? <AnimatedCounter value={s.value} /> : <Skeleton className="h-9 w-20 bg-white/15" />}
+                </div>
+                <div className="mt-1 text-xs md:text-sm uppercase tracking-wider text-white/70">{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
 
-        {/* Decorative wave bottom */}
-        <svg
-          aria-hidden
-          viewBox="0 0 1440 80"
-          className="block w-full h-12 md:h-16 -mb-px text-background"
-          preserveAspectRatio="none"
-        >
-          <path
-            fill="currentColor"
-            d="M0,40 C240,90 480,0 720,30 C960,60 1200,80 1440,40 L1440,80 L0,80 Z"
-          />
+        <svg aria-hidden viewBox="0 0 1440 80" className="block w-full h-12 md:h-16 -mb-px text-background" preserveAspectRatio="none">
+          <path fill="currentColor" d="M0,40 C240,90 480,0 720,30 C960,60 1200,80 1440,40 L1440,80 L0,80 Z" />
         </svg>
       </section>
-
-
 
       {/* QUICK ACCESS */}
       <QuickAccess />
 
-
-      {/* NOTÍCIAS */}
-      <section className="bg-secondary/40 border-y border-border/60">
-        <div className="container-page py-20 md:py-24">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-            <SectionHeading
-              eyebrow="Últimas notícias"
-              title="O legislativo em movimento"
-              description="Cobertura editorial das sessões, audiências e ações da Câmara."
-            />
-            <Button asChild variant="outline" className="self-start md:self-auto">
-              <Link to="/noticias">
-                Ver todas <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-
-          <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3 min-h-[400px]">
-            {loadingNoticias ? (
-              <div className="col-span-full flex flex-col items-center justify-center py-20 gap-4">
-                <Loader2 className="w-10 h-10 text-gold animate-spin" />
-                <p className="text-muted-foreground font-medium">Carregando notícias...</p>
-              </div>
-            ) : noticias.length > 0 ? (
-              noticias.map((n, i) => (
-                <article
-                  key={n.id}
-                  className="card-premium card-premium-hover group overflow-hidden animate-[fade-up_0.6s_ease-out_both]"
-                  style={{ animationDelay: `${i * 100}ms` }}
-                >
-                  <div className="relative aspect-[16/10] overflow-hidden bg-slate-200">
-                    {n.imagem_url ? (
-                      <img
-                        src={n.imagem_url}
-                        alt={n.titulo}
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
-                    ) : (
-                      <div className="h-full w-full flex items-center justify-center bg-gradient-to-br from-primary-deep/10 to-primary/10">
-                        <Newspaper className="w-16 h-16 text-primary/10" />
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    {n.categoria && (
-                      <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-gold px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-gold-foreground">
-                        {n.categoria}
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-6">
-                    <time className="text-xs uppercase tracking-wider text-muted-foreground">
-                      {new Date(n.publicado_em || n.created_at).toLocaleDateString("pt-BR", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </time>
-                    <h3 className="mt-2 font-display text-lg font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2">
-                      {n.titulo}
-                    </h3>
-                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed line-clamp-3">
-                      {n.resumo}
-                    </p>
-                    <Link
-                      to="/noticias"
-                      className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary hover:gap-2 transition-all"
-                    >
-                      Ler matéria <ArrowRight className="h-3.5 w-3.5" />
-                    </Link>
-                  </div>
-                </article>
-              ))
-            ) : (
-              <div className="col-span-full text-center py-20 text-muted-foreground">
-                Nenhuma notícia encontrada.
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-
-      {/* AGENDA LEGISLATIVA */}
-      <section className="container-page py-20 md:py-24">
-        <div className="grid lg:grid-cols-[1fr_400px] gap-12">
-          <div>
-            <SectionHeading
-              eyebrow="Calendário"
-              title="Agenda Legislativa"
-              description="Acompanhe as próximas sessões ordinárias, solenes e audiências públicas."
-            />
-            <div className="mt-10 space-y-4">
-              {loadingSessoes ? (
-                <div className="flex justify-center py-10">
-                  <Loader2 className="w-8 h-8 animate-spin text-gold" />
-                </div>
-              ) : proximasSessoes.length > 0 ? (
-                proximasSessoes.map((item, i) => {
-                  const dateObj = new Date(item.data_sessao);
-                  const day = dateObj.toLocaleDateString("pt-BR", { day: "2-digit" });
-                  const month = dateObj.toLocaleDateString("pt-BR", { month: "short" }).replace(".", "").toUpperCase();
-                  const time = dateObj.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
-                  
-                  return (
-                    <div key={item.id} className="flex gap-6 p-5 rounded-xl border border-border bg-card hover:border-primary/30 transition-colors group">
-                      <div className="flex flex-col items-center justify-center w-20 h-20 rounded-lg bg-secondary text-primary font-display border border-border/50 shrink-0">
-                        <span className="text-xl font-bold">{day}</span>
-                        <span className="text-xs uppercase font-medium">{month}</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-3">
-                          <span className="text-xs font-semibold uppercase tracking-wider text-gold truncate">
-                            {item.tipo || "Sessão"}
-                          </span>
-                          <span className="text-xs text-muted-foreground shrink-0">•</span>
-                          <span className="text-xs text-muted-foreground shrink-0">{time}</span>
-                        </div>
-                        <h4 className="mt-1 font-display text-lg font-semibold group-hover:text-primary transition-colors truncate">
-                          {item.titulo}
-                        </h4>
-                        <Link to="/sessoes" className="mt-2 inline-flex items-center text-sm font-medium text-primary/70 hover:text-primary transition-colors">
-                          Detalhes da pauta <ArrowRight className="ml-1 h-3 w-3" />
-                        </Link>
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <div className="p-8 text-center bg-secondary/20 rounded-xl border border-dashed border-border text-muted-foreground">
-                  Nenhuma sessão agendada para os próximos dias.
-                </div>
-              )}
-            </div>
-          </div>
-          <div className="card-premium p-8 bg-primary-deep text-primary-foreground relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4 opacity-10">
-              <Calendar className="h-32 w-32" />
-            </div>
-            <h3 className="font-display text-2xl font-bold mb-6">
-              Mês de {new Date().toLocaleDateString("pt-BR", { month: "long" })}
-            </h3>
-            <div className="grid grid-cols-7 gap-2 text-center text-xs font-bold text-primary-foreground/60 mb-4">
-              {["D", "S", "T", "Q", "Q", "S", "S"].map(d => <div key={d}>{d}</div>)}
-            </div>
-            <div className="grid grid-cols-7 gap-2 text-center">
-              {(() => {
-                const now = new Date();
-                const year = now.getFullYear();
-                const month = now.getMonth();
-                const firstDay = new Date(year, month, 1).getDay();
-                const daysInMonth = new Date(year, month + 1, 0).getDate();
-                
-                return Array.from({ length: 42 }).map((_, i) => {
-                  const day = i - firstDay + 1;
-                  const isValidDay = day > 0 && day <= daysInMonth;
-                  
-                  if (!isValidDay) return <div key={i} />;
-                  
-                  const isMeeting = proximasSessoes.some(s => {
-                    const sDate = new Date(s.data_sessao);
-                    return sDate.getDate() === day && sDate.getMonth() === month && sDate.getFullYear() === year;
-                  });
-
-                  return (
-                    <div 
-                      key={i} 
-                      className={`aspect-square flex items-center justify-center rounded-md text-sm transition-colors
-                        ${isMeeting ? "bg-gold text-gold-foreground font-bold" : "hover:bg-white/10"}`}
-                    >
-                      {day}
-                    </div>
-                  );
-                });
-              })()}
-            </div>
-            <div className="mt-8 pt-6 border-t border-white/10 space-y-3">
-              <div className="flex items-center gap-3 text-sm">
-                <div className="h-2 w-2 rounded-full bg-gold" />
-                Sessão Agendada
-              </div>
-              <Button asChild variant="outline" className="w-full mt-4 border-white/20 hover:bg-white/10 text-white">
-                <Link to="/sessoes">Ver calendário completo</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* MESA DIRETORA */}
-      <section className="bg-secondary/40 py-20 md:py-24 border-y border-border/60">
-        <div className="container-page">
-          <SectionHeading
-            eyebrow="Liderança"
-            title="Mesa Diretora"
-            description="Conheça os parlamentares responsáveis pela gestão administrativa da Câmara."
-            align="center"
-          />
-          <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
-            {loadingMesa ? (
-              <div className="col-span-full flex justify-center py-10">
-                <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
-              </div>
-            ) : mesaDiretora.length > 0 ? (
-              mesaDiretora.map((member) => (
-                <div key={member.id} className="card-premium group overflow-hidden text-center bg-card">
-                  <div className="relative aspect-[4/5] overflow-hidden">
-                    {member.vereadores.foto_url ? (
-                      <img src={member.vereadores.foto_url} alt={member.vereadores.nome} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                    ) : (
-                      <div className="h-full w-full flex items-center justify-center bg-slate-100">
-                        <User className="w-20 h-20 text-slate-300" />
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary-deep/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                  <div className="p-6">
-                    <span className="text-xs font-bold uppercase tracking-widest text-gold">{member.cargo}</span>
-                    <h4 className="mt-2 font-display text-xl font-bold">{member.vereadores.nome}</h4>
-                    <p className="text-sm text-muted-foreground">{member.vereadores.partido}</p>
-                    <div className="mt-4 flex justify-center gap-2">
-                      <Button size="sm" variant="outline" className="h-8 w-8 p-0 rounded-full">
-                        <span className="sr-only">Mensagem</span>
-                        <MessageSquare className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button size="sm" variant="outline" asChild className="h-8 w-8 p-0 rounded-full">
-                        <Link to={`/vereadores/${member.vereadores.id}`}>
-                          <span className="sr-only">Perfil</span>
-                          <Users className="h-3.5 w-3.5" />
-                        </Link>
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="col-span-full text-center py-10 text-muted-foreground">
-                Nenhum membro da Mesa Diretora cadastrado.
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* VEREADORES GRID */}
+      {/* ======================= CONHEÇA OS VEREADORES ======================= */}
       <section className="container-page py-20 md:py-24">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
           <SectionHeading
             eyebrow="Legislativo"
-            title="Nossos Vereadores"
-            description="Representantes eleitos para o mandato 2025-2028."
+            title="Conheça os Vereadores"
+            description="Os representantes eleitos para o mandato 2025–2028 trabalhando pelo município."
           />
           <Button asChild variant="outline">
             <Link to="/vereadores">
-              Ver todos os 21 vereadores <ArrowRight className="ml-2 h-4 w-4" />
+              Ver todos os vereadores <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
         </div>
-        <div className="mt-12 grid gap-6 grid-cols-2 md:grid-cols-4 lg:grid-cols-6 min-h-[160px]">
-          {loadingVereadores ? (
-            <div className="col-span-full flex flex-col items-center justify-center py-10 gap-2">
-              <Loader2 className="w-8 h-8 text-gold animate-spin" />
-              <p className="text-sm text-muted-foreground font-medium">Carregando vereadores...</p>
-            </div>
-          ) : (
-            vereadores.map((v) => (
-              <Link key={v.id} to={`/vereadores/${v.id}`} className="group block text-center animate-[fade-up_0.5s_ease-out_both]">
-                <div className="mx-auto mb-4">
-                  <VereadorAvatar
-                    nome={v.nome}
-                    foto={v.foto_url}
-                    partido={v.partido}
-                    size={112}
-                    className="border-2 border-transparent group-hover:border-gold transition-colors grayscale group-hover:grayscale-0"
-                  />
-                </div>
-                <h5 className="font-display font-bold text-sm leading-tight group-hover:text-primary transition-colors line-clamp-2 px-1">
-                  {v.nome}
-                </h5>
-                <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">
-                  {v.partido || "-"}
-                </p>
-              </Link>
-            ))
-          )}
+
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {loadingVer
+            ? Array.from({ length: 4 }).map((_, i) => <VereadorCardSkeleton key={i} />)
+            : vereadores.slice(0, 8).map((v, i) => <VereadorCard key={v.id} v={v} delay={i * 70} />)}
         </div>
       </section>
-      <section className="container-page py-20 md:py-28">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary-deep via-primary to-primary-deep p-10 md:p-16 text-primary-foreground shadow-elegant">
-          <div className="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-gold/20 blur-3xl" />
-          <div className="absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-primary/40 blur-3xl" />
-          <div className="relative grid lg:grid-cols-2 gap-10 items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-gold/40 px-3 py-1 text-xs font-medium uppercase tracking-[0.18em] text-gold">
-                <Gavel className="h-3 w-3" /> Lei de Acesso à Informação
-              </div>
-              <h2 className="mt-5 font-display text-3xl md:text-5xl font-semibold leading-tight">
-                Transparência é compromisso, não exceção.
-              </h2>
-              <p className="mt-5 text-base md:text-lg text-primary-foreground/85 leading-relaxed">
-                Consulte despesas, contratos, salários, atas e atos legislativos. Tudo aberto,
-                auditável e acessível.
-              </p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Button asChild size="lg" className="bg-gold text-gold-foreground hover:bg-gold/90 h-12 px-6">
-                  <Link to="/transparencia">Acessar Portal</Link>
-                </Button>
-                <Button asChild size="lg" variant="outline" className="h-12 px-6 border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white">
-                  <Link to="/contato">
-                    <MessageSquare className="h-4 w-4" /> Ouvidoria
-                  </Link>
-                </Button>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { icon: Gavel, label: "Licitações", value: "37" },
-                { icon: FileText, label: "Contratos", value: "142" },
-                { icon: FileText, label: "Leis", value: "2.4k" },
-                { icon: Gavel, label: "Projetos", value: "184" },
-              ].map((item) => (
-                <div
-                  key={item.label}
-                  className="glass-strong rounded-xl border border-white/15 bg-white/5 p-5 backdrop-blur-md"
-                >
-                  <item.icon className="h-5 w-5 text-gold" />
-                  <div className="mt-3 font-display text-2xl font-semibold">{item.value}</div>
-                  <div className="text-xs uppercase tracking-wider text-primary-foreground/75">
-                    {item.label}
+
+      {/* ======================= MESA DIRETORA — HORIZONTAL ======================= */}
+      <section className="bg-gradient-to-b from-secondary/40 to-background py-20 md:py-24 border-y border-border/60">
+        <div className="container-page">
+          <SectionHeading
+            eyebrow="Liderança"
+            title="Mesa Diretora"
+            description="Parlamentares responsáveis pela gestão administrativa da Câmara."
+            align="center"
+          />
+
+          <div className="mt-12 space-y-4 max-w-5xl mx-auto">
+            {loadingMesa
+              ? Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="flex items-center gap-5 p-5 rounded-2xl border border-border bg-card">
+                    <Skeleton className="h-20 w-20 rounded-2xl shrink-0" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-3 w-24" />
+                      <Skeleton className="h-5 w-48" />
+                      <Skeleton className="h-3 w-32" />
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))
+              : mesaDiretora.length > 0
+                ? mesaDiretora.map((m, i) => (
+                    <div
+                      key={m.id}
+                      className="group flex flex-col sm:flex-row items-center gap-5 p-5 md:p-6 rounded-2xl border border-border bg-card hover:border-gold/40 hover:shadow-lg transition-all animate-[fade-up_0.5s_ease-out_both]"
+                      style={{ animationDelay: `${i * 80}ms` }}
+                    >
+                      <div className="relative shrink-0">
+                        <VereadorAvatar
+                          nome={m.vereadores.nome}
+                          foto={m.vereadores.foto_url}
+                          partido={m.vereadores.partido}
+                          size={88}
+                          rounded="2xl"
+                          className="ring-2 ring-gold/30 group-hover:ring-gold/70 transition-all"
+                        />
+                        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-gold text-gold-foreground text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap shadow-md">
+                          {m.cargo}
+                        </div>
+                      </div>
+                      <div className="flex-1 text-center sm:text-left min-w-0">
+                        <h4 className="font-display text-xl font-bold truncate">{m.vereadores.nome}</h4>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          {m.vereadores.partido && <Badge variant="secondary">{m.vereadores.partido}</Badge>}
+                          <span className="ml-2 uppercase tracking-widest text-xs">{m.vereadores.cargo || "Vereador(a)"}</span>
+                        </p>
+                      </div>
+                      <Button asChild variant="outline" size="sm" className="shrink-0">
+                        <Link to={`/vereadores/${m.vereadores.id}`}>
+                          Ver perfil <ArrowRight className="ml-1 h-3 w-3" />
+                        </Link>
+                      </Button>
+                    </div>
+                  ))
+                : (
+                  <div className="text-center py-10 text-muted-foreground">Nenhum membro cadastrado.</div>
+                )}
           </div>
         </div>
       </section>
+
+      {/* ======================= ÚLTIMAS SESSÕES ======================= */}
+      <section className="container-page py-20 md:py-24">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+          <SectionHeading
+            eyebrow="Plenário"
+            title="Últimas Sessões"
+            description="Acompanhe as atividades recentes do plenário da Câmara Municipal."
+          />
+          <Button asChild variant="outline">
+            <Link to="/sessoes">
+              Ver todas <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
+
+        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {loadingSes
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="rounded-2xl border border-border bg-card p-6 space-y-3">
+                  <Skeleton className="h-10 w-10 rounded-lg" />
+                  <Skeleton className="h-3 w-24" />
+                  <Skeleton className="h-5 w-full" />
+                  <Skeleton className="h-3 w-32" />
+                </div>
+              ))
+            : ultimasSessoes.length > 0
+              ? ultimasSessoes.map((s, i) => {
+                  const d = new Date(s.data_sessao);
+                  const realizada = s.status === "realizada";
+                  return (
+                    <article
+                      key={s.id}
+                      className="group rounded-2xl border border-border bg-card p-6 hover:border-primary/40 hover:shadow-xl hover:-translate-y-1 transition-all animate-[fade-up_0.5s_ease-out_both]"
+                      style={{ animationDelay: `${i * 70}ms` }}
+                    >
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-primary to-primary-deep text-white flex items-center justify-center shadow-md">
+                          {realizada ? <PlayCircle className="h-5 w-5" /> : <Calendar className="h-5 w-5" />}
+                        </div>
+                        <Badge variant={realizada ? "secondary" : "default"} className="text-[10px] uppercase tracking-wider">
+                          {realizada ? <><CheckCircle2 className="h-3 w-3 mr-1" /> Realizada</> : <><Clock className="h-3 w-3 mr-1" /> {s.status}</>}
+                        </Badge>
+                      </div>
+                      <div className="text-[11px] uppercase tracking-widest text-gold font-bold">
+                        {s.tipo || "Sessão"}
+                      </div>
+                      <h4 className="mt-1 font-display text-lg font-bold leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                        {s.titulo}
+                      </h4>
+                      <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
+                        <span>{d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" })}</span>
+                        <span>{d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}</span>
+                      </div>
+                    </article>
+                  );
+                })
+              : <div className="col-span-full text-center py-10 text-muted-foreground">Nenhuma sessão cadastrada.</div>}
+        </div>
+      </section>
+
+      {/* ======================= TRANSPARÊNCIA EM NÚMEROS ======================= */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary-deep via-primary to-primary-deep py-20 md:py-28">
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-10 left-10 h-72 w-72 rounded-full bg-gold/30 blur-3xl" />
+          <div className="absolute bottom-10 right-10 h-72 w-72 rounded-full bg-white/20 blur-3xl" />
+        </div>
+        <div className="container-page relative">
+          <div className="text-center text-white mb-14">
+            <div className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-gold">
+              <Eye className="h-3 w-3" /> Lei de Acesso à Informação
+            </div>
+            <h2 className="mt-4 font-display text-3xl md:text-5xl font-bold leading-tight">
+              Transparência em Números
+            </h2>
+            <p className="mt-4 max-w-2xl mx-auto text-white/80 text-base md:text-lg">
+              Todos os dados públicos da Câmara, abertos, auditáveis e atualizados.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+            {[
+              { icon: Gavel, label: "Licitações", value: transparencia?.licitacoes ?? 0 },
+              { icon: FileText, label: "Contratos", value: transparencia?.contratos ?? 0 },
+              { icon: BookOpen, label: "Documentos", value: transparencia?.documentos ?? 0 },
+              { icon: HandCoins, label: "Prestações de contas", value: transparencia?.prestacoes ?? 0 },
+            ].map((t, i) => (
+              <div
+                key={t.label}
+                className="group relative rounded-2xl border border-white/15 bg-white/8 backdrop-blur-md p-6 text-white text-center hover:bg-white/15 hover:-translate-y-1 transition-all animate-[fade-up_0.6s_ease-out_both]"
+                style={{ animationDelay: `${i * 80}ms` }}
+              >
+                <div className="mx-auto h-12 w-12 rounded-xl bg-gold/20 text-gold flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <t.icon className="h-6 w-6" />
+                </div>
+                <div className="font-display text-4xl md:text-5xl font-extrabold tracking-tight">
+                  {transparencia ? <AnimatedCounter value={t.value} /> : <Skeleton className="h-12 w-20 bg-white/15 mx-auto" />}
+                </div>
+                <div className="mt-2 text-xs md:text-sm uppercase tracking-wider text-white/75">{t.label}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-12 text-center">
+            <Button asChild size="lg" className="bg-gold text-gold-foreground hover:bg-gold/90 h-12 px-8 font-bold">
+              <Link to="/transparencia">Acessar Portal de Transparência</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* ======================= PARTICIPAÇÃO POPULAR ======================= */}
+      <section className="container-page py-20 md:py-24">
+        <SectionHeading
+          eyebrow="Cidadão"
+          title="Participação Popular"
+          description="Sua voz constrói o município. Faça denúncias, peça informações e conheça nossos serviços."
+          align="center"
+        />
+
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
+          {[
+            {
+              icon: Megaphone,
+              title: "Ouvidoria",
+              description: "Registre denúncias, sugestões, reclamações e elogios sobre os serviços públicos.",
+              cta: "Abrir protocolo",
+              to: "/contato",
+              accent: "from-blue-500 to-indigo-600",
+            },
+            {
+              icon: HelpCircle,
+              title: "e-SIC",
+              description: "Sistema Eletrônico do Serviço de Informação ao Cidadão — Lei nº 12.527/2011.",
+              cta: "Solicitar informação",
+              to: "/contato",
+              accent: "from-emerald-500 to-teal-600",
+            },
+            {
+              icon: BookOpen,
+              title: "Carta de Serviços",
+              description: "Conheça todos os serviços oferecidos pela Câmara, prazos e formas de atendimento.",
+              cta: "Ver carta",
+              to: "/transparencia",
+              accent: "from-amber-500 to-orange-600",
+            },
+          ].map((item, i) => (
+            <article
+              key={item.title}
+              className="group relative overflow-hidden rounded-3xl border border-border bg-card p-8 hover:shadow-2xl hover:-translate-y-2 transition-all animate-[fade-up_0.6s_ease-out_both]"
+              style={{ animationDelay: `${i * 90}ms` }}
+            >
+              <div className={`absolute -top-16 -right-16 h-40 w-40 rounded-full bg-gradient-to-br ${item.accent} opacity-10 group-hover:opacity-20 group-hover:scale-125 transition-all duration-700`} />
+              <div className={`relative h-14 w-14 rounded-2xl bg-gradient-to-br ${item.accent} text-white flex items-center justify-center shadow-lg mb-5`}>
+                <item.icon className="h-7 w-7" />
+              </div>
+              <h3 className="font-display text-2xl font-bold">{item.title}</h3>
+              <p className="mt-3 text-muted-foreground leading-relaxed">{item.description}</p>
+              <Button asChild className="mt-6 group/btn">
+                <Link to={item.to}>
+                  {item.cta}
+                  <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
+                </Link>
+              </Button>
+            </article>
+          ))}
+        </div>
+      </section>
     </>
+  );
+}
+
+/* ============ Subcomponents ============ */
+
+function VereadorCard({ v, delay }: { v: Vereador; delay: number }) {
+  const instagram = getSocial(v.redes_sociais, "instagram");
+  const facebook = getSocial(v.redes_sociais, "facebook");
+  const twitter = getSocial(v.redes_sociais, "twitter");
+
+  return (
+    <article
+      className="group relative overflow-hidden rounded-3xl border border-border bg-card hover:shadow-2xl hover:-translate-y-1 transition-all animate-[fade-up_0.5s_ease-out_both]"
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      <div className="relative aspect-[4/5] overflow-hidden bg-gradient-to-br from-primary-deep to-primary">
+        <VereadorAvatar
+          nome={v.nome}
+          foto={v.foto_url}
+          partido={v.partido}
+          size={400}
+          rounded="lg"
+          className="!h-full !w-full !rounded-none object-cover transition-transform duration-700 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-primary-deep via-primary-deep/30 to-transparent opacity-90" />
+
+        {v.partido && (
+          <Badge className="absolute top-4 left-4 bg-gold text-gold-foreground border-0 text-[10px] uppercase tracking-wider font-bold">
+            {v.partido}
+          </Badge>
+        )}
+
+        <div className="absolute bottom-0 inset-x-0 p-5 text-white">
+          <div className="text-[10px] uppercase tracking-widest text-gold font-bold">
+            {v.cargo || "Vereador(a)"}
+          </div>
+          <h4 className="mt-1 font-display text-lg font-bold leading-tight line-clamp-2">{v.nome}</h4>
+
+          <div className="mt-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+            {instagram && (
+              <a
+                href={`https://instagram.com/${instagram.replace("@", "")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="h-8 w-8 rounded-full bg-white/15 hover:bg-gold hover:text-gold-foreground flex items-center justify-center transition-colors"
+                aria-label="Instagram"
+              >
+                <InstagramIcon className="h-3.5 w-3.5" />
+              </a>
+            )}
+            {facebook && (
+              <a
+                href={facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="h-8 w-8 rounded-full bg-white/15 hover:bg-gold hover:text-gold-foreground flex items-center justify-center transition-colors"
+                aria-label="Facebook"
+              >
+                <FacebookIcon className="h-3.5 w-3.5" />
+              </a>
+            )}
+            {twitter && (
+              <a
+                href={twitter}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="h-8 w-8 rounded-full bg-white/15 hover:bg-gold hover:text-gold-foreground flex items-center justify-center transition-colors"
+                aria-label="Twitter"
+              >
+                <TwitterIcon className="h-3.5 w-3.5" />
+              </a>
+            )}
+            {v.email && (
+              <a
+                href={`mailto:${v.email}`}
+                className="h-8 w-8 rounded-full bg-white/15 hover:bg-gold hover:text-gold-foreground flex items-center justify-center transition-colors"
+                aria-label="E-mail"
+              >
+                <Mail className="h-3.5 w-3.5" />
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="p-4">
+        <Button asChild variant="outline" className="w-full group/btn">
+          <Link to={`/vereadores/${v.id}`}>
+            Ver perfil
+            <ArrowRight className="ml-2 h-3.5 w-3.5 group-hover/btn:translate-x-1 transition-transform" />
+          </Link>
+        </Button>
+      </div>
+    </article>
+  );
+}
+
+function VereadorCardSkeleton() {
+  return (
+    <div className="rounded-3xl border border-border bg-card overflow-hidden">
+      <Skeleton className="aspect-[4/5] w-full rounded-none" />
+      <div className="p-4">
+        <Skeleton className="h-10 w-full" />
+      </div>
+    </div>
   );
 }
