@@ -25,6 +25,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
+import { VereadorAvatar } from "@/components/vereador-avatar";
 
 export const Route = createFileRoute("/vereadores")({
   head: () => ({
