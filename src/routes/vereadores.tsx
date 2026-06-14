@@ -305,9 +305,13 @@ function VereadoresPage() {
             </div>
             <div className="relative">
               <div className="aspect-video rounded-2xl overflow-hidden glass-strong border border-white/10 p-2">
-                <div className="w-full h-full bg-primary/20 flex items-center justify-center">
-                  <span className="text-xs uppercase tracking-[0.3em] font-bold text-white/40">Imagem do Plenário</span>
-                </div>
+                {plenarioImage ? (
+                  <img src={plenarioImage} alt="Plenário" className="w-full h-full object-cover rounded-xl" />
+                ) : (
+                  <div className="w-full h-full bg-primary/20 flex items-center justify-center rounded-xl">
+                    <span className="text-xs uppercase tracking-[0.3em] font-bold text-white/40">Imagem do Plenário</span>
+                  </div>
+                )}
               </div>
               <div className="absolute -bottom-6 -right-6 p-6 bg-gold rounded-2xl text-primary-deep shadow-xl animate-bounce">
                 <div className="text-4xl font-display font-bold">100%</div>
