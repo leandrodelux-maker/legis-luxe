@@ -425,6 +425,32 @@ function HomePage() {
             </p>
           </div>
 
+          {/* Linha 1 — Estatísticas institucionais da Câmara */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
+            {[
+              { icon: Users, label: "Vereadores", value: stats?.vereadores ?? 0 },
+              { icon: CheckCircle2, label: "Sessões realizadas", value: stats?.sessoesRealizadas ?? 0 },
+              { icon: Gavel, label: "Projetos em tramitação", value: stats?.projetosTramitacao ?? 0 },
+              { icon: BookOpen, label: "Leis publicadas", value: stats?.leisPublicadas ?? 0 },
+            ].map((s, i) => (
+              <div
+                key={s.label}
+                className="group rounded-2xl border border-white/15 bg-white/8 backdrop-blur-md p-5 md:p-6 text-white animate-[fade-up_0.6s_ease-out_both] hover:bg-white/12 hover:-translate-y-1 transition-all"
+                style={{ animationDelay: `${i * 80}ms` }}
+              >
+                <div className="flex items-center justify-between">
+                  <s.icon className="h-6 w-6 text-gold" />
+                  <TrendingUp className="h-4 w-4 text-white/30 group-hover:text-gold transition-colors" />
+                </div>
+                <div className="mt-4 font-display text-3xl md:text-4xl font-bold tracking-tight">
+                  {stats ? <AnimatedCounter value={s.value} /> : <Skeleton className="h-9 w-20 bg-white/15" />}
+                </div>
+                <div className="mt-1 text-[11px] md:text-xs uppercase tracking-wider text-white/70">{s.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Linha 2 — Indicadores de transparência */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
             {[
               { icon: Gavel, label: "Licitações", value: transparencia?.licitacoes ?? 0 },
@@ -432,6 +458,7 @@ function HomePage() {
               { icon: BookOpen, label: "Documentos", value: transparencia?.documentos ?? 0 },
               { icon: HandCoins, label: "Prestações de contas", value: transparencia?.prestacoes ?? 0 },
             ].map((t, i) => (
+
               <div
                 key={t.label}
                 className="group relative rounded-2xl border border-white/15 bg-white/8 backdrop-blur-md p-6 text-white text-center hover:bg-white/15 hover:-translate-y-1 transition-all animate-[fade-up_0.6s_ease-out_both]"
