@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   ArrowRight, Search, ExternalLink, ShieldCheck, AlertTriangle, Loader2,
   Banknote, Receipt, FileText, Gavel, Users, PieChart, Scale, MessageSquare, BookOpen,
@@ -36,6 +37,19 @@ const DEFAULT_INTRO =
   "Acesse de forma rápida, organizada e transparente as informações públicas da Câmara Municipal. Os dados abaixo são lidos diretamente do Portal Oficial de Transparência.";
 const DEFAULT_PORTAL = "https://camaraadelandia.megasofttransparencia.com.br/";
 
+const COLOR_MAP: Record<string, { bar: string; tint: string; ring: string; text: string }> = {
+  red:     { bar: "bg-red-600",     tint: "bg-red-50",     ring: "ring-red-200",     text: "text-red-700" },
+  orange:  { bar: "bg-orange-500",  tint: "bg-orange-50",  ring: "ring-orange-200",  text: "text-orange-700" },
+  yellow:  { bar: "bg-amber-500",   tint: "bg-amber-50",   ring: "ring-amber-200",   text: "text-amber-700" },
+  green:   { bar: "bg-emerald-600", tint: "bg-emerald-50", ring: "ring-emerald-200", text: "text-emerald-700" },
+  blue:    { bar: "bg-blue-600",    tint: "bg-blue-50",    ring: "ring-blue-200",    text: "text-blue-700" },
+  purple:  { bar: "bg-violet-600",  tint: "bg-violet-50",  ring: "ring-violet-200",  text: "text-violet-700" },
+  pink:    { bar: "bg-pink-600",    tint: "bg-pink-50",    ring: "ring-pink-200",    text: "text-pink-700" },
+  teal:    { bar: "bg-teal-600",    tint: "bg-teal-50",    ring: "ring-teal-200",    text: "text-teal-700" },
+  gray:    { bar: "bg-slate-600",   tint: "bg-slate-50",   ring: "ring-slate-200",   text: "text-slate-700" },
+};
+const colorFor = (c: string | null) => COLOR_MAP[(c || "blue").toLowerCase()] || COLOR_MAP.blue;
+
 function iconForMenu(rota: string | null) {
   const key = (rota || "").toLowerCase();
   if (key.includes("receita")) return Banknote;
@@ -53,6 +67,7 @@ function TransparenciaAtivaPage() {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [loadingSettings, setLoadingSettings] = useState(true);
   const [q, setQ] = useState("");
+  const [viewer, setViewer] = useState<{ url: string; title: string } | null>(null);
 
   useEffect(() => {
     let alive = true;
@@ -191,40 +206,42 @@ function TransparenciaAtivaPage() {
         ) : (
           filteredMenus.map((menu) => {
             const ParentIcon = iconForMenu(menu.titulo);
+            const c = colorFor(menu.cor);
             return (
-              <div key={menu.titulo}>
-                <div className="flex items-start gap-3 mb-5">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary grid place-items-center shrink-0">
+              <div key={menu.titulo} className="rounded-2xl border border-border bg-card overflow-hidden">
+                <div className={`${c.bar} text-white px-6 py-5 flex items-start gap-4`}>
+                  <div className="w-11 h-11 rounded-lg bg-white/15 grid place-items-center shrink-0">
                     <ParentIcon className="w-5 h-5" />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <h2 className="font-display text-xl md:text-2xl font-semibold">{menu.titulo}</h2>
-                      <Badge variant="secondary">{menu.filhos.length}</Badge>
+                      <Badge variant="secondary" className="bg-white/20 text-white border-0 hover:bg-white/25">
+                        {menu.filhos.length}
+                      </Badge>
                     </div>
                     {menu.descricao && (
-                      <p className="text-sm text-muted-foreground mt-1 max-w-3xl">{menu.descricao}</p>
+                      <p className="text-sm text-white/85 mt-1 max-w-3xl">{menu.descricao}</p>
                     )}
                   </div>
                 </div>
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <div className="p-5 grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {menu.filhos.map((child) => {
                     const Icon = iconForMenu(child.titulo);
                     return (
-                      <a
+                      <button
                         key={child.url}
-                        href={child.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group"
+                        type="button"
+                        onClick={() => setViewer({ url: child.url, title: child.titulo })}
+                        className="text-left group"
                       >
-                        <Card className="h-full transition-all hover:-translate-y-1 hover:shadow-lg hover:border-primary/40">
+                        <Card className={`h-full transition-all hover:-translate-y-1 hover:shadow-lg ring-1 ${c.ring} hover:ring-2`}>
                           <CardHeader className="pb-3">
                             <div className="flex items-start justify-between">
-                              <div className="w-11 h-11 rounded-lg bg-primary/10 text-primary grid place-items-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                              <div className={`w-11 h-11 rounded-lg ${c.tint} ${c.text} grid place-items-center`}>
                                 <Icon className="w-5 h-5" />
                               </div>
-                              <ExternalLink className="w-4 h-4 text-muted-foreground/60 group-hover:text-primary transition-colors" />
+                              <ExternalLink className="w-4 h-4 text-muted-foreground/60 group-hover:text-foreground" />
                             </div>
                             <CardTitle className="mt-3 text-base font-display">{child.titulo}</CardTitle>
                             {child.descricao && (
@@ -234,12 +251,12 @@ function TransparenciaAtivaPage() {
                             )}
                           </CardHeader>
                           <CardContent className="pt-0">
-                            <span className="text-xs font-semibold text-primary inline-flex items-center gap-1 group-hover:gap-2 transition-all">
-                              Acessar <ArrowRight className="w-3 h-3" />
+                            <span className={`text-xs font-semibold ${c.text} inline-flex items-center gap-1 group-hover:gap-2 transition-all`}>
+                              Visualizar <ArrowRight className="w-3 h-3" />
                             </span>
                           </CardContent>
                         </Card>
-                      </a>
+                      </button>
                     );
                   })}
                 </div>
@@ -266,6 +283,29 @@ function TransparenciaAtivaPage() {
           </Button>
         </div>
       </section>
+
+      <Dialog open={!!viewer} onOpenChange={(o) => !o && setViewer(null)}>
+        <DialogContent className="max-w-6xl w-[95vw] h-[88vh] p-0 gap-0 flex flex-col">
+          <DialogHeader className="px-5 py-3 border-b flex-row items-center justify-between gap-3 space-y-0">
+            <DialogTitle className="text-base font-display truncate">{viewer?.title}</DialogTitle>
+            {viewer && (
+              <Button asChild size="sm" variant="outline" className="mr-8">
+                <a href={viewer.url} target="_blank" rel="noopener noreferrer">
+                  Abrir em nova aba <ExternalLink className="ml-1.5 w-3.5 h-3.5" />
+                </a>
+              </Button>
+            )}
+          </DialogHeader>
+          {viewer && (
+            <iframe
+              src={viewer.url}
+              title={viewer.title}
+              className="flex-1 w-full border-0"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
