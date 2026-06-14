@@ -33,6 +33,7 @@ function GeralPage() {
       contact_hours: settings.contact_hours,
       redes_sociais: settings.redes_sociais,
       footer_text: settings.footer_text,
+      plenario_image_url: settings.plenario_image_url,
     });
   };
 
