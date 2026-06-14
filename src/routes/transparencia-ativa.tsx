@@ -19,26 +19,36 @@ export const Route = createFileRoute("/transparencia-ativa")({
   component: TransparenciaAtivaPage,
 });
 
-type Modulo = {
+type Module = {
   id: string;
-  nome: string;
-  descricao: string | null;
-  categoria: string | null;
-  icone: string | null;
-  url: string;
-  ordem: number;
-  ativo: boolean;
+  title: string;
+  description: string | null;
+  category: string;
+  icon: string | null;
+  link_url: string;
+  display_order: number;
+  is_active: boolean;
 };
 
 type Settings = {
-  transparencia_ativa_enabled: boolean | null;
-  transparencia_ativa_intro: string | null;
-  transparencia_portal_url: string | null;
-  transparencia_portal_button_label: string | null;
+  entity_name: string | null;
+  portal_base_url: string | null;
+  intro_text: string | null;
+  is_active: boolean | null;
 };
 
 const DEFAULT_INTRO =
-  "Acesse de forma rápida, organizada e transparente as informações públicas da Câmara Municipal. Consulte despesas, contratos, folha de pagamento, licitações e muito mais.";
+  "Acesse de forma rápida, organizada e transparente as informações públicas da Câmara Municipal. Consulte receitas, despesas, contratos, folha de pagamento, licitações e muito mais.";
+
+const CATEGORY_ORDER = [
+  "Financeiro",
+  "Licitações e Contratos",
+  "Pessoal",
+  "Planejamento e Orçamento",
+  "Contabilidade",
+  "Controle Social",
+  "Acesso à Informação",
+];
 
 function getIcon(name: string | null) {
   const Comp = (name && (Icons as any)[name]) || Icons.FileText;
@@ -46,7 +56,7 @@ function getIcon(name: string | null) {
 }
 
 function TransparenciaAtivaPage() {
-  const [modulos, setModulos] = useState<Modulo[]>([]);
+  const [modules, setModules] = useState<Module[]>([]);
   const [settings, setSettings] = useState<Settings | null>(null);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
@@ -55,17 +65,17 @@ function TransparenciaAtivaPage() {
     (async () => {
       const [mods, sett] = await Promise.all([
         (supabase as any)
-          .from("transparencia_modulos")
+          .from("transparency_modules")
           .select("*")
-          .eq("ativo", true)
-          .order("ordem", { ascending: true }),
+          .eq("is_active", true)
+          .order("display_order", { ascending: true }),
         (supabase as any)
-          .from("site_settings")
-          .select("transparencia_ativa_enabled, transparencia_ativa_intro, transparencia_portal_url, transparencia_portal_button_label")
+          .from("transparency_settings")
+          .select("entity_name, portal_base_url, intro_text, is_active")
           .limit(1)
           .maybeSingle(),
       ]);
-      setModulos((mods.data as Modulo[]) || []);
+      setModules((mods.data as Module[]) || []);
       setSettings((sett.data as Settings) || null);
       setLoading(false);
     })();
@@ -73,26 +83,34 @@ function TransparenciaAtivaPage() {
 
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase();
-    if (!term) return modulos;
-    return modulos.filter(
+    if (!term) return modules;
+    return modules.filter(
       (m) =>
-        m.nome.toLowerCase().includes(term) ||
-        (m.descricao || "").toLowerCase().includes(term) ||
-        (m.categoria || "").toLowerCase().includes(term),
+        m.title.toLowerCase().includes(term) ||
+        (m.description || "").toLowerCase().includes(term) ||
+        m.category.toLowerCase().includes(term),
     );
-  }, [q, modulos]);
+  }, [q, modules]);
 
   const grouped = useMemo(() => {
-    const map = new Map<string, Modulo[]>();
+    const map = new Map<string, Module[]>();
     filtered.forEach((m) => {
-      const k = m.categoria || "Outros";
+      const k = m.category || "Outros";
       if (!map.has(k)) map.set(k, []);
       map.get(k)!.push(m);
     });
-    return Array.from(map.entries());
+    const ordered: [string, Module[]][] = [];
+    CATEGORY_ORDER.forEach((c) => {
+      if (map.has(c)) {
+        ordered.push([c, map.get(c)!]);
+        map.delete(c);
+      }
+    });
+    Array.from(map.entries()).forEach((e) => ordered.push(e));
+    return ordered;
   }, [filtered]);
 
-  if (settings && settings.transparencia_ativa_enabled === false) {
+  if (settings && settings.is_active === false) {
     return (
       <div className="container py-24 text-center">
         <h1 className="font-display text-3xl font-bold">Página indisponível</h1>
@@ -101,8 +119,7 @@ function TransparenciaAtivaPage() {
     );
   }
 
-  const portalUrl = settings?.transparencia_portal_url || "https://camaraadelandia.megasofttransparencia.com.br/";
-  const portalLabel = settings?.transparencia_portal_button_label || "Acessar Portal da Transparência Completo";
+  const portalUrl = settings?.portal_base_url || "https://camaraadelandia.megasofttransparencia.com.br/";
 
   return (
     <div className="bg-gradient-to-b from-background to-muted/30">
@@ -113,14 +130,14 @@ function TransparenciaAtivaPage() {
               <ShieldCheck className="w-3.5 h-3.5" /> Portal Cidadão
             </Badge>
             <SectionHeading
-              eyebrow="Acesso à Informação"
+              eyebrow={settings?.entity_name || "Acesso à Informação"}
               title="Transparência Ativa"
-              description={settings?.transparencia_ativa_intro || DEFAULT_INTRO}
+              description={settings?.intro_text || DEFAULT_INTRO}
             />
             <div className="mt-8 relative max-w-xl">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
-                placeholder="Buscar por módulo, categoria ou tema..."
+                placeholder="Buscar por nome, descrição ou categoria..."
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 className="pl-11 h-12 bg-background"
@@ -149,11 +166,11 @@ function TransparenciaAtivaPage() {
               </div>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {items.map((m) => {
-                  const Icon = getIcon(m.icone);
+                  const Icon = getIcon(m.icon);
                   return (
                     <a
                       key={m.id}
-                      href={m.url}
+                      href={m.link_url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="group"
@@ -166,10 +183,10 @@ function TransparenciaAtivaPage() {
                             </div>
                             <ExternalLink className="w-4 h-4 text-muted-foreground/60 group-hover:text-primary transition-colors" />
                           </div>
-                          <CardTitle className="mt-3 text-base font-display">{m.nome}</CardTitle>
-                          {m.descricao && (
+                          <CardTitle className="mt-3 text-base font-display">{m.title}</CardTitle>
+                          {m.description && (
                             <CardDescription className="text-xs leading-relaxed">
-                              {m.descricao}
+                              {m.description}
                             </CardDescription>
                           )}
                         </CardHeader>
@@ -190,11 +207,11 @@ function TransparenciaAtivaPage() {
         <div className="rounded-2xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground p-8 md:p-10 text-center">
           <h3 className="font-display text-2xl md:text-3xl font-semibold">Portal da Transparência completo</h3>
           <p className="mt-2 text-primary-foreground/85 max-w-2xl mx-auto">
-            Consulte todas as informações no portal oficial integrado da Câmara Municipal.
+            Consulte todas as informações no portal oficial integrado.
           </p>
           <Button asChild size="lg" variant="secondary" className="mt-6">
             <a href={portalUrl} target="_blank" rel="noopener noreferrer">
-              {portalLabel} <ExternalLink className="ml-2 w-4 h-4" />
+              Acessar Portal da Transparência Completo <ExternalLink className="ml-2 w-4 h-4" />
             </a>
           </Button>
         </div>
