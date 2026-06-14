@@ -1,13 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { SectionHeading } from "@/components/section-heading";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import * as Icons from "lucide-react";
-import { ArrowRight, Search, ExternalLink, ShieldCheck } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  ArrowRight, Search, ExternalLink, ShieldCheck, AlertTriangle, Loader2,
+  Banknote, Receipt, FileText, Gavel, Users, PieChart, Scale, MessageSquare, BookOpen,
+} from "lucide-react";
+import { getPortalData, type PortalMenu } from "@/lib/transparency-portal.functions";
 
 export const Route = createFileRoute("/transparencia-ativa")({
   head: () => ({
@@ -19,17 +25,6 @@ export const Route = createFileRoute("/transparencia-ativa")({
   component: TransparenciaAtivaPage,
 });
 
-type Module = {
-  id: string;
-  title: string;
-  description: string | null;
-  category: string;
-  icon: string | null;
-  link_url: string;
-  display_order: number;
-  is_active: boolean;
-};
-
 type Settings = {
   entity_name: string | null;
   portal_base_url: string | null;
@@ -38,77 +33,71 @@ type Settings = {
 };
 
 const DEFAULT_INTRO =
-  "Acesse de forma rápida, organizada e transparente as informações públicas da Câmara Municipal. Consulte receitas, despesas, contratos, folha de pagamento, licitações e muito mais.";
+  "Acesse de forma rápida, organizada e transparente as informações públicas da Câmara Municipal. Os dados abaixo são lidos diretamente do Portal Oficial de Transparência.";
+const DEFAULT_PORTAL = "https://camaraadelandia.megasofttransparencia.com.br/";
 
-const CATEGORY_ORDER = [
-  "Financeiro",
-  "Licitações e Contratos",
-  "Pessoal",
-  "Planejamento e Orçamento",
-  "Contabilidade",
-  "Controle Social",
-  "Acesso à Informação",
-];
-
-function getIcon(name: string | null) {
-  const Comp = (name && (Icons as any)[name]) || Icons.FileText;
-  return Comp as React.ComponentType<{ className?: string }>;
+function iconForMenu(rota: string | null) {
+  const key = (rota || "").toLowerCase();
+  if (key.includes("receita")) return Banknote;
+  if (key.includes("despesa") || key.includes("pagamento")) return Receipt;
+  if (key.includes("contrat") || key.includes("licit") || key.includes("convenio")) return Gavel;
+  if (key.includes("servidor") || key.includes("orgao") || key.includes("diaria")) return Users;
+  if (key.includes("planejamento") || key.includes("politica")) return PieChart;
+  if (key.includes("fiscal") || key.includes("responsab")) return Scale;
+  if (key.includes("legisla")) return BookOpen;
+  if (key.includes("ouvidoria") || key.includes("sic")) return MessageSquare;
+  return FileText;
 }
 
 function TransparenciaAtivaPage() {
-  const [modules, setModules] = useState<Module[]>([]);
   const [settings, setSettings] = useState<Settings | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingSettings, setLoadingSettings] = useState(true);
   const [q, setQ] = useState("");
 
   useEffect(() => {
+    let alive = true;
     (async () => {
-      const [mods, sett] = await Promise.all([
-        (supabase as any)
-          .from("transparency_modules")
-          .select("*")
-          .eq("is_active", true)
-          .order("display_order", { ascending: true }),
-        (supabase as any)
+      try {
+        const { data } = await (supabase as any)
           .from("transparency_settings")
           .select("entity_name, portal_base_url, intro_text, is_active")
           .limit(1)
-          .maybeSingle(),
-      ]);
-      setModules((mods.data as Module[]) || []);
-      setSettings((sett.data as Settings) || null);
-      setLoading(false);
+          .maybeSingle();
+        if (alive) setSettings((data as Settings) || null);
+      } finally {
+        if (alive) setLoadingSettings(false);
+      }
     })();
+    return () => { alive = false; };
   }, []);
 
-  const filtered = useMemo(() => {
-    const term = q.trim().toLowerCase();
-    if (!term) return modules;
-    return modules.filter(
-      (m) =>
-        m.title.toLowerCase().includes(term) ||
-        (m.description || "").toLowerCase().includes(term) ||
-        m.category.toLowerCase().includes(term),
-    );
-  }, [q, modules]);
+  const portalUrl = (settings?.portal_base_url || DEFAULT_PORTAL).trim();
+  const fetchPortal = useServerFn(getPortalData);
 
-  const grouped = useMemo(() => {
-    const map = new Map<string, Module[]>();
-    filtered.forEach((m) => {
-      const k = m.category || "Outros";
-      if (!map.has(k)) map.set(k, []);
-      map.get(k)!.push(m);
-    });
-    const ordered: [string, Module[]][] = [];
-    CATEGORY_ORDER.forEach((c) => {
-      if (map.has(c)) {
-        ordered.push([c, map.get(c)!]);
-        map.delete(c);
-      }
-    });
-    Array.from(map.entries()).forEach((e) => ordered.push(e));
-    return ordered;
-  }, [filtered]);
+  const portalQuery = useQuery({
+    queryKey: ["portal-data", portalUrl],
+    queryFn: () => fetchPortal({ data: { baseUrl: portalUrl } }),
+    enabled: !loadingSettings && !!portalUrl,
+    staleTime: 5 * 60_000,
+    retry: 1,
+  });
+
+  const filteredMenus: PortalMenu[] = useMemo(() => {
+    const menus = portalQuery.data?.menus || [];
+    const term = q.trim().toLowerCase();
+    if (!term) return menus;
+    return menus
+      .map((m) => ({
+        ...m,
+        filhos: m.filhos.filter(
+          (f) =>
+            f.titulo.toLowerCase().includes(term) ||
+            f.descricao.toLowerCase().includes(term) ||
+            m.titulo.toLowerCase().includes(term),
+        ),
+      }))
+      .filter((m) => m.filhos.length > 0);
+  }, [portalQuery.data, q]);
 
   if (settings && settings.is_active === false) {
     return (
@@ -119,7 +108,8 @@ function TransparenciaAtivaPage() {
     );
   }
 
-  const portalUrl = settings?.portal_base_url || "https://camaraadelandia.megasofttransparencia.com.br/";
+  const portal = portalQuery.data;
+  const isLoading = loadingSettings || portalQuery.isLoading;
 
   return (
     <div className="bg-gradient-to-b from-background to-muted/30">
@@ -130,7 +120,7 @@ function TransparenciaAtivaPage() {
               <ShieldCheck className="w-3.5 h-3.5" /> Portal Cidadão
             </Badge>
             <SectionHeading
-              eyebrow={settings?.entity_name || "Acesso à Informação"}
+              eyebrow={settings?.entity_name || portal?.tituloDoTopo || "Acesso à Informação"}
               title="Transparência Ativa"
               description={settings?.intro_text || DEFAULT_INTRO}
             />
@@ -144,64 +134,124 @@ function TransparenciaAtivaPage() {
               />
             </div>
           </div>
+
+          {portal?.ok && (portal.receitas || portal.despesas) && (
+            <div className="mt-10 grid sm:grid-cols-2 gap-4 max-w-3xl">
+              {portal.receitas && (
+                <Card className="border-emerald-500/30 bg-emerald-500/5">
+                  <CardHeader className="pb-2">
+                    <CardDescription className="text-xs uppercase tracking-wide">
+                      Receitas Arrecadadas {portal.receitas.ano}
+                    </CardDescription>
+                    <CardTitle className="text-3xl font-display text-emerald-700 dark:text-emerald-400">
+                      {portal.receitas.valor}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="text-xs text-muted-foreground">{portal.receitas.descricao}</CardContent>
+                </Card>
+              )}
+              {portal.despesas && (
+                <Card className="border-rose-500/30 bg-rose-500/5">
+                  <CardHeader className="pb-2">
+                    <CardDescription className="text-xs uppercase tracking-wide">
+                      Despesas Liquidadas {portal.despesas.ano}
+                    </CardDescription>
+                    <CardTitle className="text-3xl font-display text-rose-700 dark:text-rose-400">
+                      {portal.despesas.valor}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="text-xs text-muted-foreground">{portal.despesas.descricao}</CardContent>
+                </Card>
+              )}
+            </div>
+          )}
         </div>
       </section>
 
       <section className="container py-12 md:py-16 space-y-12">
-        {loading ? (
+        {isLoading ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {Array.from({ length: 8 }).map((_, i) => (
               <div key={i} className="h-40 rounded-xl bg-muted animate-pulse" />
             ))}
           </div>
-        ) : grouped.length === 0 ? (
-          <p className="text-center text-muted-foreground py-12">Nenhum módulo encontrado.</p>
+        ) : portalQuery.isError || !portal?.ok ? (
+          <Alert variant="destructive">
+            <AlertTriangle className="w-4 h-4" />
+            <AlertDescription>
+              Não foi possível ler os dados do Portal de Transparência ({portal?.error || "erro desconhecido"}).
+              Tente novamente em instantes ou acesse diretamente:{" "}
+              <a className="underline" href={portalUrl} target="_blank" rel="noopener noreferrer">
+                {portalUrl}
+              </a>
+            </AlertDescription>
+          </Alert>
+        ) : filteredMenus.length === 0 ? (
+          <p className="text-center text-muted-foreground py-12">Nenhum item encontrado para "{q}".</p>
         ) : (
-          grouped.map(([cat, items]) => (
-            <div key={cat}>
-              <div className="flex items-center gap-3 mb-5">
-                <span className="gold-divider" />
-                <h2 className="font-display text-xl md:text-2xl font-semibold">{cat}</h2>
-                <Badge variant="secondary" className="ml-1">{items.length}</Badge>
-              </div>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {items.map((m) => {
-                  const Icon = getIcon(m.icon);
-                  return (
-                    <a
-                      key={m.id}
-                      href={m.link_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group"
-                    >
-                      <Card className="h-full transition-all hover:-translate-y-1 hover:shadow-lg hover:border-primary/40">
-                        <CardHeader className="pb-3">
-                          <div className="flex items-start justify-between">
-                            <div className="w-11 h-11 rounded-lg bg-primary/10 text-primary grid place-items-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                              <Icon className="w-5 h-5" />
+          filteredMenus.map((menu) => {
+            const ParentIcon = iconForMenu(menu.titulo);
+            return (
+              <div key={menu.titulo}>
+                <div className="flex items-start gap-3 mb-5">
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary grid place-items-center shrink-0">
+                    <ParentIcon className="w-5 h-5" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <h2 className="font-display text-xl md:text-2xl font-semibold">{menu.titulo}</h2>
+                      <Badge variant="secondary">{menu.filhos.length}</Badge>
+                    </div>
+                    {menu.descricao && (
+                      <p className="text-sm text-muted-foreground mt-1 max-w-3xl">{menu.descricao}</p>
+                    )}
+                  </div>
+                </div>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {menu.filhos.map((child) => {
+                    const Icon = iconForMenu(child.titulo);
+                    return (
+                      <a
+                        key={child.url}
+                        href={child.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group"
+                      >
+                        <Card className="h-full transition-all hover:-translate-y-1 hover:shadow-lg hover:border-primary/40">
+                          <CardHeader className="pb-3">
+                            <div className="flex items-start justify-between">
+                              <div className="w-11 h-11 rounded-lg bg-primary/10 text-primary grid place-items-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                                <Icon className="w-5 h-5" />
+                              </div>
+                              <ExternalLink className="w-4 h-4 text-muted-foreground/60 group-hover:text-primary transition-colors" />
                             </div>
-                            <ExternalLink className="w-4 h-4 text-muted-foreground/60 group-hover:text-primary transition-colors" />
-                          </div>
-                          <CardTitle className="mt-3 text-base font-display">{m.title}</CardTitle>
-                          {m.description && (
-                            <CardDescription className="text-xs leading-relaxed">
-                              {m.description}
-                            </CardDescription>
-                          )}
-                        </CardHeader>
-                        <CardContent className="pt-0">
-                          <span className="text-xs font-semibold text-primary inline-flex items-center gap-1 group-hover:gap-2 transition-all">
-                            Acessar <ArrowRight className="w-3 h-3" />
-                          </span>
-                        </CardContent>
-                      </Card>
-                    </a>
-                  );
-                })}
+                            <CardTitle className="mt-3 text-base font-display">{child.titulo}</CardTitle>
+                            {child.descricao && (
+                              <CardDescription className="text-xs leading-relaxed line-clamp-3">
+                                {child.descricao}
+                              </CardDescription>
+                            )}
+                          </CardHeader>
+                          <CardContent className="pt-0">
+                            <span className="text-xs font-semibold text-primary inline-flex items-center gap-1 group-hover:gap-2 transition-all">
+                              Acessar <ArrowRight className="w-3 h-3" />
+                            </span>
+                          </CardContent>
+                        </Card>
+                      </a>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          ))
+            );
+          })
+        )}
+
+        {portalQuery.isFetching && !isLoading && (
+          <p className="text-xs text-muted-foreground flex items-center justify-center gap-2">
+            <Loader2 className="w-3 h-3 animate-spin" /> Atualizando dados do portal…
+          </p>
         )}
 
         <div className="rounded-2xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground p-8 md:p-10 text-center">
@@ -210,7 +260,7 @@ function TransparenciaAtivaPage() {
             Consulte todas as informações no portal oficial integrado.
           </p>
           <Button asChild size="lg" variant="secondary" className="mt-6">
-            <a href={portalUrl} target="_blank" rel="noopener noreferrer">
+            <a href={portal?.portalUrl || portalUrl} target="_blank" rel="noopener noreferrer">
               Acessar Portal da Transparência Completo <ExternalLink className="ml-2 w-4 h-4" />
             </a>
           </Button>
