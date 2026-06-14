@@ -1318,6 +1318,75 @@ export type Database = {
         }
         Relationships: []
       }
+      transparency_modules: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          display_order: number
+          icon: string | null
+          id: string
+          is_active: boolean
+          link_url: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          link_url: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          link_url?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      transparency_settings: {
+        Row: {
+          created_at: string
+          entity_name: string
+          id: string
+          intro_text: string | null
+          is_active: boolean
+          portal_base_url: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          entity_name?: string
+          id?: string
+          intro_text?: string | null
+          is_active?: boolean
+          portal_base_url?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          entity_name?: string
+          id?: string
+          intro_text?: string | null
+          is_active?: boolean
+          portal_base_url?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
