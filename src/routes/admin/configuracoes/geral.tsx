@@ -33,6 +33,7 @@ function GeralPage() {
       contact_hours: settings.contact_hours,
       redes_sociais: settings.redes_sociais,
       footer_text: settings.footer_text,
+      plenario_image_url: settings.plenario_image_url,
     });
   };
 
@@ -78,6 +79,20 @@ function GeralPage() {
           <div><Label>Twitter / X</Label><Input value={redes.twitter ?? ""} onChange={(e) => setRede("twitter", e.target.value)} placeholder="https://x.com/..." /></div>
           <div><Label>LinkedIn</Label><Input value={redes.linkedin ?? ""} onChange={(e) => setRede("linkedin", e.target.value)} /></div>
           <div><Label>TikTok</Label><Input value={redes.tiktok ?? ""} onChange={(e) => setRede("tiktok", e.target.value)} /></div>
+        </div>
+      </section>
+
+      <section className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4">
+        <h2 className="font-display font-bold text-lg">Imagem do Plenário</h2>
+        <p className="text-xs text-slate-500">Exibida na seção institucional da página de Vereadores.</p>
+        <div className="max-w-md">
+          <ImageUploader
+            value={settings.plenario_image_url}
+            onChange={(u) => update({ plenario_image_url: u })}
+            folder="plenario"
+            label="Foto do Plenário"
+            height={200}
+          />
         </div>
       </section>
 

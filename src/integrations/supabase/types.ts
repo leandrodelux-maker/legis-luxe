@@ -959,6 +959,7 @@ export type Database = {
           nome_camara: string | null
           og_image_url: string | null
           ordem_blocos: Json | null
+          plenario_image_url: string | null
           privacy_policy: string | null
           redes_sociais: Json | null
           seo_description: string | null
@@ -1006,6 +1007,7 @@ export type Database = {
           nome_camara?: string | null
           og_image_url?: string | null
           ordem_blocos?: Json | null
+          plenario_image_url?: string | null
           privacy_policy?: string | null
           redes_sociais?: Json | null
           seo_description?: string | null
@@ -1053,6 +1055,7 @@ export type Database = {
           nome_camara?: string | null
           og_image_url?: string | null
           ordem_blocos?: Json | null
+          plenario_image_url?: string | null
           privacy_policy?: string | null
           redes_sociais?: Json | null
           seo_description?: string | null

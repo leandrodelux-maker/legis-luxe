@@ -47,6 +47,7 @@ function VereadoresPage() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [vereadores, setVereadores] = useState<Vereador[]>([]);
   const [loading, setLoading] = useState(true);
+  const [plenarioImage, setPlenarioImage] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchVereadores() {
@@ -66,7 +67,17 @@ function VereadoresPage() {
       }
     }
 
+    async function fetchPlenario() {
+      const { data } = await supabase
+        .from("site_settings")
+        .select("plenario_image_url")
+        .limit(1)
+        .maybeSingle();
+      setPlenarioImage((data as any)?.plenario_image_url ?? null);
+    }
+
     fetchVereadores();
+    fetchPlenario();
   }, []);
 
   const filteredVereadores = vereadores.filter(v => 
@@ -294,9 +305,13 @@ function VereadoresPage() {
             </div>
             <div className="relative">
               <div className="aspect-video rounded-2xl overflow-hidden glass-strong border border-white/10 p-2">
-                <div className="w-full h-full bg-primary/20 flex items-center justify-center">
-                  <span className="text-xs uppercase tracking-[0.3em] font-bold text-white/40">Imagem do Plenário</span>
-                </div>
+                {plenarioImage ? (
+                  <img src={plenarioImage} alt="Plenário" className="w-full h-full object-cover rounded-xl" />
+                ) : (
+                  <div className="w-full h-full bg-primary/20 flex items-center justify-center rounded-xl">
+                    <span className="text-xs uppercase tracking-[0.3em] font-bold text-white/40">Imagem do Plenário</span>
+                  </div>
+                )}
               </div>
               <div className="absolute -bottom-6 -right-6 p-6 bg-gold rounded-2xl text-primary-deep shadow-xl animate-bounce">
                 <div className="text-4xl font-display font-bold">100%</div>
