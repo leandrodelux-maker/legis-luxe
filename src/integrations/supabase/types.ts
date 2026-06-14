@@ -965,6 +965,10 @@ export type Database = {
           seo_description: string | null
           seo_title: string | null
           terms_of_use: string | null
+          transparencia_ativa_enabled: boolean
+          transparencia_ativa_intro: string | null
+          transparencia_portal_button_label: string | null
+          transparencia_portal_url: string | null
           updated_at: string
           whatsapp: string | null
         }
@@ -1013,6 +1017,10 @@ export type Database = {
           seo_description?: string | null
           seo_title?: string | null
           terms_of_use?: string | null
+          transparencia_ativa_enabled?: boolean
+          transparencia_ativa_intro?: string | null
+          transparencia_portal_button_label?: string | null
+          transparencia_portal_url?: string | null
           updated_at?: string
           whatsapp?: string | null
         }
@@ -1061,6 +1069,10 @@ export type Database = {
           seo_description?: string | null
           seo_title?: string | null
           terms_of_use?: string | null
+          transparencia_ativa_enabled?: boolean
+          transparencia_ativa_intro?: string | null
+          transparencia_portal_button_label?: string | null
+          transparencia_portal_url?: string | null
           updated_at?: string
           whatsapp?: string | null
         }
@@ -1228,6 +1240,45 @@ export type Database = {
           status?: string
           updated_at?: string
           valor_estimado?: number | null
+        }
+        Relationships: []
+      }
+      transparencia_modulos: {
+        Row: {
+          ativo: boolean
+          categoria: string | null
+          created_at: string
+          descricao: string | null
+          icone: string | null
+          id: string
+          nome: string
+          ordem: number
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          ativo?: boolean
+          categoria?: string | null
+          created_at?: string
+          descricao?: string | null
+          icone?: string | null
+          id?: string
+          nome: string
+          ordem?: number
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          ativo?: boolean
+          categoria?: string | null
+          created_at?: string
+          descricao?: string | null
+          icone?: string | null
+          id?: string
+          nome?: string
+          ordem?: number
+          updated_at?: string
+          url?: string
         }
         Relationships: []
       }
