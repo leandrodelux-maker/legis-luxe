@@ -17,7 +17,7 @@ import {
   Loader2,
   Vote,
   Gavel,
-  Image as ImageIcon,
+  
   Award,
   ExternalLink,
   XCircle,
