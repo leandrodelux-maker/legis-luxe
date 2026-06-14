@@ -207,49 +207,49 @@ function HomePage() {
           <div className="absolute -bottom-40 -left-40 h-[420px] w-[420px] rounded-full bg-primary/40 blur-3xl" />
         </div>
 
-        <div className="container-page py-14 md:py-20 lg:py-24 text-white text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-white/10 backdrop-blur-sm px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-gold animate-[fade-up_0.6s_ease-out]">
-            <Sparkles className="h-3.5 w-3.5" /> {eyebrow}
+        <div className="container-page py-5 md:py-8 lg:py-10 text-white text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-white/10 backdrop-blur-sm px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-gold animate-[fade-up_0.6s_ease-out]">
+            <Sparkles className="h-3 w-3" /> {eyebrow}
           </div>
 
-          <h1 className="mt-4 font-display text-4xl md:text-6xl lg:text-7xl font-extrabold leading-[1.02] tracking-tight animate-[fade-up_0.7s_ease-out]">
+          <h1 className="mt-2 font-display text-2xl md:text-3xl lg:text-4xl font-extrabold leading-[1.05] tracking-tight animate-[fade-up_0.7s_ease-out]">
             {title}
           </h1>
 
-          <p className="mt-5 max-w-2xl mx-auto text-base md:text-lg text-white/85 leading-relaxed animate-[fade-up_0.8s_ease-out]">
+          <p className="mt-2 max-w-2xl mx-auto text-xs md:text-sm text-white/85 leading-relaxed animate-[fade-up_0.8s_ease-out]">
             {subtitle}
           </p>
 
-          <form className="mt-10 max-w-2xl mx-auto animate-[fade-up_0.9s_ease-out]">
-            <div className="flex items-stretch rounded-2xl bg-white shadow-2xl shadow-primary-deep/40 overflow-hidden ring-1 ring-white/10">
-              <div className="flex items-center pl-5 text-slate-400">
-                <Search className="h-5 w-5" />
+          <form className="mt-4 max-w-xl mx-auto animate-[fade-up_0.9s_ease-out]">
+            <div className="flex items-stretch rounded-xl bg-white shadow-xl shadow-primary-deep/40 overflow-hidden ring-1 ring-white/10">
+              <div className="flex items-center pl-4 text-slate-400">
+                <Search className="h-4 w-4" />
               </div>
               <input
                 type="search"
                 placeholder="O que você procura? Ex: IPTU, licitações, vereador..."
-                className="flex-1 px-3 h-14 text-slate-700 placeholder:text-slate-400 focus:outline-none text-base"
+                className="flex-1 px-3 h-10 text-slate-700 placeholder:text-slate-400 focus:outline-none text-sm"
               />
-              <Button type="submit" className="h-14 rounded-none rounded-r-2xl px-6 md:px-8 bg-gold hover:bg-gold/90 text-gold-foreground font-bold text-base">
+              <Button type="submit" className="h-10 rounded-none rounded-r-xl px-5 bg-gold hover:bg-gold/90 text-gold-foreground font-bold text-sm">
                 Buscar
               </Button>
             </div>
           </form>
 
-          <div className="mt-8 flex flex-wrap justify-center gap-3 animate-[fade-up_1s_ease-out]">
+          <div className="mt-3 flex flex-wrap justify-center gap-2 animate-[fade-up_1s_ease-out]">
             {heroPills.map((p) => (
               <Link
                 key={p.label}
                 to={p.to}
-                className="inline-flex items-center gap-2 h-11 px-5 rounded-full border border-white/25 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white text-sm font-medium transition-all hover:-translate-y-0.5"
+                className="inline-flex items-center gap-1.5 h-8 px-3 rounded-full border border-white/25 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white text-xs font-medium transition-all hover:-translate-y-0.5"
               >
-                <p.icon className="h-4 w-4 text-gold" /> {p.label}
+                <p.icon className="h-3.5 w-3.5 text-gold" /> {p.label}
               </Link>
             ))}
           </div>
         </div>
 
-        <div className="pb-8 md:pb-12" />
+
 
 
 
