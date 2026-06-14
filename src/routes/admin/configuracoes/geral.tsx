@@ -82,6 +82,20 @@ function GeralPage() {
       </section>
 
       <section className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4">
+        <h2 className="font-display font-bold text-lg">Imagem do Plenário</h2>
+        <p className="text-xs text-slate-500">Exibida na seção institucional da página de Vereadores.</p>
+        <div className="max-w-md">
+          <ImageUploader
+            value={settings.plenario_image_url}
+            onChange={(u) => update({ plenario_image_url: u })}
+            folder="plenario"
+            label="Foto do Plenário"
+            height={200}
+          />
+        </div>
+      </section>
+
+      <section className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4">
         <h2 className="font-display font-bold text-lg">Rodapé</h2>
         <Textarea rows={3} value={settings.footer_text ?? ""} onChange={(e) => update({ footer_text: e.target.value })} placeholder="Texto exibido no rodapé do site" />
       </section>
