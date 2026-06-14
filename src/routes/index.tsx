@@ -207,7 +207,7 @@ function HomePage() {
           <div className="absolute -bottom-40 -left-40 h-[420px] w-[420px] rounded-full bg-primary/40 blur-3xl" />
         </div>
 
-        <div className="container-page py-5 md:py-8 lg:py-10 text-white text-center">
+        <div className="container-page py-6 md:py-9 lg:py-12 text-white text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-white/10 backdrop-blur-sm px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-gold animate-[fade-up_0.6s_ease-out]">
             <Sparkles className="h-3 w-3" /> {eyebrow}
           </div>
