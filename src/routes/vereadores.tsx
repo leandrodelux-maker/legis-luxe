@@ -47,6 +47,7 @@ function VereadoresPage() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [vereadores, setVereadores] = useState<Vereador[]>([]);
   const [loading, setLoading] = useState(true);
+  const [plenarioImage, setPlenarioImage] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchVereadores() {
@@ -66,7 +67,17 @@ function VereadoresPage() {
       }
     }
 
+    async function fetchPlenario() {
+      const { data } = await supabase
+        .from("site_settings")
+        .select("plenario_image_url")
+        .limit(1)
+        .maybeSingle();
+      setPlenarioImage((data as any)?.plenario_image_url ?? null);
+    }
+
     fetchVereadores();
+    fetchPlenario();
   }, []);
 
   const filteredVereadores = vereadores.filter(v => 
