@@ -1364,7 +1364,11 @@ export type Database = {
           id: string
           intro_text: string | null
           is_active: boolean
+          last_sync_at: string | null
           portal_base_url: string
+          portal_name: string
+          portal_url: string
+          show_full_portal_embed: boolean
           updated_at: string
         }
         Insert: {
@@ -1373,7 +1377,11 @@ export type Database = {
           id?: string
           intro_text?: string | null
           is_active?: boolean
+          last_sync_at?: string | null
           portal_base_url?: string
+          portal_name?: string
+          portal_url: string
+          show_full_portal_embed?: boolean
           updated_at?: string
         }
         Update: {
@@ -1382,7 +1390,11 @@ export type Database = {
           id?: string
           intro_text?: string | null
           is_active?: boolean
+          last_sync_at?: string | null
           portal_base_url?: string
+          portal_name?: string
+          portal_url?: string
+          show_full_portal_embed?: boolean
           updated_at?: string
         }
         Relationships: []

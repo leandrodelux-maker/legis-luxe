@@ -1,378 +1,317 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
-import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Input } from "@/components/ui/input";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   AlertTriangle,
-  ArrowRight,
   Banknote,
   BookOpen,
+  BriefcaseBusiness,
+  Building2,
   CalendarDays,
-  Database,
   ExternalLink,
+  FileCheck2,
+  FileClock,
   FileSignature,
   FileText,
   Gavel,
+  HandCoins,
+  Landmark,
   Loader2,
-  MessageSquare,
-  PieChart,
   Receipt,
-  Search,
+  Scale,
   ShieldCheck,
-  ShoppingCart,
   Users,
   WalletCards,
 } from "lucide-react";
-import { getPortalData, type PortalDataset, type PortalMenu } from "@/lib/transparency-portal.functions";
 
 export const Route = createFileRoute("/transparencia-ativa")({
   head: () => ({
     meta: [
-      { title: "Transparência Ativa — Dados Municipais" },
-      { name: "description", content: "Painel público com dados de receitas, despesas, licitações, contratos e servidores." },
+      { title: "Portal da Transparência — Câmara Municipal" },
+      {
+        name: "description",
+        content:
+          "Acesse receitas, despesas, contratos, licitações, folha de pagamento e demais informações públicas da Câmara Municipal.",
+      },
     ],
   }),
   component: TransparenciaAtivaPage,
 });
 
-type Settings = {
-  entity_name: string | null;
-  portal_base_url: string | null;
-  intro_text: string | null;
+type TransparencySettings = {
+  id: string;
+  portal_url: string | null;
+  portal_base_url?: string | null;
+  portal_name: string | null;
+  entity_name?: string | null;
   is_active: boolean | null;
+  show_full_portal_embed: boolean | null;
 };
 
-const DEFAULT_INTRO =
-  "Consulte em um só lugar os dados públicos do município lidos diretamente do Portal Oficial de Transparência.";
-const DEFAULT_PORTAL = "https://camaraadelandia.megasofttransparencia.com.br/";
-
-const iconMap = {
-  Banknote,
-  Receipt,
-  WalletCards,
-  Gavel,
-  FileSignature,
-  ShoppingCart,
-  Users,
-  FileText,
+type TransparencyModule = {
+  title: string;
+  description: string;
+  path: string;
+  icon: typeof Banknote;
 };
 
-const formatCurrency = (value: unknown) =>
-  typeof value === "number"
-    ? new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value)
-    : String(value ?? "—");
+const modules: TransparencyModule[] = [
+  {
+    title: "Receitas",
+    description: "Arrecadação, repasses e demais entradas registradas no portal oficial.",
+    path: "receitas-e-despesas/receita",
+    icon: Banknote,
+  },
+  {
+    title: "Despesas",
+    description: "Consulta sintética das despesas públicas por período e classificação.",
+    path: "receitas-e-despesas/despesa-sintetica",
+    icon: Receipt,
+  },
+  {
+    title: "Empenhos",
+    description: "Empenhos emitidos, favorecidos, liquidações e valores vinculados.",
+    path: "receitas-e-despesas/empenho",
+    icon: WalletCards,
+  },
+  {
+    title: "Licitações",
+    description: "Procedimentos licitatórios, modalidades, situações e documentos oficiais.",
+    path: "contratos-convenios-e-licitacoes/procedimentos-licitatorios",
+    icon: Gavel,
+  },
+  {
+    title: "Contratos",
+    description: "Contratos celebrados, fornecedores, vigência, objeto e anexos.",
+    path: "contratos-convenios-e-licitacoes/contrato",
+    icon: FileSignature,
+  },
+  {
+    title: "Aditivos",
+    description: "Aditamentos e informações complementares vinculadas aos contratos.",
+    path: "contratos-convenios-e-licitacoes/contrato",
+    icon: FileClock,
+  },
+  {
+    title: "Dispensas e Inexigibilidades",
+    description: "Contratações diretas, dispensas, inexigibilidades e processos relacionados.",
+    path: "contratos-convenios-e-licitacoes/dispensas-inexigibilidades",
+    icon: FileCheck2,
+  },
+  {
+    title: "Folha de Pagamento",
+    description: "Servidores, remuneração, cargos e informações de pessoal.",
+    path: "orgaos-e-servidores/servidor",
+    icon: Users,
+  },
+  {
+    title: "Diárias",
+    description: "Diárias concedidas, beneficiários, destinos, datas e valores.",
+    path: "orgaos-e-servidores/diaria",
+    icon: BriefcaseBusiness,
+  },
+  {
+    title: "Patrimônio",
+    description: "Bens patrimoniais, almoxarifado e movimentações disponíveis.",
+    path: "receitas-e-despesas/patrimonio-e-almoxarifado",
+    icon: Building2,
+  },
+  {
+    title: "Prestação de Contas",
+    description: "Balanços, pareceres, contas anuais e relatórios publicados.",
+    path: "planejamento-e-politicas-publicas/parecer-previo",
+    icon: ShieldCheck,
+  },
+  {
+    title: "Relatórios Fiscais",
+    description: "Relatórios de gestão fiscal e demonstrativos de responsabilidade fiscal.",
+    path: "responsabilidade-fiscal/relatorio-de-gestao-fiscal",
+    icon: Landmark,
+  },
+  {
+    title: "Leis e Atos",
+    description: "Legislação municipal, atos infralegais, resoluções e publicações normativas.",
+    path: "legislacao-e-publicacoes/leis-e-atos-infralegais",
+    icon: Scale,
+  },
+  {
+    title: "Diário Oficial",
+    description: "Publicações oficiais, atos administrativos e documentos de interesse público.",
+    path: "legislacao-e-publicacoes/outras-publicacoes",
+    icon: BookOpen,
+  },
+];
 
-function iconFor(text: string | null) {
-  const key = (text || "").toLowerCase();
-  if (key.includes("receita")) return Banknote;
-  if (key.includes("pagamento")) return WalletCards;
-  if (key.includes("despesa") || key.includes("empenho")) return Receipt;
-  if (key.includes("contrat")) return FileSignature;
-  if (key.includes("licit") || key.includes("conven") || key.includes("obra")) return Gavel;
-  if (key.includes("servidor") || key.includes("diária") || key.includes("diaria")) return Users;
-  if (key.includes("planejamento") || key.includes("política")) return PieChart;
-  if (key.includes("legisla")) return BookOpen;
-  if (key.includes("sic") || key.includes("ouvidoria")) return MessageSquare;
-  return FileText;
+export function getTransparencyUrl(baseUrl: string, path = "") {
+  const base = new URL(baseUrl.trim());
+  const cleanPath = path.trim().replace(/^\/+/, "");
+  const cleanBase = base.href.replace(/\/+$/, "");
+  return cleanPath ? `${cleanBase}/${cleanPath}` : `${cleanBase}/`;
 }
 
-function datasetText(dataset: PortalDataset) {
-  return [dataset.title, dataset.description, dataset.category, ...dataset.rows.flatMap((row) => Object.values(row).map(String))]
-    .join(" ")
-    .toLowerCase();
+function isValidPortalUrl(value: string | null | undefined) {
+  if (!value) return false;
+  try {
+    const url = new URL(value.trim());
+    return url.protocol === "https:" || url.protocol === "http:";
+  } catch {
+    return false;
+  }
 }
 
 export function TransparenciaAtivaPage() {
-  const [settings, setSettings] = useState<Settings | null>(null);
-  const [loadingSettings, setLoadingSettings] = useState(true);
-  const [search, setSearch] = useState("");
-  const [viewer, setViewer] = useState<{ url: string; title: string } | null>(null);
+  const [settings, setSettings] = useState<TransparencySettings | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let alive = true;
+    let mounted = true;
     (async () => {
-      try {
-        const { data } = await (supabase as any)
-          .from("transparency_settings")
-          .select("entity_name, portal_base_url, intro_text, is_active")
-          .limit(1)
-          .maybeSingle();
-        if (alive) setSettings((data as Settings) || null);
-      } finally {
-        if (alive) setLoadingSettings(false);
+      const { data } = await (supabase as any)
+        .from("transparency_settings")
+        .select("id, portal_url, portal_base_url, portal_name, entity_name, is_active, show_full_portal_embed")
+        .eq("is_active", true)
+        .order("updated_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (mounted) {
+        setSettings((data as TransparencySettings | null) || null);
+        setLoading(false);
       }
     })();
     return () => {
-      alive = false;
+      mounted = false;
     };
   }, []);
 
-  const portalUrl = (settings?.portal_base_url || DEFAULT_PORTAL).trim();
-  const fetchPortal = useServerFn(getPortalData);
-  const portalQuery = useQuery({
-    queryKey: ["portal-transparencia-completo", portalUrl],
-    queryFn: () => fetchPortal({ data: { baseUrl: portalUrl } }),
-    enabled: !loadingSettings && !!portalUrl,
-    staleTime: 5 * 60_000,
-    retry: 1,
-  });
+  const portalUrl = useMemo(() => {
+    const configuredUrl = settings?.portal_url || settings?.portal_base_url || "";
+    return isValidPortalUrl(configuredUrl) ? getTransparencyUrl(configuredUrl) : "";
+  }, [settings?.portal_base_url, settings?.portal_url]);
 
-  const portal = portalQuery.data;
-  const datasets = portal?.datasets || [];
-  const term = search.trim().toLowerCase();
-  const filteredDatasets = useMemo(
-    () => (term ? datasets.filter((dataset) => datasetText(dataset).includes(term)) : datasets),
-    [datasets, term],
-  );
-  const filteredMenus: PortalMenu[] = useMemo(() => {
-    const menus = portal?.menus || [];
-    if (!term) return menus;
-    return menus
-      .map((menu) => ({
-        ...menu,
-        filhos: menu.filhos.filter((child) =>
-          [menu.titulo, child.titulo, child.descricao].join(" ").toLowerCase().includes(term),
-        ),
-      }))
-      .filter((menu) => menu.filhos.length > 0);
-  }, [portal?.menus, term]);
+  const portalName = settings?.portal_name || settings?.entity_name || "Portal da Transparência";
 
-  const totalRecords = datasets.reduce((sum, dataset) => sum + dataset.total, 0);
-  const featured = filteredDatasets.slice(0, 6);
-  const isLoading = loadingSettings || portalQuery.isLoading;
-
-  if (settings && settings.is_active === false) {
+  if (loading) {
     return (
-      <main className="container py-24 text-center">
-        <h1 className="font-display text-3xl font-bold">Página indisponível</h1>
-        <p className="mt-4 text-muted-foreground">A página de Transparência Ativa está temporariamente desativada.</p>
+      <main className="min-h-screen bg-background">
+        <section className="container-page py-20">
+          <div className="flex items-center gap-3 text-muted-foreground">
+            <Loader2 className="h-5 w-5 animate-spin" /> Carregando Portal da Transparência...
+          </div>
+        </section>
+      </main>
+    );
+  }
+
+  if (!settings || settings.is_active === false) {
+    return (
+      <main className="min-h-screen bg-background">
+        <section className="container-page py-20 text-center">
+          <h1 className="font-display text-3xl font-bold text-foreground">Portal da Transparência</h1>
+          <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">Esta área está temporariamente indisponível.</p>
+        </section>
+      </main>
+    );
+  }
+
+  if (!portalUrl) {
+    return (
+      <main className="min-h-screen bg-background">
+        <section className="container-page py-20">
+          <Alert variant="destructive">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>O link do Portal Megasoft não está configurado corretamente.</AlertDescription>
+          </Alert>
+        </section>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-slate-50">
-      <section className="relative overflow-hidden bg-slate-950 text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(34,197,94,0.22),transparent_34%),linear-gradient(135deg,rgba(14,165,233,0.16),transparent_44%)]" />
-        <div className="container relative py-12 md:py-16">
-          <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
-            <div>
-              <Badge className="mb-5 border-white/20 bg-white/10 text-white hover:bg-white/15">
-                <ShieldCheck className="mr-1.5 h-3.5 w-3.5" /> Dados oficiais integrados
-              </Badge>
-              <h1 className="font-display text-4xl font-bold leading-tight md:text-6xl">
-                Painel da Transparência
-              </h1>
-              <p className="mt-4 max-w-3xl text-lg text-slate-200">
-                {settings?.intro_text || DEFAULT_INTRO}
-              </p>
-              <div className="mt-7 flex flex-wrap items-center gap-3 text-sm text-slate-300">
-                <span className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2">
-                  <Database className="h-4 w-4 text-emerald-300" /> {settings?.entity_name || "Câmara Municipal"}
-                </span>
-                {portal?.generatedAt && (
-                  <span className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2">
-                    <CalendarDays className="h-4 w-4 text-sky-300" /> Atualizado agora pelo portal
-                  </span>
-                )}
-              </div>
+    <main className="min-h-screen bg-background">
+      <section className="border-b border-border bg-gradient-to-br from-primary-deep via-primary to-primary-deep py-14 text-primary-foreground md:py-20">
+        <div className="container-page">
+          <div className="max-w-4xl animate-fade-up">
+            <div className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase text-gold">
+              <ShieldCheck className="h-3.5 w-3.5" /> Dados oficiais
             </div>
-
-            <div className="rounded-2xl border border-white/10 bg-white/10 p-5 backdrop-blur">
-              <p className="text-sm font-medium text-slate-200">Buscar nos dados de transparência</p>
-              <div className="relative mt-3">
-                <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                <Input
-                  value={search}
-                  onChange={(event) => setSearch(event.target.value)}
-                  placeholder="Fornecedor, empenho, contrato, licitação..."
-                  className="h-12 border-white/15 bg-white text-slate-950 pl-11"
-                />
-              </div>
-              <div className="mt-5 grid grid-cols-2 gap-3">
-                <div className="rounded-xl bg-white/10 p-4">
-                  <p className="text-xs uppercase text-slate-300">Registros lidos</p>
-                  <p className="mt-1 text-2xl font-bold">{totalRecords.toLocaleString("pt-BR")}</p>
-                </div>
-                <div className="rounded-xl bg-white/10 p-4">
-                  <p className="text-xs uppercase text-slate-300">Bases ativas</p>
-                  <p className="mt-1 text-2xl font-bold">{datasets.filter((d) => !d.error).length}</p>
-                </div>
-              </div>
+            <h1 className="mt-5 font-display text-4xl font-extrabold leading-tight md:text-5xl">Portal da Transparência</h1>
+            <p className="mt-4 max-w-3xl text-base leading-7 text-primary-foreground/85 md:text-lg">
+              Acompanhe receitas, despesas, contratos, licitações, folha de pagamento e demais informações públicas da Câmara Municipal.
+            </p>
+            <div className="mt-6 flex flex-wrap items-center gap-3 text-sm text-primary-foreground/80">
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2">
+                <Landmark className="h-4 w-4 text-gold" /> {portalName}
+              </span>
+              <a className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 transition-colors hover:border-gold hover:text-gold" href={portalUrl} target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="h-4 w-4" /> Abrir portal completo
+              </a>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="container -mt-6 relative z-10">
-        <div className="grid gap-4 md:grid-cols-2">
-          <Card className="border-emerald-200 bg-white shadow-lg">
-            <CardHeader className="pb-2">
-              <CardDescription>Receitas arrecadadas {portal?.receitas?.ano || ""}</CardDescription>
-              <CardTitle className="text-3xl text-emerald-700">{portal?.receitas?.valor || "—"}</CardTitle>
-            </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">{portal?.receitas?.descricao || "Dados lidos do portal."}</CardContent>
-          </Card>
-          <Card className="border-rose-200 bg-white shadow-lg">
-            <CardHeader className="pb-2">
-              <CardDescription>Despesas liquidadas {portal?.despesas?.ano || ""}</CardDescription>
-              <CardTitle className="text-3xl text-rose-700">{portal?.despesas?.valor || "—"}</CardTitle>
-            </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">{portal?.despesas?.descricao || "Dados lidos do portal."}</CardContent>
-          </Card>
-        </div>
-      </section>
-
-      <section className="container py-10 md:py-14">
-        {isLoading ? (
-          <div className="grid gap-4 md:grid-cols-3">
-            {Array.from({ length: 6 }).map((_, index) => (
-              <div key={index} className="h-52 animate-pulse rounded-2xl bg-slate-200" />
-            ))}
-          </div>
-        ) : portalQuery.isError || !portal?.ok ? (
-          <Alert variant="destructive">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertDescription>
-              Não foi possível carregar os dados do portal ({portal?.error || "erro desconhecido"}).
-              <a className="ml-1 underline" href={portalUrl} target="_blank" rel="noopener noreferrer">Abrir portal oficial</a>
-            </AlertDescription>
-          </Alert>
-        ) : (
-          <Tabs defaultValue="dados" className="space-y-8">
-            <TabsList className="grid h-auto w-full grid-cols-2 rounded-2xl bg-white p-1 shadow-sm md:w-[520px]">
-              <TabsTrigger value="dados" className="rounded-xl">Dados do município</TabsTrigger>
-              <TabsTrigger value="modulos" className="rounded-xl">Módulos do portal</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="dados" className="space-y-6">
-              {featured.length === 0 ? (
-                <p className="py-12 text-center text-muted-foreground">Nenhum dado encontrado para “{search}”.</p>
-              ) : (
-                featured.map((dataset) => <DatasetPanel key={dataset.key} dataset={dataset} onOpen={setViewer} />)
-              )}
-            </TabsContent>
-
-            <TabsContent value="modulos" className="space-y-6">
-              {filteredMenus.map((menu) => (
-                <Card key={menu.titulo} className="overflow-hidden border-slate-200 bg-white">
-                  <CardHeader className="border-b bg-slate-100">
-                    <div className="flex items-start gap-4">
-                      <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-slate-950 text-white">
-                        {(() => {
-                          const Icon = iconFor(menu.titulo);
-                          return <Icon className="h-5 w-5" />;
-                        })()}
-                      </div>
-                      <div>
-                        <CardTitle className="font-display text-xl">{menu.titulo}</CardTitle>
-                        <CardDescription className="mt-1">{menu.descricao}</CardDescription>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {menu.filhos.map((child) => (
-                      <button
-                        key={child.url}
-                        type="button"
-                        onClick={() => setViewer({ url: child.url, title: child.titulo })}
-                        className="group rounded-xl border border-slate-200 bg-white p-4 text-left transition hover:border-slate-400 hover:shadow-md"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <p className="font-semibold text-slate-950">{child.titulo}</p>
-                          <ExternalLink className="h-4 w-4 shrink-0 text-slate-400 group-hover:text-slate-800" />
-                        </div>
-                        {child.descricao && <p className="mt-2 line-clamp-2 text-sm text-slate-600">{child.descricao}</p>}
-                      </button>
-                    ))}
-                  </CardContent>
-                </Card>
-              ))}
-            </TabsContent>
-          </Tabs>
-        )}
-      </section>
-
-      <Dialog open={!!viewer} onOpenChange={(open) => !open && setViewer(null)}>
-        <DialogContent className="flex h-[88vh] w-[95vw] max-w-6xl flex-col gap-0 p-0">
-          <DialogHeader className="flex-row items-center justify-between gap-3 space-y-0 border-b px-5 py-3">
-            <DialogTitle className="truncate text-base font-display">{viewer?.title}</DialogTitle>
-            {viewer && (
-              <Button asChild size="sm" variant="outline" className="mr-8">
-                <a href={viewer.url} target="_blank" rel="noopener noreferrer">
-                  Abrir no portal <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
+      <section className="container-page py-12 md:py-16">
+        {settings.show_full_portal_embed ? (
+          <div className="space-y-5">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 className="font-display text-2xl font-bold text-foreground">Portal Megasoft incorporado</h2>
+                <p className="mt-1 text-muted-foreground">Conteúdo oficial exibido diretamente do portal configurado.</p>
+              </div>
+              <Button asChild variant="outline">
+                <a href={portalUrl} target="_blank" rel="noopener noreferrer">
+                  Abrir em nova aba <ExternalLink className="ml-2 h-4 w-4" />
                 </a>
               </Button>
-            )}
-          </DialogHeader>
-          {viewer && <iframe src={viewer.url} title={viewer.title} className="w-full flex-1 border-0" />}
-        </DialogContent>
-      </Dialog>
-    </main>
-  );
-}
-
-function DatasetPanel({ dataset, onOpen }: { dataset: PortalDataset; onOpen: (viewer: { url: string; title: string }) => void }) {
-  const Icon = iconMap[dataset.icon as keyof typeof iconMap] || FileText;
-  return (
-    <Card className="overflow-hidden border-slate-200 bg-white shadow-sm">
-      <CardHeader className="border-b border-slate-100">
-        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-          <div className="flex gap-4">
-            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-slate-950 text-white">
-              <Icon className="h-5 w-5" />
             </div>
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <CardTitle className="font-display text-2xl">{dataset.title}</CardTitle>
-                <Badge variant="secondary">{dataset.total.toLocaleString("pt-BR")} registros</Badge>
-              </div>
-              <CardDescription className="mt-1 max-w-2xl">{dataset.description}</CardDescription>
+            <div className="overflow-hidden rounded-lg border border-border bg-card shadow-card">
+              <iframe src={portalUrl} title="Portal Megasoft completo" width="100%" height="900" className="block w-full border-0" />
             </div>
           </div>
-          <Button variant="outline" onClick={() => onOpen({ url: dataset.portalUrl, title: dataset.title })}>
-            Ver consulta completa <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        </div>
-      </CardHeader>
-      <CardContent className="p-0">
-        {dataset.error ? (
-          <div className="p-5 text-sm text-amber-700">Não foi possível ler esta base agora: {dataset.error}</div>
-        ) : dataset.rows.length === 0 ? (
-          <div className="p-5 text-sm text-muted-foreground">Nenhum registro retornado pelo portal.</div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[760px] text-sm">
-              <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500">
-                <tr>
-                  {dataset.columns.map((column) => (
-                    <th key={column.key} className="px-5 py-3 font-semibold">{column.label}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {dataset.rows.map((row, index) => (
-                  <tr key={index} className="hover:bg-slate-50/80">
-                    {dataset.columns.map((column) => (
-                      <td key={column.key} className="px-5 py-4 align-top text-slate-700">
-                        {column.type === "currency" ? formatCurrency(row[column.key]) : String(row[column.key] ?? "—")}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div>
+            <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div>
+                <div className="gold-divider mb-4" />
+                <h2 className="font-display text-2xl font-bold text-foreground md:text-3xl">Acessos rápidos</h2>
+                <p className="mt-2 max-w-2xl text-muted-foreground">Escolha uma área para consultar os dados diretamente no portal oficial.</p>
+              </div>
+              <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+                <CalendarDays className="h-4 w-4 text-primary" /> Links gerados pela configuração salva
+              </div>
+            </div>
+
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {modules.map((module) => {
+                const Icon = module.icon;
+                const href = getTransparencyUrl(portalUrl, module.path);
+                return (
+                  <Card key={module.title} className="card-premium card-premium-hover flex h-full flex-col overflow-hidden rounded-lg">
+                    <CardHeader className="pb-3">
+                      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                        <Icon className="h-6 w-6" />
+                      </div>
+                      <CardTitle className="font-display text-xl text-foreground">{module.title}</CardTitle>
+                      <CardDescription className="min-h-[52px] text-sm leading-6">{module.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="mt-auto pt-0">
+                      <Button asChild className="w-full bg-primary-deep hover:bg-primary">
+                        <a href={href} target="_blank" rel="noopener noreferrer">
+                          Acessar <ExternalLink className="ml-2 h-4 w-4" />
+                        </a>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
           </div>
         )}
-      </CardContent>
-    </Card>
+      </section>
+    </main>
   );
 }

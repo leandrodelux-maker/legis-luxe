@@ -1,177 +1,203 @@
 import { createFileRoute } from "@tanstack/react-router";
+import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { CrudPage } from "@/components/admin/crud-page";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Loader2 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertTriangle, ExternalLink, Loader2, Save, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
+import { saveTransparencySettings } from "@/lib/transparency-settings.functions";
 
 export const Route = createFileRoute("/admin/transparencia-ativa")({
   component: AdminTransparenciaAtiva,
 });
 
-const CATEGORIES = [
-  "Financeiro",
-  "Licitações e Contratos",
-  "Pessoal",
-  "Planejamento e Orçamento",
-  "Contabilidade",
-  "Controle Social",
-  "Acesso à Informação",
-];
-
 type Settings = {
-  id: string;
-  entity_name: string;
-  portal_base_url: string;
-  intro_text: string | null;
+  id: string | null;
+  portal_url: string;
+  portal_name: string;
   is_active: boolean;
+  show_full_portal_embed: boolean;
+  last_sync_at: string | null;
 };
 
-type Module = {
-  id: string;
-  title: string;
-  category: string;
-  display_order: number;
-  is_active: boolean;
-  link_url: string;
+const emptySettings: Settings = {
+  id: null,
+  portal_url: "",
+  portal_name: "Portal da Transparência",
+  is_active: true,
+  show_full_portal_embed: false,
+  last_sync_at: null,
 };
+
+function normalizePortalUrl(value: string) {
+  const url = new URL(value.trim());
+  if (url.protocol !== "https:" && url.protocol !== "http:") throw new Error("invalid");
+  url.hash = "";
+  return `${url.origin}${url.pathname}`.replace(/\/+$/, "") + "/";
+}
 
 function AdminTransparenciaAtiva() {
-  const [settings, setSettings] = useState<Settings | null>(null);
+  const [settings, setSettings] = useState<Settings>(emptySettings);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const saveSettingsFn = useServerFn(saveTransparencySettings);
 
   useEffect(() => {
+    let mounted = true;
     (async () => {
-      const { data } = await (supabase as any)
+      const { data, error } = await (supabase as any)
         .from("transparency_settings")
-        .select("*")
+        .select("id, portal_url, portal_base_url, portal_name, entity_name, is_active, show_full_portal_embed, last_sync_at")
+        .order("updated_at", { ascending: false })
         .limit(1)
         .maybeSingle();
-      setSettings(data as Settings | null);
+
+      if (!mounted) return;
+      if (error) toast.error(error.message);
+      if (data) {
+        setSettings({
+          id: data.id,
+          portal_url: data.portal_url || data.portal_base_url || "",
+          portal_name: data.portal_name || data.entity_name || "Portal da Transparência",
+          is_active: data.is_active ?? true,
+          show_full_portal_embed: data.show_full_portal_embed ?? false,
+          last_sync_at: data.last_sync_at || null,
+        });
+      }
       setLoading(false);
     })();
+    return () => {
+      mounted = false;
+    };
   }, []);
 
-  const saveSettings = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!settings) return;
+  const saveSettings = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    let normalizedUrl = "";
+    try {
+      normalizedUrl = normalizePortalUrl(settings.portal_url);
+    } catch {
+      toast.error("Link inválido. Informe uma URL completa do Portal Megasoft.");
+      return;
+    }
+
     setSaving(true);
-    const { error } = await (supabase as any)
-      .from("transparency_settings")
-      .update({
-        entity_name: settings.entity_name,
-        portal_base_url: settings.portal_base_url,
-        intro_text: settings.intro_text,
-        is_active: settings.is_active,
-      })
-      .eq("id", settings.id);
-    setSaving(false);
-    if (error) toast.error(error.message);
-    else toast.success("Configurações salvas");
+    const payload = {
+      id: settings.id,
+      portal_url: normalizedUrl,
+      portal_name: settings.portal_name.trim() || "Portal da Transparência",
+      is_active: settings.is_active,
+      show_full_portal_embed: settings.show_full_portal_embed,
+    };
+
+    try {
+      const saved = await saveSettingsFn({ data: payload });
+      setSettings((current) => ({ ...current, ...saved, id: saved.id }));
+      toast.success("Configuração salva com sucesso");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Erro ao salvar configuração");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-display font-bold text-slate-900">Transparência Ativa</h1>
-        <p className="text-slate-500">
-          Configurações da página pública e dos módulos do Portal Megasoft. Para reutilizar em outro município,
-          basta trocar a URL base do portal e os links de cada módulo.
+        <h1 className="font-display text-3xl font-bold text-slate-900">Transparência Ativa</h1>
+        <p className="mt-1 max-w-3xl text-slate-500">
+          Configure o endereço oficial do Portal Megasoft usado pela página pública de Transparência.
         </p>
       </div>
 
-      <section className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 max-w-4xl">
-        <h2 className="font-display font-bold text-lg">Configurações da página</h2>
-        {loading || !settings ? (
-          <div className="py-6 grid place-items-center"><Loader2 className="w-5 h-5 animate-spin text-slate-400" /></div>
+      <section className="max-w-4xl rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+        {loading ? (
+          <div className="grid min-h-48 place-items-center text-slate-500">
+            <Loader2 className="mb-3 h-6 w-6 animate-spin" /> Carregando configuração...
+          </div>
         ) : (
-          <form onSubmit={saveSettings} className="space-y-4">
-            <div className="flex items-center gap-2">
-              <input
-                id="enabled"
-                type="checkbox"
-                checked={settings.is_active}
-                onChange={(e) => setSettings({ ...settings, is_active: e.target.checked })}
-                className="w-4 h-4"
-              />
-              <Label htmlFor="enabled">Página de Transparência Ativa publicada</Label>
+          <form onSubmit={saveSettings} className="space-y-6">
+            <div className="flex items-start gap-3 rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-blue-900">
+              <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0" />
+              <p>Os cards públicos serão gerados sempre a partir desta URL salva. Nenhum dado demonstrativo será exibido.</p>
             </div>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <Label>Nome da entidade</Label>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="portal_name">Nome do portal</Label>
                 <Input
-                  value={settings.entity_name ?? ""}
-                  onChange={(e) => setSettings({ ...settings, entity_name: e.target.value })}
-                  placeholder="Câmara Municipal de ..."
+                  id="portal_name"
+                  value={settings.portal_name}
+                  onChange={(event) => setSettings({ ...settings, portal_name: event.target.value })}
+                  placeholder="Portal da Transparência"
                 />
               </div>
-              <div>
-                <Label>URL base do Portal Megasoft</Label>
+              <div className="space-y-2">
+                <Label htmlFor="portal_url">Link do Portal Megasoft *</Label>
                 <Input
+                  id="portal_url"
                   type="url"
-                  value={settings.portal_base_url ?? ""}
-                  onChange={(e) => setSettings({ ...settings, portal_base_url: e.target.value })}
-                  placeholder="https://camara{municipio}.megasofttransparencia.com.br/"
+                  required
+                  value={settings.portal_url}
+                  onChange={(event) => setSettings({ ...settings, portal_url: event.target.value })}
+                  placeholder="https://camaraadelandia.megasofttransparencia.com.br/"
                 />
               </div>
             </div>
-            <div>
-              <Label>Texto de apresentação</Label>
-              <Textarea
-                rows={3}
-                value={settings.intro_text ?? ""}
-                onChange={(e) => setSettings({ ...settings, intro_text: e.target.value })}
-              />
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="flex items-center justify-between rounded-lg border border-slate-200 p-4">
+                <div>
+                  <Label htmlFor="is_active" className="font-semibold">Página publicada</Label>
+                  <p className="mt-1 text-sm text-slate-500">Mantém a página pública disponível para visitantes.</p>
+                </div>
+                <Switch
+                  id="is_active"
+                  checked={settings.is_active}
+                  onCheckedChange={(checked) => setSettings({ ...settings, is_active: checked })}
+                />
+              </div>
+
+              <div className="flex items-center justify-between rounded-lg border border-slate-200 p-4">
+                <div>
+                  <Label htmlFor="show_full_portal_embed" className="font-semibold">Exibir Portal Completo Incorporado</Label>
+                  <p className="mt-1 text-sm text-slate-500">Quando ativo, exibe o Portal Megasoft em iframe responsivo.</p>
+                </div>
+                <Switch
+                  id="show_full_portal_embed"
+                  checked={settings.show_full_portal_embed}
+                  onCheckedChange={(checked) => setSettings({ ...settings, show_full_portal_embed: checked })}
+                />
+              </div>
             </div>
+
+            {settings.portal_url && (
+              <Alert>
+                <AlertTriangle className="h-4 w-4" />
+                <AlertDescription>
+                  Link configurado: {" "}
+                  <a href={settings.portal_url} target="_blank" rel="noopener noreferrer" className="font-medium underline">
+                    abrir Portal Megasoft <ExternalLink className="ml-1 inline h-3.5 w-3.5" />
+                  </a>
+                </AlertDescription>
+              </Alert>
+            )}
+
             <div className="flex justify-end">
-              <Button type="submit" disabled={saving} className="bg-primary-deep">
-                {saving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />} Salvar configurações
+              <Button type="submit" disabled={saving} className="bg-primary-deep hover:bg-primary">
+                {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+                Salvar
               </Button>
             </div>
           </form>
         )}
       </section>
-
-      <CrudPage<Module>
-        title="Módulos de Transparência"
-        description="Cards exibidos na página pública. Ícone usa nomes da biblioteca lucide-react (ex.: Banknote, Gavel, FileText)."
-        table="transparency_modules"
-        orderBy={{ column: "display_order", ascending: true }}
-        defaultValues={{ is_active: true, display_order: 0, category: CATEGORIES[0] }}
-        columns={[
-          { key: "display_order", label: "#" },
-          { key: "title", label: "Título" },
-          { key: "category", label: "Categoria" },
-          {
-            key: "is_active",
-            label: "Status",
-            render: (r) => (
-              <Badge variant={r.is_active ? "default" : "secondary"}>{r.is_active ? "Ativo" : "Inativo"}</Badge>
-            ),
-          },
-        ]}
-        fields={[
-          { name: "title", label: "Título", required: true },
-          { name: "description", label: "Descrição", type: "textarea" },
-          {
-            name: "category",
-            label: "Categoria",
-            type: "select",
-            required: true,
-            options: CATEGORIES.map((c) => ({ label: c, value: c })),
-          },
-          { name: "icon", label: "Ícone (lucide-react)", placeholder: "Banknote" },
-          { name: "link_url", label: "Link (URL)", type: "url", required: true, placeholder: "https://..." },
-          { name: "display_order", label: "Ordem", type: "number" },
-          { name: "is_active", label: "Ativo", type: "checkbox" },
-        ]}
-      />
     </div>
   );
 }
