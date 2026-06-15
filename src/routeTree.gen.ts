@@ -23,7 +23,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as SessoesIndexRouteImport } from './routes/sessoes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as VereadoresRankingRouteImport } from './routes/vereadores.ranking'
-import { Route as VereadoresIdRouteImport } from './routes/vereadores.$id'
+import { Route as VereadoresSlugRouteImport } from './routes/vereadores.$slug'
 import { Route as SessoesAoVivoRouteImport } from './routes/sessoes/ao-vivo'
 import { Route as AdminTransparenciaAtivaRouteImport } from './routes/admin/transparencia-ativa'
 import { Route as AdminMesaDiretoraRouteImport } from './routes/admin/mesa-diretora'
@@ -133,9 +133,9 @@ const VereadoresRankingRoute = VereadoresRankingRouteImport.update({
   path: '/ranking',
   getParentRoute: () => VereadoresRoute,
 } as any)
-const VereadoresIdRoute = VereadoresIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
+const VereadoresSlugRoute = VereadoresSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
   getParentRoute: () => VereadoresRoute,
 } as any)
 const SessoesAoVivoRoute = SessoesAoVivoRouteImport.update({
@@ -349,7 +349,7 @@ export interface FileRoutesByFullPath {
   '/admin/mesa-diretora': typeof AdminMesaDiretoraRoute
   '/admin/transparencia-ativa': typeof AdminTransparenciaAtivaRoute
   '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
-  '/vereadores/$id': typeof VereadoresIdRoute
+  '/vereadores/$slug': typeof VereadoresSlugRoute
   '/vereadores/ranking': typeof VereadoresRankingRoute
   '/admin/': typeof AdminIndexRoute
   '/sessoes/': typeof SessoesIndexRoute
@@ -402,7 +402,7 @@ export interface FileRoutesByTo {
   '/admin/mesa-diretora': typeof AdminMesaDiretoraRoute
   '/admin/transparencia-ativa': typeof AdminTransparenciaAtivaRoute
   '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
-  '/vereadores/$id': typeof VereadoresIdRoute
+  '/vereadores/$slug': typeof VereadoresSlugRoute
   '/vereadores/ranking': typeof VereadoresRankingRoute
   '/admin': typeof AdminIndexRoute
   '/sessoes': typeof SessoesIndexRoute
@@ -458,7 +458,7 @@ export interface FileRoutesById {
   '/admin/mesa-diretora': typeof AdminMesaDiretoraRoute
   '/admin/transparencia-ativa': typeof AdminTransparenciaAtivaRoute
   '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
-  '/vereadores/$id': typeof VereadoresIdRoute
+  '/vereadores/$slug': typeof VereadoresSlugRoute
   '/vereadores/ranking': typeof VereadoresRankingRoute
   '/admin/': typeof AdminIndexRoute
   '/sessoes/': typeof SessoesIndexRoute
@@ -515,7 +515,7 @@ export interface FileRouteTypes {
     | '/admin/mesa-diretora'
     | '/admin/transparencia-ativa'
     | '/sessoes/ao-vivo'
-    | '/vereadores/$id'
+    | '/vereadores/$slug'
     | '/vereadores/ranking'
     | '/admin/'
     | '/sessoes/'
@@ -568,7 +568,7 @@ export interface FileRouteTypes {
     | '/admin/mesa-diretora'
     | '/admin/transparencia-ativa'
     | '/sessoes/ao-vivo'
-    | '/vereadores/$id'
+    | '/vereadores/$slug'
     | '/vereadores/ranking'
     | '/admin'
     | '/sessoes'
@@ -623,7 +623,7 @@ export interface FileRouteTypes {
     | '/admin/mesa-diretora'
     | '/admin/transparencia-ativa'
     | '/sessoes/ao-vivo'
-    | '/vereadores/$id'
+    | '/vereadores/$slug'
     | '/vereadores/ranking'
     | '/admin/'
     | '/sessoes/'
@@ -775,11 +775,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VereadoresRankingRouteImport
       parentRoute: typeof VereadoresRoute
     }
-    '/vereadores/$id': {
-      id: '/vereadores/$id'
-      path: '/$id'
-      fullPath: '/vereadores/$id'
-      preLoaderRoute: typeof VereadoresIdRouteImport
+    '/vereadores/$slug': {
+      id: '/vereadores/$slug'
+      path: '/$slug'
+      fullPath: '/vereadores/$slug'
+      preLoaderRoute: typeof VereadoresSlugRouteImport
       parentRoute: typeof VereadoresRoute
     }
     '/sessoes/ao-vivo': {
@@ -1159,12 +1159,12 @@ const SessoesRouteWithChildren =
   SessoesRoute._addFileChildren(SessoesRouteChildren)
 
 interface VereadoresRouteChildren {
-  VereadoresIdRoute: typeof VereadoresIdRoute
+  VereadoresSlugRoute: typeof VereadoresSlugRoute
   VereadoresRankingRoute: typeof VereadoresRankingRoute
 }
 
 const VereadoresRouteChildren: VereadoresRouteChildren = {
-  VereadoresIdRoute: VereadoresIdRoute,
+  VereadoresSlugRoute: VereadoresSlugRoute,
   VereadoresRankingRoute: VereadoresRankingRoute,
 }
 

@@ -32,7 +32,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { VereadorAvatar } from "@/components/vereador-avatar";
 
-export const Route = createFileRoute("/vereadores/$id")({
+export const Route = createFileRoute("/vereadores/$slug")({
   component: VereadorDetailPage,
 });
 
@@ -65,8 +65,10 @@ function VotoBadge({ voto }: { voto: string }) {
   return <Badge variant="outline">{voto}</Badge>;
 }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 function VereadorDetailPage() {
-  const { id } = Route.useParams();
+  const { slug } = Route.useParams();
   const [vereador, setVereador] = useState<Vereador | null>(null);
   const [projetos, setProjetos] = useState<Projeto[]>([]);
   const [presencas, setPresencas] = useState<PresencaRow[]>([]);
@@ -74,35 +76,43 @@ function VereadorDetailPage() {
   const [mandatos, setMandatos] = useState<Mandato[]>([]);
   const [galeria, setGaleria] = useState<GaleriaItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [tipoFiltro, setTipoFiltro] = useState<string>("Todos");
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       setLoading(true);
       try {
-        const { data: vData, error: vErr } = await supabase
-          .from("vereadores").select("*").eq("id", id).maybeSingle();
+        const isUuid = UUID_RE.test(slug);
+        const query = (supabase as any)
+          .from("vereadores")
+          .select("*")
+          .limit(1);
+        const { data: vData, error: vErr } = isUuid
+          ? await query.eq("id", slug).maybeSingle()
+          : await query.eq("slug", slug).maybeSingle();
         if (vErr) throw vErr;
         if (!vData) { if (!cancelled) setVereador(null); return; }
         if (cancelled) return;
         setVereador(vData);
+        const id = vData.id;
 
         const [pr, pres, vot, mand, gal] = await Promise.all([
           supabase.from("projetos_legislativos")
             .select("id, numero, ano, tipo, ementa, status, data_apresentacao, documento_url, autor, autor_id")
             .or(`autor_id.eq.${id},autor.ilike.%${(vData.nome || "").replace(/[%_]/g, "")}%`)
             .order("data_apresentacao", { ascending: false })
-            .limit(50),
+            .limit(100),
           supabase.from("sessoes_presencas")
             .select("id, presente, sessao:sessoes(id, titulo, data_sessao, tipo)")
             .eq("vereador_id", id)
             .order("created_at", { ascending: false })
-            .limit(50),
+            .limit(100),
           supabase.from("sessoes_votacoes")
             .select("id, voto, created_at, sessao:sessoes(id, titulo, data_sessao)")
             .eq("vereador_id", id)
             .order("created_at", { ascending: false })
-            .limit(50),
+            .limit(100),
           supabase.from("vereadores_mandatos")
             .select("*").eq("vereador_id", id).order("data_inicio", { ascending: false }),
           supabase.from("vereadores_galeria")
@@ -122,7 +132,7 @@ function VereadorDetailPage() {
       }
     })();
     return () => { cancelled = true; };
-  }, [id]);
+  }, [slug]);
 
   const computed = useMemo(() => {
     const totalSessoes = presencas.length;
@@ -358,16 +368,41 @@ function VereadorDetailPage() {
                       <InfoRow icon={<Calendar className="w-6 h-6 text-gold" />} label="Data de posse"
                         value={vereador.data_posse ? new Date(vereador.data_posse).toLocaleDateString("pt-BR") : null} />
                       <InfoRow icon={<Award className="w-6 h-6 text-gold" />} label="Cargo" value={vereador.cargo || "Vereador"} />
+                      <InfoRow icon={<Award className="w-6 h-6 text-gold" />} label="Legislatura" value={vereador.legislatura || vereador.mandato_atual} />
+                      <InfoRow icon={<Trophy className="w-6 h-6 text-gold" />} label="Comissões" value={vereador.comissoes} />
                     </div>
                   </TabsContent>
 
                   {/* PROJETOS */}
                   <TabsContent value="projetos" className="mt-0">
-                    {projetos.length === 0 ? (
-                      <EmptyState icon={<Gavel className="w-10 h-10 text-slate-300" />} text="Nenhum projeto registrado para este vereador." />
-                    ) : (
-                      <ul className="divide-y divide-slate-100">
-                        {projetos.map((p) => (
+                    {(() => {
+                      const tipos = ["Todos", ...Array.from(new Set(projetos.map((p) => p.tipo).filter(Boolean)))];
+                      const filtrados = tipoFiltro === "Todos" ? projetos : projetos.filter((p) => p.tipo === tipoFiltro);
+                      return (
+                        <>
+                          {tipos.length > 1 && (
+                            <div className="flex flex-wrap gap-2 mb-4">
+                              {tipos.map((t) => (
+                                <button
+                                  key={t}
+                                  onClick={() => setTipoFiltro(t)}
+                                  className={
+                                    "px-3 py-1.5 rounded-full text-xs font-bold border transition " +
+                                    (tipoFiltro === t
+                                      ? "bg-primary text-primary-foreground border-primary"
+                                      : "bg-white text-slate-600 border-slate-200 hover:border-primary/50")
+                                  }
+                                >
+                                  {t}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                          {filtrados.length === 0 ? (
+                            <EmptyState icon={<Gavel className="w-10 h-10 text-slate-300" />} text="Nenhum ato legislativo registrado." />
+                          ) : (
+                            <ul className="divide-y divide-slate-100">
+                              {filtrados.map((p) => (
                           <li key={p.id} className="py-4 first:pt-0 last:pb-0">
                             <div className="flex items-start justify-between gap-3 flex-wrap">
                               <div className="flex-1 min-w-0">
@@ -393,9 +428,12 @@ function VereadorDetailPage() {
                               )}
                             </div>
                           </li>
-                        ))}
-                      </ul>
-                    )}
+                            ))}
+                          </ul>
+                          )}
+                        </>
+                      );
+                    })()}
                   </TabsContent>
 
                   {/* PRESENÇAS */}

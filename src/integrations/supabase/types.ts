@@ -1425,6 +1425,7 @@ export type Database = {
           ativo: boolean
           biografia: string | null
           cargo: string | null
+          comissoes: string | null
           created_at: string
           data_nascimento: string | null
           data_posse: string | null
@@ -1433,6 +1434,7 @@ export type Database = {
           foto_url: string | null
           gabinete: string | null
           id: string
+          legislatura: string | null
           mandato_atual: string | null
           mandato_fim: string | null
           mandato_inicio: string | null
@@ -1442,6 +1444,7 @@ export type Database = {
           partido: string | null
           profissao: string | null
           redes_sociais: Json | null
+          slug: string | null
           stats: Json | null
           telefone: string | null
           updated_at: string
@@ -1450,6 +1453,7 @@ export type Database = {
           ativo?: boolean
           biografia?: string | null
           cargo?: string | null
+          comissoes?: string | null
           created_at?: string
           data_nascimento?: string | null
           data_posse?: string | null
@@ -1458,6 +1462,7 @@ export type Database = {
           foto_url?: string | null
           gabinete?: string | null
           id?: string
+          legislatura?: string | null
           mandato_atual?: string | null
           mandato_fim?: string | null
           mandato_inicio?: string | null
@@ -1467,6 +1472,7 @@ export type Database = {
           partido?: string | null
           profissao?: string | null
           redes_sociais?: Json | null
+          slug?: string | null
           stats?: Json | null
           telefone?: string | null
           updated_at?: string
@@ -1475,6 +1481,7 @@ export type Database = {
           ativo?: boolean
           biografia?: string | null
           cargo?: string | null
+          comissoes?: string | null
           created_at?: string
           data_nascimento?: string | null
           data_posse?: string | null
@@ -1483,6 +1490,7 @@ export type Database = {
           foto_url?: string | null
           gabinete?: string | null
           id?: string
+          legislatura?: string | null
           mandato_atual?: string | null
           mandato_fim?: string | null
           mandato_inicio?: string | null
@@ -1492,6 +1500,7 @@ export type Database = {
           partido?: string | null
           profissao?: string | null
           redes_sociais?: Json | null
+          slug?: string | null
           stats?: Json | null
           telefone?: string | null
           updated_at?: string
