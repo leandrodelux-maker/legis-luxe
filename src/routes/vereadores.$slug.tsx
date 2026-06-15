@@ -32,7 +32,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { VereadorAvatar } from "@/components/vereador-avatar";
 
-export const Route = createFileRoute("/vereadores/$id")({
+export const Route = createFileRoute("/vereadores/$slug")({
   component: VereadorDetailPage,
 });
 
