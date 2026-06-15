@@ -65,8 +65,10 @@ function VotoBadge({ voto }: { voto: string }) {
   return <Badge variant="outline">{voto}</Badge>;
 }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 function VereadorDetailPage() {
-  const { id } = Route.useParams();
+  const { slug } = Route.useParams();
   const [vereador, setVereador] = useState<Vereador | null>(null);
   const [projetos, setProjetos] = useState<Projeto[]>([]);
   const [presencas, setPresencas] = useState<PresencaRow[]>([]);
@@ -74,20 +76,26 @@ function VereadorDetailPage() {
   const [mandatos, setMandatos] = useState<Mandato[]>([]);
   const [galeria, setGaleria] = useState<GaleriaItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [tipoFiltro, setTipoFiltro] = useState<string>("Todos");
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       setLoading(true);
       try {
-        const { data: vData, error: vErr } = await supabase
-          .from("vereadores").select("*").eq("id", id).maybeSingle();
+        const isUuid = UUID_RE.test(slug);
+        const query = (supabase as any)
+          .from("vereadores")
+          .select("*")
+          .limit(1);
+        const { data: vData, error: vErr } = isUuid
+          ? await query.eq("id", slug).maybeSingle()
+          : await query.eq("slug", slug).maybeSingle();
         if (vErr) throw vErr;
         if (!vData) { if (!cancelled) setVereador(null); return; }
         if (cancelled) return;
         setVereador(vData);
-
-        const [pr, pres, vot, mand, gal] = await Promise.all([
+        const id = vData.id;
           supabase.from("projetos_legislativos")
             .select("id, numero, ano, tipo, ementa, status, data_apresentacao, documento_url, autor, autor_id")
             .or(`autor_id.eq.${id},autor.ilike.%${(vData.nome || "").replace(/[%_]/g, "")}%`)
