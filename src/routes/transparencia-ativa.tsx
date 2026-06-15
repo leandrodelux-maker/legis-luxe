@@ -90,7 +90,7 @@ function datasetText(dataset: PortalDataset) {
     .toLowerCase();
 }
 
-function TransparenciaAtivaPage() {
+export function TransparenciaAtivaPage() {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [loadingSettings, setLoadingSettings] = useState(true);
   const [search, setSearch] = useState("");
