@@ -20,12 +20,16 @@ export const saveTransparencySettings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: SaveTransparencySettingsInput) => data)
   .handler(async ({ data, context }) => {
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: roleRow, error: roleError } = await supabaseAdmin
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", context.userId)
+      .eq("role", "admin")
+      .maybeSingle();
 
-    if (!isAdmin) throw new Error("Sem permissão para salvar esta configuração.");
+    if (roleError) throw new Error(roleError.message);
+    if (!roleRow) throw new Error("Sem permissão para salvar esta configuração.");
 
     const normalizedUrl = normalizePortalUrl(data.portal_url);
     const name = data.portal_name.trim() || "Portal da Transparência";
@@ -38,7 +42,6 @@ export const saveTransparencySettings = createServerFn({ method: "POST" })
       show_full_portal_embed: data.show_full_portal_embed,
     };
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const query = data.id
       ? supabaseAdmin.from("transparency_settings").update(payload).eq("id", data.id).select("id").single()
       : supabaseAdmin.from("transparency_settings").insert(payload).select("id").single();
