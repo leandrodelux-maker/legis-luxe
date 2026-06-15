@@ -9,6 +9,8 @@ import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle, ExternalLink, Loader2, Save, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
+import { saveTransparencySettings } from "@/lib/transparency-settings.functions";
 
 export const Route = createFileRoute("/admin/transparencia-ativa")({
   component: AdminTransparenciaAtiva,
@@ -43,6 +45,7 @@ function AdminTransparenciaAtiva() {
   const [settings, setSettings] = useState<Settings>(emptySettings);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const saveSettingsFn = useServerFn(saveTransparencySettings);
 
   useEffect(() => {
     let mounted = true;
@@ -86,28 +89,22 @@ function AdminTransparenciaAtiva() {
 
     setSaving(true);
     const payload = {
+      id: settings.id,
       portal_url: normalizedUrl,
-      portal_base_url: normalizedUrl,
       portal_name: settings.portal_name.trim() || "Portal da Transparência",
-      entity_name: settings.portal_name.trim() || "Portal da Transparência",
       is_active: settings.is_active,
       show_full_portal_embed: settings.show_full_portal_embed,
     };
 
-    const query = settings.id
-      ? (supabase as any).from("transparency_settings").update(payload).eq("id", settings.id).select("id").single()
-      : (supabase as any).from("transparency_settings").insert(payload).select("id").single();
-
-    const { data, error } = await query;
-    setSaving(false);
-
-    if (error) {
-      toast.error(error.message);
-      return;
+    try {
+      const saved = await saveSettingsFn({ data: payload });
+      setSettings((current) => ({ ...current, ...saved, id: saved.id }));
+      toast.success("Configuração salva com sucesso");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Erro ao salvar configuração");
+    } finally {
+      setSaving(false);
     }
-
-    setSettings((current) => ({ ...current, ...payload, id: data?.id || current.id }));
-    toast.success("Configuração salva com sucesso");
   };
 
   return (
