@@ -96,21 +96,23 @@ function VereadorDetailPage() {
         if (cancelled) return;
         setVereador(vData);
         const id = vData.id;
+
+        const [pr, pres, vot, mand, gal] = await Promise.all([
           supabase.from("projetos_legislativos")
             .select("id, numero, ano, tipo, ementa, status, data_apresentacao, documento_url, autor, autor_id")
             .or(`autor_id.eq.${id},autor.ilike.%${(vData.nome || "").replace(/[%_]/g, "")}%`)
             .order("data_apresentacao", { ascending: false })
-            .limit(50),
+            .limit(100),
           supabase.from("sessoes_presencas")
             .select("id, presente, sessao:sessoes(id, titulo, data_sessao, tipo)")
             .eq("vereador_id", id)
             .order("created_at", { ascending: false })
-            .limit(50),
+            .limit(100),
           supabase.from("sessoes_votacoes")
             .select("id, voto, created_at, sessao:sessoes(id, titulo, data_sessao)")
             .eq("vereador_id", id)
             .order("created_at", { ascending: false })
-            .limit(50),
+            .limit(100),
           supabase.from("vereadores_mandatos")
             .select("*").eq("vereador_id", id).order("data_inicio", { ascending: false }),
           supabase.from("vereadores_galeria")
@@ -130,7 +132,7 @@ function VereadorDetailPage() {
       }
     })();
     return () => { cancelled = true; };
-  }, [id]);
+  }, [slug]);
 
   const computed = useMemo(() => {
     const totalSessoes = presencas.length;
