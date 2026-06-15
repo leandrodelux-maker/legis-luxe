@@ -42,7 +42,6 @@ export const saveTransparencySettings = createServerFn({ method: "POST" })
       show_full_portal_embed: data.show_full_portal_embed,
     };
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const query = data.id
       ? supabaseAdmin.from("transparency_settings").update(payload).eq("id", data.id).select("id").single()
       : supabaseAdmin.from("transparency_settings").insert(payload).select("id").single();
