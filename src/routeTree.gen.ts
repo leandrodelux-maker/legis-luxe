@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VereadoresRouteImport } from './routes/vereadores'
-import { Route as TransparenciaAtivaRouteImport } from './routes/transparencia-ativa'
 import { Route as TransparenciaRouteImport } from './routes/transparencia'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SessoesRouteImport } from './routes/sessoes'
@@ -66,11 +65,6 @@ import { Route as AdminCmsPaginasIdRouteImport } from './routes/admin/cms/pagina
 const VereadoresRoute = VereadoresRouteImport.update({
   id: '/vereadores',
   path: '/vereadores',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TransparenciaAtivaRoute = TransparenciaAtivaRouteImport.update({
-  id: '/transparencia-ativa',
-  path: '/transparencia-ativa',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TransparenciaRoute = TransparenciaRouteImport.update({
@@ -341,7 +335,6 @@ export interface FileRoutesByFullPath {
   '/sessoes': typeof SessoesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/transparencia': typeof TransparenciaRoute
-  '/transparencia-ativa': typeof TransparenciaAtivaRoute
   '/vereadores': typeof VereadoresRouteWithChildren
   '/admin/auditoria': typeof AdminAuditoriaRoute
   '/admin/dashboard': typeof AdminDashboardRoute
@@ -394,7 +387,6 @@ export interface FileRoutesByTo {
   '/projetos': typeof ProjetosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/transparencia': typeof TransparenciaRoute
-  '/transparencia-ativa': typeof TransparenciaAtivaRoute
   '/vereadores': typeof VereadoresRouteWithChildren
   '/admin/auditoria': typeof AdminAuditoriaRoute
   '/admin/dashboard': typeof AdminDashboardRoute
@@ -450,7 +442,6 @@ export interface FileRoutesById {
   '/sessoes': typeof SessoesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/transparencia': typeof TransparenciaRoute
-  '/transparencia-ativa': typeof TransparenciaAtivaRoute
   '/vereadores': typeof VereadoresRouteWithChildren
   '/admin/auditoria': typeof AdminAuditoriaRoute
   '/admin/dashboard': typeof AdminDashboardRoute
@@ -507,7 +498,6 @@ export interface FileRouteTypes {
     | '/sessoes'
     | '/sitemap.xml'
     | '/transparencia'
-    | '/transparencia-ativa'
     | '/vereadores'
     | '/admin/auditoria'
     | '/admin/dashboard'
@@ -560,7 +550,6 @@ export interface FileRouteTypes {
     | '/projetos'
     | '/sitemap.xml'
     | '/transparencia'
-    | '/transparencia-ativa'
     | '/vereadores'
     | '/admin/auditoria'
     | '/admin/dashboard'
@@ -615,7 +604,6 @@ export interface FileRouteTypes {
     | '/sessoes'
     | '/sitemap.xml'
     | '/transparencia'
-    | '/transparencia-ativa'
     | '/vereadores'
     | '/admin/auditoria'
     | '/admin/dashboard'
@@ -671,7 +659,6 @@ export interface RootRouteChildren {
   SessoesRoute: typeof SessoesRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TransparenciaRoute: typeof TransparenciaRoute
-  TransparenciaAtivaRoute: typeof TransparenciaAtivaRoute
   VereadoresRoute: typeof VereadoresRouteWithChildren
 }
 
@@ -682,13 +669,6 @@ declare module '@tanstack/react-router' {
       path: '/vereadores'
       fullPath: '/vereadores'
       preLoaderRoute: typeof VereadoresRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/transparencia-ativa': {
-      id: '/transparencia-ativa'
-      path: '/transparencia-ativa'
-      fullPath: '/transparencia-ativa'
-      preLoaderRoute: typeof TransparenciaAtivaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/transparencia': {
@@ -1182,7 +1162,6 @@ const rootRouteChildren: RootRouteChildren = {
   SessoesRoute: SessoesRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TransparenciaRoute: TransparenciaRoute,
-  TransparenciaAtivaRoute: TransparenciaAtivaRoute,
   VereadoresRoute: VereadoresRouteWithChildren,
 }
 export const routeTree = rootRouteImport
