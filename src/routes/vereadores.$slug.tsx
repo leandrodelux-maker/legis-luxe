@@ -428,9 +428,12 @@ function VereadorDetailPage() {
                               )}
                             </div>
                           </li>
-                        ))}
-                      </ul>
-                    )}
+                            ))}
+                          </ul>
+                          )}
+                        </>
+                      );
+                    })()}
                   </TabsContent>
 
                   {/* PRESENÇAS */}
