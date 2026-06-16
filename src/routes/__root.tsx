@@ -16,6 +16,9 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { LgpdBanner } from "@/components/lgpd-banner";
+import { AccessibilityProvider } from "@/components/accessibility/accessibility-provider";
+import { AccessibilityWidget } from "@/components/accessibility/accessibility-widget";
+import { SkipLinks } from "@/components/accessibility/skip-links";
 
 function NotFoundComponent() {
   return (
