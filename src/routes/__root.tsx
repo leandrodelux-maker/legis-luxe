@@ -143,14 +143,18 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <div className="flex min-h-dvh flex-col bg-background">
-          {!isAdminPath && <SiteHeader />}
-          <main id="conteudo" className={isAdminPath ? "flex-1" : "flex-1"}>
-            <Outlet />
-          </main>
-          {!isAdminPath && <SiteFooter />}
-          {!isAdminPath && <LgpdBanner />}
-        </div>
+        <AccessibilityProvider>
+          <SkipLinks />
+          <div className="flex min-h-dvh flex-col bg-background">
+            {!isAdminPath && <SiteHeader />}
+            <main id="conteudo" tabIndex={-1} className={isAdminPath ? "flex-1" : "flex-1"}>
+              <Outlet />
+            </main>
+            {!isAdminPath && <SiteFooter />}
+            {!isAdminPath && <LgpdBanner />}
+            {!isAdminPath && <AccessibilityWidget />}
+          </div>
+        </AccessibilityProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
