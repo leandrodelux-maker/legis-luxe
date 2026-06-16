@@ -16,22 +16,23 @@ function notify() {
 function fetchSettings(force = false): Promise<SiteSettings | null> {
   if (!force && _cache) return Promise.resolve(_cache);
   if (!force && _inflight) return _inflight;
-  _inflight = supabase
-    .from("site_settings")
-    .select("*")
-    .limit(1)
-    .maybeSingle()
-    .then(({ data, error }) => {
-      _inflight = null;
-      if (error) {
-        toast.error(error.message);
-        return null;
-      }
-      _cache = (data as SiteSettings | null) ?? null;
-      notify();
-      return _cache;
-    });
-  return _inflight;
+  const p = (async () => {
+    const { data, error } = await supabase
+      .from("site_settings")
+      .select("*")
+      .limit(1)
+      .maybeSingle();
+    _inflight = null;
+    if (error) {
+      toast.error(error.message);
+      return null;
+    }
+    _cache = (data as SiteSettings | null) ?? null;
+    notify();
+    return _cache;
+  })();
+  _inflight = p;
+  return p;
 }
 
 export function useSiteSettings() {
