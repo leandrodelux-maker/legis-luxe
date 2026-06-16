@@ -110,7 +110,7 @@ function NoticiasPage() {
                 >
                   <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-primary-deep via-primary to-primary/70">
                     {n.imagem_url ? (
-                      <img src={n.imagem_url} alt={n.titulo} className="absolute inset-0 h-full w-full object-cover" />
+                      <img src={n.imagem_url} alt={n.titulo} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
                     ) : (
                       <Building2 className="absolute right-4 bottom-4 h-16 w-16 text-white/15" />
                     )}
