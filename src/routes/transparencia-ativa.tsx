@@ -70,21 +70,30 @@ function isValidPortalUrl(value: string | null | undefined) {
 
 export function TransparenciaAtivaPage() {
   const [settings, setSettings] = useState<TransparencySettings | null>(null);
+  const [links, setLinks] = useState<TransparencyLink[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
     (async () => {
-      const { data } = await (supabase as any)
-        .from("transparency_settings")
-        .select("id, portal_url, portal_base_url, portal_name, entity_name, is_active, show_full_portal_embed")
-        .eq("is_active", true)
-        .order("updated_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
+      const [settingsRes, linksRes] = await Promise.all([
+        (supabase as any)
+          .from("transparency_settings")
+          .select("id, portal_url, portal_base_url, portal_name, entity_name, is_active, show_full_portal_embed")
+          .eq("is_active", true)
+          .order("updated_at", { ascending: false })
+          .limit(1)
+          .maybeSingle(),
+        (supabase as any)
+          .from("transparency_links")
+          .select("*")
+          .eq("is_active", true)
+          .order("sort_order", { ascending: true }),
+      ]);
 
       if (mounted) {
-        setSettings((data as TransparencySettings | null) || null);
+        setSettings((settingsRes.data as TransparencySettings | null) || null);
+        setLinks((linksRes.data as TransparencyLink[]) || []);
         setLoading(false);
       }
     })();
@@ -92,6 +101,7 @@ export function TransparenciaAtivaPage() {
       mounted = false;
     };
   }, []);
+
 
   const portalUrl = useMemo(() => {
     const configuredUrl = settings?.portal_url || settings?.portal_base_url || "";
