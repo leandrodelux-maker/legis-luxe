@@ -29,7 +29,9 @@ export function SiteFooter() {
             {settings?.footer_logo_url ? (
               <img 
                 src={settings.footer_logo_url} 
-                alt="Logo Câmara Municipal" 
+                alt="Logo Câmara Municipal"
+                loading="lazy"
+                decoding="async"
                 style={{ height: `${settings.footer_logo_height}px` }}
                 className="w-auto object-contain"
               />
