@@ -49,7 +49,10 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: "Transparência, legislação e participação cidadã." },
       { property: "og:url", content: "/" },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [
+      { rel: "canonical", href: "/" },
+      { rel: "preload", as: "image", href: heroImg, fetchpriority: "high" } as any,
+    ],
   }),
   component: HomePage,
 });
