@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as VereadoresRouteImport } from './routes/vereadores'
 import { Route as TransparenciaAtivaRouteImport } from './routes/transparencia-ativa'
 import { Route as TransparenciaRouteImport } from './routes/transparencia'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -20,6 +19,7 @@ import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VereadoresIndexRouteImport } from './routes/vereadores.index'
 import { Route as SessoesIndexRouteImport } from './routes/sessoes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as VereadoresRankingRouteImport } from './routes/vereadores.ranking'
@@ -64,11 +64,6 @@ import { Route as AdminCmsCategoriasRouteImport } from './routes/admin/cms/categ
 import { Route as AdminCmsBannersRouteImport } from './routes/admin/cms/banners'
 import { Route as AdminCmsPaginasIdRouteImport } from './routes/admin/cms/paginas.$id'
 
-const VereadoresRoute = VereadoresRouteImport.update({
-  id: '/vereadores',
-  path: '/vereadores',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const TransparenciaAtivaRoute = TransparenciaAtivaRouteImport.update({
   id: '/transparencia-ativa',
   path: '/transparencia-ativa',
@@ -119,6 +114,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VereadoresIndexRoute = VereadoresIndexRouteImport.update({
+  id: '/vereadores/',
+  path: '/vereadores/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SessoesIndexRoute = SessoesIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -130,14 +130,14 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   getParentRoute: () => AdminRoute,
 } as any)
 const VereadoresRankingRoute = VereadoresRankingRouteImport.update({
-  id: '/ranking',
-  path: '/ranking',
-  getParentRoute: () => VereadoresRoute,
+  id: '/vereadores/ranking',
+  path: '/vereadores/ranking',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const VereadoresSlugRoute = VereadoresSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => VereadoresRoute,
+  id: '/vereadores/$slug',
+  path: '/vereadores/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const SessoesAoVivoRoute = SessoesAoVivoRouteImport.update({
   id: '/ao-vivo',
@@ -348,7 +348,6 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/transparencia': typeof TransparenciaRoute
   '/transparencia-ativa': typeof TransparenciaAtivaRoute
-  '/vereadores': typeof VereadoresRouteWithChildren
   '/admin/auditoria': typeof AdminAuditoriaRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/executivo': typeof AdminExecutivoRoute
@@ -360,6 +359,7 @@ export interface FileRoutesByFullPath {
   '/vereadores/ranking': typeof VereadoresRankingRoute
   '/admin/': typeof AdminIndexRoute
   '/sessoes/': typeof SessoesIndexRoute
+  '/vereadores/': typeof VereadoresIndexRoute
   '/admin/cms/banners': typeof AdminCmsBannersRoute
   '/admin/cms/categorias': typeof AdminCmsCategoriasRoute
   '/admin/cms/contratos': typeof AdminCmsContratosRoute
@@ -402,7 +402,6 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/transparencia': typeof TransparenciaRoute
   '/transparencia-ativa': typeof TransparenciaAtivaRoute
-  '/vereadores': typeof VereadoresRouteWithChildren
   '/admin/auditoria': typeof AdminAuditoriaRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/executivo': typeof AdminExecutivoRoute
@@ -414,6 +413,7 @@ export interface FileRoutesByTo {
   '/vereadores/ranking': typeof VereadoresRankingRoute
   '/admin': typeof AdminIndexRoute
   '/sessoes': typeof SessoesIndexRoute
+  '/vereadores': typeof VereadoresIndexRoute
   '/admin/cms/banners': typeof AdminCmsBannersRoute
   '/admin/cms/categorias': typeof AdminCmsCategoriasRoute
   '/admin/cms/contratos': typeof AdminCmsContratosRoute
@@ -459,7 +459,6 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/transparencia': typeof TransparenciaRoute
   '/transparencia-ativa': typeof TransparenciaAtivaRoute
-  '/vereadores': typeof VereadoresRouteWithChildren
   '/admin/auditoria': typeof AdminAuditoriaRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/executivo': typeof AdminExecutivoRoute
@@ -471,6 +470,7 @@ export interface FileRoutesById {
   '/vereadores/ranking': typeof VereadoresRankingRoute
   '/admin/': typeof AdminIndexRoute
   '/sessoes/': typeof SessoesIndexRoute
+  '/vereadores/': typeof VereadoresIndexRoute
   '/admin/cms/banners': typeof AdminCmsBannersRoute
   '/admin/cms/categorias': typeof AdminCmsCategoriasRoute
   '/admin/cms/contratos': typeof AdminCmsContratosRoute
@@ -517,7 +517,6 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/transparencia'
     | '/transparencia-ativa'
-    | '/vereadores'
     | '/admin/auditoria'
     | '/admin/dashboard'
     | '/admin/executivo'
@@ -529,6 +528,7 @@ export interface FileRouteTypes {
     | '/vereadores/ranking'
     | '/admin/'
     | '/sessoes/'
+    | '/vereadores/'
     | '/admin/cms/banners'
     | '/admin/cms/categorias'
     | '/admin/cms/contratos'
@@ -571,7 +571,6 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/transparencia'
     | '/transparencia-ativa'
-    | '/vereadores'
     | '/admin/auditoria'
     | '/admin/dashboard'
     | '/admin/executivo'
@@ -583,6 +582,7 @@ export interface FileRouteTypes {
     | '/vereadores/ranking'
     | '/admin'
     | '/sessoes'
+    | '/vereadores'
     | '/admin/cms/banners'
     | '/admin/cms/categorias'
     | '/admin/cms/contratos'
@@ -627,7 +627,6 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/transparencia'
     | '/transparencia-ativa'
-    | '/vereadores'
     | '/admin/auditoria'
     | '/admin/dashboard'
     | '/admin/executivo'
@@ -639,6 +638,7 @@ export interface FileRouteTypes {
     | '/vereadores/ranking'
     | '/admin/'
     | '/sessoes/'
+    | '/vereadores/'
     | '/admin/cms/banners'
     | '/admin/cms/categorias'
     | '/admin/cms/contratos'
@@ -684,18 +684,13 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TransparenciaRoute: typeof TransparenciaRoute
   TransparenciaAtivaRoute: typeof TransparenciaAtivaRoute
-  VereadoresRoute: typeof VereadoresRouteWithChildren
+  VereadoresSlugRoute: typeof VereadoresSlugRoute
+  VereadoresRankingRoute: typeof VereadoresRankingRoute
+  VereadoresIndexRoute: typeof VereadoresIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/vereadores': {
-      id: '/vereadores'
-      path: '/vereadores'
-      fullPath: '/vereadores'
-      preLoaderRoute: typeof VereadoresRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/transparencia-ativa': {
       id: '/transparencia-ativa'
       path: '/transparencia-ativa'
@@ -766,6 +761,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/vereadores/': {
+      id: '/vereadores/'
+      path: '/vereadores'
+      fullPath: '/vereadores/'
+      preLoaderRoute: typeof VereadoresIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sessoes/': {
       id: '/sessoes/'
       path: '/'
@@ -782,17 +784,17 @@ declare module '@tanstack/react-router' {
     }
     '/vereadores/ranking': {
       id: '/vereadores/ranking'
-      path: '/ranking'
+      path: '/vereadores/ranking'
       fullPath: '/vereadores/ranking'
       preLoaderRoute: typeof VereadoresRankingRouteImport
-      parentRoute: typeof VereadoresRoute
+      parentRoute: typeof rootRouteImport
     }
     '/vereadores/$slug': {
       id: '/vereadores/$slug'
-      path: '/$slug'
+      path: '/vereadores/$slug'
       fullPath: '/vereadores/$slug'
       preLoaderRoute: typeof VereadoresSlugRouteImport
-      parentRoute: typeof VereadoresRoute
+      parentRoute: typeof rootRouteImport
     }
     '/sessoes/ao-vivo': {
       id: '/sessoes/ao-vivo'
@@ -1179,20 +1181,6 @@ const SessoesRouteChildren: SessoesRouteChildren = {
 const SessoesRouteWithChildren =
   SessoesRoute._addFileChildren(SessoesRouteChildren)
 
-interface VereadoresRouteChildren {
-  VereadoresSlugRoute: typeof VereadoresSlugRoute
-  VereadoresRankingRoute: typeof VereadoresRankingRoute
-}
-
-const VereadoresRouteChildren: VereadoresRouteChildren = {
-  VereadoresSlugRoute: VereadoresSlugRoute,
-  VereadoresRankingRoute: VereadoresRankingRoute,
-}
-
-const VereadoresRouteWithChildren = VereadoresRoute._addFileChildren(
-  VereadoresRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
@@ -1204,7 +1192,9 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TransparenciaRoute: TransparenciaRoute,
   TransparenciaAtivaRoute: TransparenciaAtivaRoute,
-  VereadoresRoute: VereadoresRouteWithChildren,
+  VereadoresSlugRoute: VereadoresSlugRoute,
+  VereadoresRankingRoute: VereadoresRankingRoute,
+  VereadoresIndexRoute: VereadoresIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

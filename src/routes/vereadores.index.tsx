@@ -27,7 +27,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { VereadorAvatar } from "@/components/vereador-avatar";
 
-export const Route = createFileRoute("/vereadores")({
+export const Route = createFileRoute("/vereadores/")({
   head: () => ({
     meta: [
       { title: "Vereadores — Câmara Municipal" },
