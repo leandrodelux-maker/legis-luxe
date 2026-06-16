@@ -4,20 +4,53 @@ import { toast } from "sonner";
 
 export type SiteSettings = Record<string, any> & { id: string };
 
+// Cache compartilhado entre header/footer/etc. evita N queries por página.
+let _cache: SiteSettings | null = null;
+let _inflight: Promise<SiteSettings | null> | null = null;
+const _subs = new Set<(s: SiteSettings | null) => void>();
+
+function notify() {
+  _subs.forEach((fn) => fn(_cache));
+}
+
+function fetchSettings(force = false): Promise<SiteSettings | null> {
+  if (!force && _cache) return Promise.resolve(_cache);
+  if (!force && _inflight) return _inflight;
+  _inflight = supabase
+    .from("site_settings")
+    .select("*")
+    .limit(1)
+    .maybeSingle()
+    .then(({ data, error }) => {
+      _inflight = null;
+      if (error) {
+        toast.error(error.message);
+        return null;
+      }
+      _cache = (data as SiteSettings | null) ?? null;
+      notify();
+      return _cache;
+    });
+  return _inflight;
+}
+
 export function useSiteSettings() {
-  const [settings, setSettings] = useState<SiteSettings | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [settings, setSettings] = useState<SiteSettings | null>(_cache);
+  const [loading, setLoading] = useState(_cache === null);
   const [saving, setSaving] = useState(false);
 
-  const load = async () => {
-    setLoading(true);
-    const { data, error } = await supabase.from("site_settings").select("*").limit(1).maybeSingle();
-    if (error) toast.error(error.message);
-    else setSettings(data as SiteSettings | null);
-    setLoading(false);
-  };
-
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    const sub = (s: SiteSettings | null) => setSettings(s);
+    _subs.add(sub);
+    if (_cache === null) {
+      fetchSettings().then(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
+    return () => {
+      _subs.delete(sub);
+    };
+  }, []);
 
   const save = async (patch: Partial<SiteSettings>) => {
     if (!settings) return;
@@ -25,13 +58,17 @@ export function useSiteSettings() {
     const { error } = await (supabase as any).from("site_settings").update(patch).eq("id", settings.id);
     setSaving(false);
     if (error) { toast.error(error.message); return false; }
-    setSettings({ ...settings, ...patch });
+    _cache = { ...settings, ...patch };
+    notify();
     toast.success("Configurações salvas");
     return true;
   };
 
   const update = (patch: Partial<SiteSettings>) => {
-    if (settings) setSettings({ ...settings, ...patch });
+    if (_cache) {
+      _cache = { ...(_cache as SiteSettings), ...patch };
+      notify();
+    }
   };
 
   return { settings, loading, saving, save, update };
