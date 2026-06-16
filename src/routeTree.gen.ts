@@ -25,6 +25,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as VereadoresRankingRouteImport } from './routes/vereadores.ranking'
 import { Route as VereadoresSlugRouteImport } from './routes/vereadores.$slug'
 import { Route as SessoesAoVivoRouteImport } from './routes/sessoes/ao-vivo'
+import { Route as AdminTransparenciaLinksRouteImport } from './routes/admin/transparencia-links'
 import { Route as AdminTransparenciaAtivaRouteImport } from './routes/admin/transparencia-ativa'
 import { Route as AdminMesaDiretoraRouteImport } from './routes/admin/mesa-diretora'
 import { Route as AdminExecutivoRouteImport } from './routes/admin/executivo'
@@ -142,6 +143,11 @@ const SessoesAoVivoRoute = SessoesAoVivoRouteImport.update({
   id: '/ao-vivo',
   path: '/ao-vivo',
   getParentRoute: () => SessoesRoute,
+} as any)
+const AdminTransparenciaLinksRoute = AdminTransparenciaLinksRouteImport.update({
+  id: '/transparencia-links',
+  path: '/transparencia-links',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminTransparenciaAtivaRoute = AdminTransparenciaAtivaRouteImport.update({
   id: '/transparencia-ativa',
@@ -348,6 +354,7 @@ export interface FileRoutesByFullPath {
   '/admin/executivo': typeof AdminExecutivoRoute
   '/admin/mesa-diretora': typeof AdminMesaDiretoraRoute
   '/admin/transparencia-ativa': typeof AdminTransparenciaAtivaRoute
+  '/admin/transparencia-links': typeof AdminTransparenciaLinksRoute
   '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
   '/vereadores/$slug': typeof VereadoresSlugRoute
   '/vereadores/ranking': typeof VereadoresRankingRoute
@@ -401,6 +408,7 @@ export interface FileRoutesByTo {
   '/admin/executivo': typeof AdminExecutivoRoute
   '/admin/mesa-diretora': typeof AdminMesaDiretoraRoute
   '/admin/transparencia-ativa': typeof AdminTransparenciaAtivaRoute
+  '/admin/transparencia-links': typeof AdminTransparenciaLinksRoute
   '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
   '/vereadores/$slug': typeof VereadoresSlugRoute
   '/vereadores/ranking': typeof VereadoresRankingRoute
@@ -457,6 +465,7 @@ export interface FileRoutesById {
   '/admin/executivo': typeof AdminExecutivoRoute
   '/admin/mesa-diretora': typeof AdminMesaDiretoraRoute
   '/admin/transparencia-ativa': typeof AdminTransparenciaAtivaRoute
+  '/admin/transparencia-links': typeof AdminTransparenciaLinksRoute
   '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
   '/vereadores/$slug': typeof VereadoresSlugRoute
   '/vereadores/ranking': typeof VereadoresRankingRoute
@@ -514,6 +523,7 @@ export interface FileRouteTypes {
     | '/admin/executivo'
     | '/admin/mesa-diretora'
     | '/admin/transparencia-ativa'
+    | '/admin/transparencia-links'
     | '/sessoes/ao-vivo'
     | '/vereadores/$slug'
     | '/vereadores/ranking'
@@ -567,6 +577,7 @@ export interface FileRouteTypes {
     | '/admin/executivo'
     | '/admin/mesa-diretora'
     | '/admin/transparencia-ativa'
+    | '/admin/transparencia-links'
     | '/sessoes/ao-vivo'
     | '/vereadores/$slug'
     | '/vereadores/ranking'
@@ -622,6 +633,7 @@ export interface FileRouteTypes {
     | '/admin/executivo'
     | '/admin/mesa-diretora'
     | '/admin/transparencia-ativa'
+    | '/admin/transparencia-links'
     | '/sessoes/ao-vivo'
     | '/vereadores/$slug'
     | '/vereadores/ranking'
@@ -788,6 +800,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/sessoes/ao-vivo'
       preLoaderRoute: typeof SessoesAoVivoRouteImport
       parentRoute: typeof SessoesRoute
+    }
+    '/admin/transparencia-links': {
+      id: '/admin/transparencia-links'
+      path: '/transparencia-links'
+      fullPath: '/admin/transparencia-links'
+      preLoaderRoute: typeof AdminTransparenciaLinksRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/transparencia-ativa': {
       id: '/admin/transparencia-ativa'
@@ -1069,6 +1088,7 @@ interface AdminRouteChildren {
   AdminExecutivoRoute: typeof AdminExecutivoRoute
   AdminMesaDiretoraRoute: typeof AdminMesaDiretoraRoute
   AdminTransparenciaAtivaRoute: typeof AdminTransparenciaAtivaRoute
+  AdminTransparenciaLinksRoute: typeof AdminTransparenciaLinksRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminCmsBannersRoute: typeof AdminCmsBannersRoute
   AdminCmsCategoriasRoute: typeof AdminCmsCategoriasRoute
@@ -1109,6 +1129,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminExecutivoRoute: AdminExecutivoRoute,
   AdminMesaDiretoraRoute: AdminMesaDiretoraRoute,
   AdminTransparenciaAtivaRoute: AdminTransparenciaAtivaRoute,
+  AdminTransparenciaLinksRoute: AdminTransparenciaLinksRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminCmsBannersRoute: AdminCmsBannersRoute,
   AdminCmsCategoriasRoute: AdminCmsCategoriasRoute,

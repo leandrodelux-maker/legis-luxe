@@ -97,6 +97,7 @@ const groups: Group[] = [
     label: "Transparência",
     items: [
       { label: "Transparência Ativa", path: "/admin/transparencia-ativa", icon: Globe },
+      { label: "Links da Transparência", path: "/admin/transparencia-links", icon: Globe },
       { label: "Documentos", path: "/admin/transparencia", icon: ShieldCheck },
       { label: "Licitações", path: "/admin/cms/licitacoes", icon: Gavel },
       { label: "Contratos", path: "/admin/cms/contratos", icon: FileBarChart },

@@ -6,26 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   AlertTriangle,
-  Banknote,
-  BookOpen,
-  BriefcaseBusiness,
-  Building2,
   CalendarDays,
   ExternalLink,
-  FileCheck2,
-  FileClock,
-  FileSignature,
-  FileText,
-  Gavel,
-  HandCoins,
   Landmark,
   Loader2,
-  Receipt,
-  Scale,
   ShieldCheck,
-  Users,
-  WalletCards,
 } from "lucide-react";
+import { getTransparencyIcon } from "@/lib/transparency-icons";
+
 
 export const Route = createFileRoute("/transparencia-ativa")({
   head: () => ({
@@ -51,99 +39,17 @@ type TransparencySettings = {
   show_full_portal_embed: boolean | null;
 };
 
-type TransparencyModule = {
+type TransparencyLink = {
+  id: string;
   title: string;
   description: string;
+  icon: string;
   path: string;
-  icon: typeof Banknote;
+  external_url: string | null;
+  sort_order: number;
+  is_active: boolean;
 };
 
-const modules: TransparencyModule[] = [
-  {
-    title: "Receitas",
-    description: "Arrecadação, repasses e demais entradas registradas no portal oficial.",
-    path: "receitas-e-despesas/receita",
-    icon: Banknote,
-  },
-  {
-    title: "Despesas",
-    description: "Consulta sintética das despesas públicas por período e classificação.",
-    path: "receitas-e-despesas/despesa-sintetica",
-    icon: Receipt,
-  },
-  {
-    title: "Empenhos",
-    description: "Empenhos emitidos, favorecidos, liquidações e valores vinculados.",
-    path: "receitas-e-despesas/empenho",
-    icon: WalletCards,
-  },
-  {
-    title: "Licitações",
-    description: "Procedimentos licitatórios, modalidades, situações e documentos oficiais.",
-    path: "contratos-convenios-e-licitacoes/procedimentos-licitatorios",
-    icon: Gavel,
-  },
-  {
-    title: "Contratos",
-    description: "Contratos celebrados, fornecedores, vigência, objeto e anexos.",
-    path: "contratos-convenios-e-licitacoes/contrato",
-    icon: FileSignature,
-  },
-  {
-    title: "Aditivos",
-    description: "Aditamentos e informações complementares vinculadas aos contratos.",
-    path: "contratos-convenios-e-licitacoes/contrato",
-    icon: FileClock,
-  },
-  {
-    title: "Dispensas e Inexigibilidades",
-    description: "Contratações diretas, dispensas, inexigibilidades e processos relacionados.",
-    path: "contratos-convenios-e-licitacoes/dispensas-inexigibilidades",
-    icon: FileCheck2,
-  },
-  {
-    title: "Folha de Pagamento",
-    description: "Servidores, remuneração, cargos e informações de pessoal.",
-    path: "orgaos-e-servidores/servidor",
-    icon: Users,
-  },
-  {
-    title: "Diárias",
-    description: "Diárias concedidas, beneficiários, destinos, datas e valores.",
-    path: "orgaos-e-servidores/diaria",
-    icon: BriefcaseBusiness,
-  },
-  {
-    title: "Patrimônio",
-    description: "Bens patrimoniais, almoxarifado e movimentações disponíveis.",
-    path: "receitas-e-despesas/patrimonio-e-almoxarifado",
-    icon: Building2,
-  },
-  {
-    title: "Prestação de Contas",
-    description: "Balanços, pareceres, contas anuais e relatórios publicados.",
-    path: "planejamento-e-politicas-publicas/parecer-previo",
-    icon: ShieldCheck,
-  },
-  {
-    title: "Relatórios Fiscais",
-    description: "Relatórios de gestão fiscal e demonstrativos de responsabilidade fiscal.",
-    path: "responsabilidade-fiscal/relatorio-de-gestao-fiscal",
-    icon: Landmark,
-  },
-  {
-    title: "Leis e Atos",
-    description: "Legislação municipal, atos infralegais, resoluções e publicações normativas.",
-    path: "legislacao-e-publicacoes/leis-e-atos-infralegais",
-    icon: Scale,
-  },
-  {
-    title: "Diário Oficial",
-    description: "Publicações oficiais, atos administrativos e documentos de interesse público.",
-    path: "legislacao-e-publicacoes/outras-publicacoes",
-    icon: BookOpen,
-  },
-];
 
 export function getTransparencyUrl(baseUrl: string, path = "") {
   const base = new URL(baseUrl.trim());
@@ -164,21 +70,30 @@ function isValidPortalUrl(value: string | null | undefined) {
 
 export function TransparenciaAtivaPage() {
   const [settings, setSettings] = useState<TransparencySettings | null>(null);
+  const [links, setLinks] = useState<TransparencyLink[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
     (async () => {
-      const { data } = await (supabase as any)
-        .from("transparency_settings")
-        .select("id, portal_url, portal_base_url, portal_name, entity_name, is_active, show_full_portal_embed")
-        .eq("is_active", true)
-        .order("updated_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
+      const [settingsRes, linksRes] = await Promise.all([
+        (supabase as any)
+          .from("transparency_settings")
+          .select("id, portal_url, portal_base_url, portal_name, entity_name, is_active, show_full_portal_embed")
+          .eq("is_active", true)
+          .order("updated_at", { ascending: false })
+          .limit(1)
+          .maybeSingle(),
+        (supabase as any)
+          .from("transparency_links")
+          .select("*")
+          .eq("is_active", true)
+          .order("sort_order", { ascending: true }),
+      ]);
 
       if (mounted) {
-        setSettings((data as TransparencySettings | null) || null);
+        setSettings((settingsRes.data as TransparencySettings | null) || null);
+        setLinks((linksRes.data as TransparencyLink[]) || []);
         setLoading(false);
       }
     })();
@@ -186,6 +101,7 @@ export function TransparenciaAtivaPage() {
       mounted = false;
     };
   }, []);
+
 
   const portalUrl = useMemo(() => {
     const configuredUrl = settings?.portal_url || settings?.portal_base_url || "";
@@ -285,33 +201,42 @@ export function TransparenciaAtivaPage() {
               </div>
             </div>
 
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {modules.map((module) => {
-                const Icon = module.icon;
-                const href = getTransparencyUrl(portalUrl, module.path);
-                return (
-                  <Card key={module.title} className="card-premium card-premium-hover flex h-full flex-col overflow-hidden rounded-lg">
-                    <CardHeader className="pb-3">
-                      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                        <Icon className="h-6 w-6" />
-                      </div>
-                      <CardTitle className="font-display text-xl text-foreground">{module.title}</CardTitle>
-                      <CardDescription className="min-h-[52px] text-sm leading-6">{module.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="mt-auto pt-0">
-                      <Button asChild className="w-full bg-primary-deep hover:bg-primary">
-                        <a href={href} target="_blank" rel="noopener noreferrer">
-                          Acessar <ExternalLink className="ml-2 h-4 w-4" />
-                        </a>
-                      </Button>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
+            {links.length === 0 ? (
+              <div className="rounded-lg border border-dashed border-border bg-card p-10 text-center text-muted-foreground">
+                Nenhum link cadastrado. Configure os acessos em Painel Admin → Links da Transparência.
+              </div>
+            ) : (
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {links.map((item) => {
+                  const Icon = getTransparencyIcon(item.icon);
+                  const href = item.external_url?.trim()
+                    ? item.external_url.trim()
+                    : getTransparencyUrl(portalUrl, item.path);
+                  return (
+                    <Card key={item.id} className="card-premium card-premium-hover flex h-full flex-col overflow-hidden rounded-lg">
+                      <CardHeader className="pb-3">
+                        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                          <Icon className="h-6 w-6" />
+                        </div>
+                        <CardTitle className="font-display text-xl text-foreground">{item.title}</CardTitle>
+                        <CardDescription className="min-h-[52px] text-sm leading-6">{item.description}</CardDescription>
+                      </CardHeader>
+                      <CardContent className="mt-auto pt-0">
+                        <Button asChild className="w-full bg-primary-deep hover:bg-primary">
+                          <a href={href} target="_blank" rel="noopener noreferrer">
+                            Acessar <ExternalLink className="ml-2 h-4 w-4" />
+                          </a>
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
       </section>
     </main>
   );
+
 }

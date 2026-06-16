@@ -1318,6 +1318,45 @@ export type Database = {
         }
         Relationships: []
       }
+      transparency_links: {
+        Row: {
+          created_at: string
+          description: string
+          external_url: string | null
+          icon: string
+          id: string
+          is_active: boolean
+          path: string
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          external_url?: string | null
+          icon?: string
+          id?: string
+          is_active?: boolean
+          path?: string
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          external_url?: string | null
+          icon?: string
+          id?: string
+          is_active?: boolean
+          path?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       transparency_modules: {
         Row: {
           category: string
