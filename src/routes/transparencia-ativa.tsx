@@ -39,99 +39,17 @@ type TransparencySettings = {
   show_full_portal_embed: boolean | null;
 };
 
-type TransparencyModule = {
+type TransparencyLink = {
+  id: string;
   title: string;
   description: string;
+  icon: string;
   path: string;
-  icon: typeof Banknote;
+  external_url: string | null;
+  sort_order: number;
+  is_active: boolean;
 };
 
-const modules: TransparencyModule[] = [
-  {
-    title: "Receitas",
-    description: "Arrecadação, repasses e demais entradas registradas no portal oficial.",
-    path: "receitas-e-despesas/receita",
-    icon: Banknote,
-  },
-  {
-    title: "Despesas",
-    description: "Consulta sintética das despesas públicas por período e classificação.",
-    path: "receitas-e-despesas/despesa-sintetica",
-    icon: Receipt,
-  },
-  {
-    title: "Empenhos",
-    description: "Empenhos emitidos, favorecidos, liquidações e valores vinculados.",
-    path: "receitas-e-despesas/empenho",
-    icon: WalletCards,
-  },
-  {
-    title: "Licitações",
-    description: "Procedimentos licitatórios, modalidades, situações e documentos oficiais.",
-    path: "contratos-convenios-e-licitacoes/procedimentos-licitatorios",
-    icon: Gavel,
-  },
-  {
-    title: "Contratos",
-    description: "Contratos celebrados, fornecedores, vigência, objeto e anexos.",
-    path: "contratos-convenios-e-licitacoes/contrato",
-    icon: FileSignature,
-  },
-  {
-    title: "Aditivos",
-    description: "Aditamentos e informações complementares vinculadas aos contratos.",
-    path: "contratos-convenios-e-licitacoes/contrato",
-    icon: FileClock,
-  },
-  {
-    title: "Dispensas e Inexigibilidades",
-    description: "Contratações diretas, dispensas, inexigibilidades e processos relacionados.",
-    path: "contratos-convenios-e-licitacoes/dispensas-inexigibilidades",
-    icon: FileCheck2,
-  },
-  {
-    title: "Folha de Pagamento",
-    description: "Servidores, remuneração, cargos e informações de pessoal.",
-    path: "orgaos-e-servidores/servidor",
-    icon: Users,
-  },
-  {
-    title: "Diárias",
-    description: "Diárias concedidas, beneficiários, destinos, datas e valores.",
-    path: "orgaos-e-servidores/diaria",
-    icon: BriefcaseBusiness,
-  },
-  {
-    title: "Patrimônio",
-    description: "Bens patrimoniais, almoxarifado e movimentações disponíveis.",
-    path: "receitas-e-despesas/patrimonio-e-almoxarifado",
-    icon: Building2,
-  },
-  {
-    title: "Prestação de Contas",
-    description: "Balanços, pareceres, contas anuais e relatórios publicados.",
-    path: "planejamento-e-politicas-publicas/parecer-previo",
-    icon: ShieldCheck,
-  },
-  {
-    title: "Relatórios Fiscais",
-    description: "Relatórios de gestão fiscal e demonstrativos de responsabilidade fiscal.",
-    path: "responsabilidade-fiscal/relatorio-de-gestao-fiscal",
-    icon: Landmark,
-  },
-  {
-    title: "Leis e Atos",
-    description: "Legislação municipal, atos infralegais, resoluções e publicações normativas.",
-    path: "legislacao-e-publicacoes/leis-e-atos-infralegais",
-    icon: Scale,
-  },
-  {
-    title: "Diário Oficial",
-    description: "Publicações oficiais, atos administrativos e documentos de interesse público.",
-    path: "legislacao-e-publicacoes/outras-publicacoes",
-    icon: BookOpen,
-  },
-];
 
 export function getTransparencyUrl(baseUrl: string, path = "") {
   const base = new URL(baseUrl.trim());
