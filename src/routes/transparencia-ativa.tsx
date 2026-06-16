@@ -6,26 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   AlertTriangle,
-  Banknote,
-  BookOpen,
-  BriefcaseBusiness,
-  Building2,
   CalendarDays,
   ExternalLink,
-  FileCheck2,
-  FileClock,
-  FileSignature,
-  FileText,
-  Gavel,
-  HandCoins,
   Landmark,
   Loader2,
-  Receipt,
-  Scale,
   ShieldCheck,
-  Users,
-  WalletCards,
 } from "lucide-react";
+import { getTransparencyIcon } from "@/lib/transparency-icons";
+
 
 export const Route = createFileRoute("/transparencia-ativa")({
   head: () => ({
