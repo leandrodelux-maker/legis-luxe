@@ -261,7 +261,9 @@ function SessoesPage() {
                         <>
                           <img 
                             src={`https://img.youtube.com/vi/${videoId}/0.jpg`} 
-                            alt="Thumbnail" 
+                            alt="Thumbnail"
+                            loading="lazy"
+                            decoding="async"
                             className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity"
                           />
                           <div className="absolute inset-0 flex items-center justify-center">
