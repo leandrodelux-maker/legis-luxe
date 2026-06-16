@@ -9,7 +9,9 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "clean": "rm -rf node_modules/.vite .vite dist .nitro .output src/routeTree.gen.ts",
+    "routes:rebuild": "npm run clean && vite dev"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
