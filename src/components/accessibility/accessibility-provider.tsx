@@ -92,7 +92,7 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
         const parsed = JSON.parse(raw);
         setSettings({ ...DEFAULT_SETTINGS, ...parsed });
       }
-    } catch {}
+    } catch (e) { if (typeof console !== "undefined") console.warn("[storage]", e); }
   }, []);
 
   // apply + persist
@@ -100,7 +100,7 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     applySettings(settings);
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
-    } catch {}
+    } catch (e) { if (typeof console !== "undefined") console.warn("[storage]", e); }
   }, [settings]);
 
   // reading guide / mask follow the cursor
@@ -173,7 +173,7 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     setSettings(DEFAULT_SETTINGS);
     try {
       localStorage.removeItem(STORAGE_KEY);
-    } catch {}
+    } catch (e) { if (typeof console !== "undefined") console.warn("[storage]", e); }
   }, []);
 
   const stopSpeaking = useCallback(() => {

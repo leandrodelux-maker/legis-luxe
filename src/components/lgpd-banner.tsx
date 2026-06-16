@@ -13,13 +13,13 @@ export function LgpdBanner() {
         const t = setTimeout(() => setShow(true), 600);
         return () => clearTimeout(t);
       }
-    } catch {}
+    } catch (e) { if (typeof console !== "undefined") console.warn("[storage]", e); }
   }, []);
 
   const accept = (value: "all" | "essential") => {
     try {
       localStorage.setItem(STORAGE_KEY, value);
-    } catch {}
+    } catch (e) { if (typeof console !== "undefined") console.warn("[storage]", e); }
     setShow(false);
   };
 
