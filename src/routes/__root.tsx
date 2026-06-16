@@ -16,6 +16,9 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { LgpdBanner } from "@/components/lgpd-banner";
+import { AccessibilityProvider } from "@/components/accessibility/accessibility-provider";
+import { AccessibilityWidget } from "@/components/accessibility/accessibility-widget";
+import { SkipLinks } from "@/components/accessibility/skip-links";
 
 function NotFoundComponent() {
   return (
@@ -140,14 +143,18 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <div className="flex min-h-dvh flex-col bg-background">
-          {!isAdminPath && <SiteHeader />}
-          <main id="conteudo" className={isAdminPath ? "flex-1" : "flex-1"}>
-            <Outlet />
-          </main>
-          {!isAdminPath && <SiteFooter />}
-          {!isAdminPath && <LgpdBanner />}
-        </div>
+        <AccessibilityProvider>
+          <SkipLinks />
+          <div className="flex min-h-dvh flex-col bg-background">
+            {!isAdminPath && <SiteHeader />}
+            <main id="conteudo" tabIndex={-1} className={isAdminPath ? "flex-1" : "flex-1"}>
+              <Outlet />
+            </main>
+            {!isAdminPath && <SiteFooter />}
+            {!isAdminPath && <LgpdBanner />}
+            {!isAdminPath && <AccessibilityWidget />}
+          </div>
+        </AccessibilityProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );

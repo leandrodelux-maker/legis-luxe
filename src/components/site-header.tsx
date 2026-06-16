@@ -156,7 +156,7 @@ export function SiteHeader() {
       </div>
 
       {/* BLUE NAV BAR */}
-      <nav aria-label="Principal" className="hidden lg:block bg-primary-deep border-t border-white/10 sticky top-0 z-40">
+      <nav id="menu-principal" aria-label="Principal" className="hidden lg:block bg-primary-deep border-t border-white/10 sticky top-0 z-40" tabIndex={-1}>
         <div className="container-page flex items-center justify-between gap-2">
           <ul className="flex items-stretch">
             {mainNav.map((item) => (
