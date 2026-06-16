@@ -203,7 +203,7 @@ function HomePage() {
           {isVideo && mediaUrl ? (
             <video src={mediaUrl} autoPlay muted loop playsInline className="h-full w-full object-cover" />
           ) : (
-            <img src={mediaUrl || heroImg} alt="Município" className="h-full w-full object-cover" />
+            <img src={mediaUrl || heroImg} alt="Município" fetchPriority="high" decoding="async" className="h-full w-full object-cover" />
           )}
           <div className="absolute inset-0 bg-gradient-to-br from-primary-deep/90 via-primary-deep/80 to-primary/85" />
           <div className="absolute -top-40 -right-40 h-[480px] w-[480px] rounded-full bg-gold/20 blur-3xl" />
