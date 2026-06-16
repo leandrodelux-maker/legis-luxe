@@ -201,33 +201,42 @@ export function TransparenciaAtivaPage() {
               </div>
             </div>
 
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {modules.map((module) => {
-                const Icon = module.icon;
-                const href = getTransparencyUrl(portalUrl, module.path);
-                return (
-                  <Card key={module.title} className="card-premium card-premium-hover flex h-full flex-col overflow-hidden rounded-lg">
-                    <CardHeader className="pb-3">
-                      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                        <Icon className="h-6 w-6" />
-                      </div>
-                      <CardTitle className="font-display text-xl text-foreground">{module.title}</CardTitle>
-                      <CardDescription className="min-h-[52px] text-sm leading-6">{module.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="mt-auto pt-0">
-                      <Button asChild className="w-full bg-primary-deep hover:bg-primary">
-                        <a href={href} target="_blank" rel="noopener noreferrer">
-                          Acessar <ExternalLink className="ml-2 h-4 w-4" />
-                        </a>
-                      </Button>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
+            {links.length === 0 ? (
+              <div className="rounded-lg border border-dashed border-border bg-card p-10 text-center text-muted-foreground">
+                Nenhum link cadastrado. Configure os acessos em Painel Admin → Links da Transparência.
+              </div>
+            ) : (
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {links.map((item) => {
+                  const Icon = getTransparencyIcon(item.icon);
+                  const href = item.external_url?.trim()
+                    ? item.external_url.trim()
+                    : getTransparencyUrl(portalUrl, item.path);
+                  return (
+                    <Card key={item.id} className="card-premium card-premium-hover flex h-full flex-col overflow-hidden rounded-lg">
+                      <CardHeader className="pb-3">
+                        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                          <Icon className="h-6 w-6" />
+                        </div>
+                        <CardTitle className="font-display text-xl text-foreground">{item.title}</CardTitle>
+                        <CardDescription className="min-h-[52px] text-sm leading-6">{item.description}</CardDescription>
+                      </CardHeader>
+                      <CardContent className="mt-auto pt-0">
+                        <Button asChild className="w-full bg-primary-deep hover:bg-primary">
+                          <a href={href} target="_blank" rel="noopener noreferrer">
+                            Acessar <ExternalLink className="ml-2 h-4 w-4" />
+                          </a>
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
       </section>
     </main>
   );
+
 }
