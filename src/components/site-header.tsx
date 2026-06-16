@@ -98,7 +98,8 @@ export function SiteHeader() {
             {settings?.header_logo_url ? (
               <img 
                 src={settings.header_logo_url} 
-                alt="Logo Câmara Municipal" 
+                alt="Logo Câmara Municipal"
+                decoding="async"
                 style={{ height: `${settings.header_logo_height}px` }}
                 className="w-auto object-contain"
               />
