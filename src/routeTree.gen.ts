@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TransparenciaPortalRouteImport } from './routes/transparencia-portal'
 import { Route as TransparenciaAtivaRouteImport } from './routes/transparencia-ativa'
 import { Route as TransparenciaRouteImport } from './routes/transparencia'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -64,6 +65,11 @@ import { Route as AdminCmsCategoriasRouteImport } from './routes/admin/cms/categ
 import { Route as AdminCmsBannersRouteImport } from './routes/admin/cms/banners'
 import { Route as AdminCmsPaginasIdRouteImport } from './routes/admin/cms/paginas.$id'
 
+const TransparenciaPortalRoute = TransparenciaPortalRouteImport.update({
+  id: '/transparencia-portal',
+  path: '/transparencia-portal',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TransparenciaAtivaRoute = TransparenciaAtivaRouteImport.update({
   id: '/transparencia-ativa',
   path: '/transparencia-ativa',
@@ -348,6 +354,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/transparencia': typeof TransparenciaRoute
   '/transparencia-ativa': typeof TransparenciaAtivaRoute
+  '/transparencia-portal': typeof TransparenciaPortalRoute
   '/admin/auditoria': typeof AdminAuditoriaRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/executivo': typeof AdminExecutivoRoute
@@ -402,6 +409,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/transparencia': typeof TransparenciaRoute
   '/transparencia-ativa': typeof TransparenciaAtivaRoute
+  '/transparencia-portal': typeof TransparenciaPortalRoute
   '/admin/auditoria': typeof AdminAuditoriaRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/executivo': typeof AdminExecutivoRoute
@@ -459,6 +467,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/transparencia': typeof TransparenciaRoute
   '/transparencia-ativa': typeof TransparenciaAtivaRoute
+  '/transparencia-portal': typeof TransparenciaPortalRoute
   '/admin/auditoria': typeof AdminAuditoriaRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/executivo': typeof AdminExecutivoRoute
@@ -517,6 +526,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/transparencia'
     | '/transparencia-ativa'
+    | '/transparencia-portal'
     | '/admin/auditoria'
     | '/admin/dashboard'
     | '/admin/executivo'
@@ -571,6 +581,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/transparencia'
     | '/transparencia-ativa'
+    | '/transparencia-portal'
     | '/admin/auditoria'
     | '/admin/dashboard'
     | '/admin/executivo'
@@ -627,6 +638,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/transparencia'
     | '/transparencia-ativa'
+    | '/transparencia-portal'
     | '/admin/auditoria'
     | '/admin/dashboard'
     | '/admin/executivo'
@@ -684,6 +696,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TransparenciaRoute: typeof TransparenciaRoute
   TransparenciaAtivaRoute: typeof TransparenciaAtivaRoute
+  TransparenciaPortalRoute: typeof TransparenciaPortalRoute
   VereadoresSlugRoute: typeof VereadoresSlugRoute
   VereadoresRankingRoute: typeof VereadoresRankingRoute
   VereadoresIndexRoute: typeof VereadoresIndexRoute
@@ -691,6 +704,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/transparencia-portal': {
+      id: '/transparencia-portal'
+      path: '/transparencia-portal'
+      fullPath: '/transparencia-portal'
+      preLoaderRoute: typeof TransparenciaPortalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/transparencia-ativa': {
       id: '/transparencia-ativa'
       path: '/transparencia-ativa'
@@ -1192,6 +1212,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TransparenciaRoute: TransparenciaRoute,
   TransparenciaAtivaRoute: TransparenciaAtivaRoute,
+  TransparenciaPortalRoute: TransparenciaPortalRoute,
   VereadoresSlugRoute: VereadoresSlugRoute,
   VereadoresRankingRoute: VereadoresRankingRoute,
   VereadoresIndexRoute: VereadoresIndexRoute,
