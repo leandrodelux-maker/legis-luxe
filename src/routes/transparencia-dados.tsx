@@ -176,16 +176,13 @@ function TransparenciaDadosPage() {
     <main className="min-h-screen bg-background">
       {/* HERO */}
       <section className="relative overflow-hidden border-b border-border bg-gradient-to-br from-primary-deep via-primary to-primary-deep text-primary-foreground">
-        <div className="container-page relative py-5 md:py-6">
-          <div className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-white/10 px-3 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-gold">
-            <ShieldCheck className="h-3.5 w-3.5" /> Consulta Pública ao vivo
-          </div>
-          <h1 className="mt-2 font-display text-2xl font-extrabold md:text-3xl">Portal da Transparência</h1>
-          <p className="mt-1 max-w-2xl text-sm text-primary-foreground/85">
-            Dados oficiais consumidos em tempo real do {portalName}.
+        <div className="container-page relative flex flex-wrap items-center justify-between gap-2 py-2.5">
+          <h1 className="font-display text-lg font-extrabold md:text-xl">Portal da Transparência</h1>
+          <p className="text-xs text-primary-foreground/85">
+            Dados em tempo real do {portalName}
             {data?.generatedAt && (
-              <span className="ml-2 text-xs text-primary-foreground/70">
-                · Atualizado em {new Date(data.generatedAt).toLocaleString("pt-BR")}
+              <span className="ml-2 text-primary-foreground/70">
+                · {new Date(data.generatedAt).toLocaleString("pt-BR")}
               </span>
             )}
           </p>
