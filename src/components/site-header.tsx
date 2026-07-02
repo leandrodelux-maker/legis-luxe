@@ -123,20 +123,26 @@ export function SiteHeader() {
             )}
           </Link>
 
-          <div className="hidden lg:flex flex-1 max-w-xs">
-            <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <div className="hidden lg:flex ml-auto w-full max-w-sm">
+            <div className="relative w-full flex items-stretch h-[52px] rounded-xl bg-slate-100 overflow-hidden focus-within:ring-2 focus-within:ring-primary/30 transition-all">
               <input
                 placeholder="Buscar serviços, notícia"
-                className="w-full h-11 pl-10 pr-3 rounded-xl bg-slate-100 text-sm placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 border border-transparent focus:border-primary/40 transition-all"
+                className="flex-1 min-w-0 h-full pl-4 pr-3 bg-transparent text-sm placeholder:text-slate-400 focus:outline-none"
               />
+              <button
+                type="button"
+                aria-label="Buscar"
+                className="h-full w-14 shrink-0 grid place-items-center bg-sky-400 hover:bg-sky-500 text-white transition-colors"
+              >
+                <Search className="h-5 w-5" />
+              </button>
             </div>
           </div>
 
           <div className="hidden md:flex items-center gap-3">
             <Link
               to="/transparencia"
-              className="inline-flex items-center gap-2 h-[52px] px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm shadow-sm transition-colors"
+              className="inline-flex items-center gap-2 h-[52px] px-5 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm shadow-sm transition-colors"
             >
               <Info className="h-4 w-4" /> Acesso a Transparência
             </Link>
