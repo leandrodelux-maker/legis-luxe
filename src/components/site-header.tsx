@@ -8,6 +8,7 @@ import {
   X,
   ChevronDown,
   Shield,
+  Info,
   MessageSquare,
   Search,
   Globe,
