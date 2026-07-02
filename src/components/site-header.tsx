@@ -132,7 +132,7 @@ export function SiteHeader() {
               <button
                 type="button"
                 aria-label="Buscar"
-                className="h-full w-12 shrink-0 grid place-items-center bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+                className="h-full w-12 shrink-0 grid place-items-center bg-primary hover:bg-primary-deep text-white transition-colors"
               >
                 <Search className="h-5 w-5" />
               </button>
@@ -152,7 +152,7 @@ export function SiteHeader() {
             </a>
             <Link
               to="/transparencia"
-              className="inline-flex items-center gap-2 h-[60px] px-5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm shadow-sm transition-colors whitespace-nowrap"
+              className="inline-flex items-center gap-2 h-[60px] px-5 rounded-xl bg-primary hover:bg-primary-deep text-white font-semibold text-sm shadow-sm transition-colors whitespace-nowrap"
             >
               <Info className="h-4 w-4" /> Acesso a Transparência
             </Link>
