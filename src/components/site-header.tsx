@@ -229,17 +229,19 @@ export function SiteHeader() {
               <Link
                 to="/transparencia"
                 onClick={() => setOpen(false)}
-                className="flex-1 inline-flex items-center justify-center gap-2 h-11 px-4 rounded-xl bg-emerald-600 text-white font-semibold text-sm"
+                className="flex-1 inline-flex items-center justify-center gap-2 h-[52px] px-4 rounded-xl bg-emerald-600 text-white font-semibold text-sm"
               >
                 <Shield className="h-4 w-4" /> Transparência
               </Link>
-              <Link
-                to="/contato"
+              <a
+                href="https://radardatransparencia.com.br/"
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={() => setOpen(false)}
-                className="flex-1 inline-flex items-center justify-center gap-2 h-11 px-4 rounded-xl bg-orange-500 text-white font-semibold text-sm"
+                className="flex-1 inline-flex items-center justify-center gap-2 h-[52px] px-4 rounded-xl bg-white text-primary-deep font-semibold text-sm ring-1 ring-white/20"
               >
-                <MessageSquare className="h-4 w-4" /> Ouvidoria
-              </Link>
+                <img src={radarLogo.url} alt="" className="h-7 w-auto" /> Radar
+              </a>
             </li>
           </ul>
         </nav>
