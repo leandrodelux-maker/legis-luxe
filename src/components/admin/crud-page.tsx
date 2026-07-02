@@ -112,8 +112,12 @@ export function CrudPage<T extends { id: string }>({
 
   const handleDelete = async (row: T) => {
     if (!confirm("Excluir este registro?")) return;
-    const { error } = await (supabase as any).from(table).delete().eq("id", row.id);
-    if (error) return toast.error(error.message);
+    const { error, status } = await (supabase as any).from(table).delete().eq("id", row.id);
+    if (error) {
+      console.error(`[CRUD DELETE] ${table} id=${row.id}`, { status, code: error.code, message: error.message, details: error.details, hint: error.hint });
+      const isRls = error.code === "42501" || /row-level security|permission denied/i.test(error.message || "");
+      return toast.error(isRls ? `Bloqueado por RLS: ${error.message}` : `Erro (${error.code || status}): ${error.message}`);
+    }
     toast.success("Excluído");
     load();
   };
