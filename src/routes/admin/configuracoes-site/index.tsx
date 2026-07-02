@@ -286,13 +286,13 @@ function SiteSettingsAdmin() {
                   <Input 
                     type="range" 
                     min="30" 
-                    max="120" 
+                    max="200" 
                     step="1"
                     value={settings.header_logo_height}
                     onChange={(e) => setSettings({ ...settings, header_logo_height: parseInt(e.target.value) })}
                     className="flex-1"
                   />
-                  <span className="text-sm font-mono w-10">{settings.header_logo_height}px</span>
+                  <span className="text-sm font-mono w-14">{settings.header_logo_height}px</span>
                 </div>
               </div>
             </div>
