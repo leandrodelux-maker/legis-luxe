@@ -124,7 +124,7 @@ export function SiteHeader() {
           </Link>
 
           <div className="hidden lg:flex ml-auto w-full max-w-[240px]">
-            <div className="relative w-full flex items-stretch h-[52px] rounded-xl bg-slate-100 overflow-hidden focus-within:ring-2 focus-within:ring-primary/30 transition-all">
+            <div className="relative w-full flex items-stretch h-[60px] rounded-xl bg-slate-100 overflow-hidden focus-within:ring-2 focus-within:ring-primary/30 transition-all">
               <input
                 placeholder="Buscar serviços, notícia"
                 className="flex-1 min-w-0 h-full pl-4 pr-3 bg-transparent text-sm placeholder:text-slate-400 focus:outline-none"
@@ -132,7 +132,7 @@ export function SiteHeader() {
               <button
                 type="button"
                 aria-label="Buscar"
-                className="h-full w-12 shrink-0 grid place-items-center bg-sky-400 hover:bg-sky-500 text-white transition-colors"
+                className="h-full w-12 shrink-0 grid place-items-center bg-blue-600 hover:bg-blue-700 text-white transition-colors"
               >
                 <Search className="h-5 w-5" />
               </button>
@@ -140,22 +140,22 @@ export function SiteHeader() {
           </div>
 
           <div className="hidden md:flex items-center gap-3">
-            <Link
-              to="/transparencia"
-              className="inline-flex items-center gap-2 h-[52px] px-5 rounded-xl bg-sky-400 hover:bg-sky-500 text-white font-semibold text-sm shadow-sm transition-colors whitespace-nowrap"
-            >
-              <Info className="h-4 w-4" /> Acesso a Transparência
-            </Link>
             <a
               href="https://radardatransparencia.com.br/"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 h-[52px] px-4 rounded-xl bg-white hover:bg-slate-50 text-primary-deep font-semibold text-sm shadow-sm ring-1 ring-slate-200 transition-colors whitespace-nowrap"
+              className="inline-flex items-center gap-2 h-[60px] px-4 rounded-xl bg-white hover:bg-slate-50 text-primary-deep font-semibold text-sm shadow-sm ring-1 ring-slate-200 transition-colors whitespace-nowrap"
               aria-label="Radar da Transparência Pública"
             >
-              <img src={radarLogo.url} alt="" className="h-8 w-auto" />
+              <img src={radarLogo.url} alt="" className="h-9 w-auto" />
               <span className="hidden xl:inline">Radar da Transparência</span>
             </a>
+            <Link
+              to="/transparencia"
+              className="inline-flex items-center gap-2 h-[60px] px-5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm shadow-sm transition-colors whitespace-nowrap"
+            >
+              <Info className="h-4 w-4" /> Acesso a Transparência
+            </Link>
           </div>
 
           <button
