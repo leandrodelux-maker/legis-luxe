@@ -83,7 +83,7 @@ export function SiteFooter() {
             Transparência
           </h3>
           <ul className="mt-4 space-y-2 text-sm text-primary-foreground/80">
-            <li><Link to="/transparencia" className="hover:text-gold transition-colors">Portal da Transparência</Link></li>
+            <li><Link to="/transparencia-portal" className="hover:text-gold transition-colors">Portal da Transparência</Link></li>
             <li><a href="#" className="hover:text-gold transition-colors">Lei de Acesso à Informação</a></li>
             <li><a href="#" className="hover:text-gold transition-colors">Licitações e Contratos</a></li>
             <li><a href="#" className="hover:text-gold transition-colors">Folha de Pagamento</a></li>

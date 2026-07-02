@@ -151,7 +151,7 @@ export function SiteHeader() {
               <span className="hidden xl:inline">Radar da Transparência</span>
             </a>
             <Link
-              to="/transparencia"
+              to="/transparencia-portal"
               className="inline-flex items-center gap-2 h-[60px] px-5 rounded-xl bg-primary hover:bg-primary-deep text-white font-semibold text-sm shadow-sm transition-colors whitespace-nowrap"
             >
               <Info className="h-4 w-4" /> Acesso a Transparência
@@ -192,7 +192,7 @@ export function SiteHeader() {
           </ul>
           <div className="flex items-center gap-1 text-white/90 shrink-0">
             <Link
-              to="/transparencia"
+              to="/transparencia-portal"
               className="inline-flex items-center gap-1.5 px-3 py-4 text-[13px] font-semibold tracking-wide hover:bg-white/5 hover:text-white transition-colors uppercase whitespace-nowrap"
             >
               <Info className="h-4 w-4" /> Acesso a Transparência
@@ -236,7 +236,7 @@ export function SiteHeader() {
             ))}
             <li className="pt-3 mt-2 border-t border-white/10 flex gap-2">
               <Link
-                to="/transparencia"
+                to="/transparencia-portal"
                 onClick={() => setOpen(false)}
                 className="flex-1 inline-flex items-center justify-center gap-2 h-[52px] px-4 rounded-xl bg-emerald-600 text-white font-semibold text-sm"
               >

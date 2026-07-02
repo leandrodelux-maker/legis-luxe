@@ -58,11 +58,11 @@ export const Route = createFileRoute("/")({
 });
 
 const heroPills = [
-  { icon: Shield, label: "Transparência", to: "/transparencia" },
+  { icon: Shield, label: "Transparência", to: "/transparencia-portal" },
   { icon: FileText, label: "e-SIC", to: "/contato" },
   { icon: MessageSquare, label: "Ouvidoria", to: "/contato" },
-  { icon: BookOpen, label: "Carta de Serviços", to: "/transparencia" },
-  { icon: Gavel, label: "Licitações", to: "/transparencia" },
+  { icon: BookOpen, label: "Carta de Serviços", to: "/transparencia-portal" },
+  { icon: Gavel, label: "Licitações", to: "/transparencia-portal" },
   { icon: Newspaper, label: "Diário Oficial", to: "/noticias" },
 ];
 
@@ -480,7 +480,7 @@ function HomePage() {
 
           <div className="mt-12 text-center">
             <Button asChild size="lg" className="bg-gold text-gold-foreground hover:bg-gold/90 h-12 px-8 font-bold">
-              <Link to="/transparencia">Acessar Portal de Transparência</Link>
+              <Link to="/transparencia-portal">Acessar Portal de Transparência</Link>
             </Button>
           </div>
         </div>
@@ -518,7 +518,7 @@ function HomePage() {
               title: "Carta de Serviços",
               description: "Conheça todos os serviços oferecidos pela Câmara, prazos e formas de atendimento.",
               cta: "Ver carta",
-              to: "/transparencia",
+              to: "/transparencia-portal",
               accent: "from-amber-500 to-orange-600",
             },
           ].map((item, i) => (

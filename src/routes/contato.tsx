@@ -231,7 +231,7 @@ function ContatoPage() {
 
               <div className="grid md:grid-cols-3 gap-6">
                 {[
-                  { title: "Transparência Ativa", desc: "Dados que já estão disponíveis no Portal da Transparência.", link: "/transparencia" },
+                  { title: "Transparência Ativa", desc: "Dados que já estão disponíveis no Portal da Transparência.", link: "/transparencia-portal" },
                   { title: "Transparência Passiva", desc: "Solicite dados específicos que ainda não foram publicados.", active: true },
                   { title: "Prazos de Resposta", desc: "Até 20 dias úteis, prorrogáveis por mais 10 dias.", icon: Clock },
                 ].map((card, i) => (
