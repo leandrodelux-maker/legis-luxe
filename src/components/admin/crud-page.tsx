@@ -62,12 +62,13 @@ export function CrudPage<T extends { id: string }>({
 
   const load = async () => {
     setLoading(true);
-    // Expand query to include joined tables if necessary (simple join for 1 level)
     let q = (supabase as any).from(table).select("*");
     if (orderBy) q = q.order(orderBy.column, { ascending: orderBy.ascending ?? false });
-    const { data, error } = await q;
-    if (error) toast.error(error.message);
-    else setRows((data as T[]) ?? []);
+    const { data, error, status } = await q;
+    if (error) {
+      console.error(`[CRUD SELECT] ${table} falhou`, { status, code: error.code, message: error.message, details: error.details, hint: error.hint });
+      toast.error(`Falha ao carregar "${table}" (${error.code || status}): ${error.message}`);
+    } else setRows((data as T[]) ?? []);
     setLoading(false);
   };
 
@@ -111,8 +112,12 @@ export function CrudPage<T extends { id: string }>({
 
   const handleDelete = async (row: T) => {
     if (!confirm("Excluir este registro?")) return;
-    const { error } = await (supabase as any).from(table).delete().eq("id", row.id);
-    if (error) return toast.error(error.message);
+    const { error, status } = await (supabase as any).from(table).delete().eq("id", row.id);
+    if (error) {
+      console.error(`[CRUD DELETE] ${table} id=${row.id}`, { status, code: error.code, message: error.message, details: error.details, hint: error.hint });
+      const isRls = error.code === "42501" || /row-level security|permission denied/i.test(error.message || "");
+      return toast.error(isRls ? `Bloqueado por RLS: ${error.message}` : `Erro (${error.code || status}): ${error.message}`);
+    }
     toast.success("Excluído");
     load();
   };
@@ -129,21 +134,66 @@ export function CrudPage<T extends { id: string }>({
       payload[f.name] = v;
     });
 
-    try {
-      const op = editing
-        ? (supabase as any).from(table).update(payload).eq("id", editing.id)
-        : (supabase as any).from(table).insert(payload);
-      
-      const { error } = await op;
-      if (error) throw error;
+    const operation = editing ? "UPDATE" : "INSERT";
+    const startedAt = performance.now();
+    console.groupCollapsed(
+      `%c[CRUD ${operation}] ${table}${editing ? ` (id=${editing.id})` : ""}`,
+      "color:#2563eb;font-weight:bold",
+    );
+    console.log("Payload:", payload);
 
+    try {
+      const { data: authData } = await supabase.auth.getUser();
+      console.log("Auth user:", authData.user?.id ?? "(anonymous)", authData.user?.email ?? "");
+
+      const op = editing
+        ? (supabase as any).from(table).update(payload).eq("id", editing.id).select()
+        : (supabase as any).from(table).insert(payload).select();
+
+      const { data, error, status, statusText } = await op;
+      const durationMs = Math.round(performance.now() - startedAt);
+      console.log(`HTTP ${status ?? "?"} ${statusText ?? ""} • ${durationMs}ms`);
+
+      if (error) {
+        console.error("Supabase error:", {
+          message: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint,
+          status,
+        });
+
+        const isRls =
+          error.code === "42501" ||
+          /row-level security|permission denied|violates row-level/i.test(error.message || "");
+
+        if (isRls) {
+          console.error(
+            "%c⛔ RLS/permissão bloqueou a operação",
+            "color:#dc2626;font-weight:bold",
+            `\nTabela: ${table}\nOperação: ${operation}\nUsuário: ${authData.user?.id ?? "anon"}\nDica: verifique policies (has_role/admin) e GRANTs.`,
+          );
+          toast.error(
+            `Bloqueado por RLS em "${table}": ${error.hint || error.details || error.message}`,
+            { duration: 8000 },
+          );
+        } else {
+          toast.error(`Erro (${error.code || status || "?"}): ${error.message}`, { duration: 6000 });
+        }
+        throw error;
+      }
+
+      console.log("Resultado:", data);
       toast.success(editing ? "Atualizado com sucesso" : "Criado com sucesso");
       setOpen(false);
       load();
     } catch (error: any) {
-      console.error("Erro ao salvar:", error);
-      toast.error("Erro ao salvar: " + (error.message || "Erro desconhecido"));
+      if (!error?.code) {
+        console.error("Exceção não-Supabase:", error);
+        toast.error("Erro inesperado: " + (error?.message || "desconhecido"));
+      }
     } finally {
+      console.groupEnd();
       setSaving(false);
     }
   };
