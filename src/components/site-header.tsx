@@ -8,6 +8,7 @@ import {
   X,
   ChevronDown,
   Shield,
+  Info,
   MessageSquare,
   Search,
   Globe,
@@ -137,7 +138,7 @@ export function SiteHeader() {
               to="/transparencia"
               className="inline-flex items-center gap-2 h-[52px] px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm shadow-sm transition-colors"
             >
-              <Shield className="h-4 w-4" /> Transparência
+              <Info className="h-4 w-4" /> Acesso a Transparência
             </Link>
             <a
               href="https://radardatransparencia.com.br/"
@@ -188,7 +189,7 @@ export function SiteHeader() {
               to="/transparencia"
               className="inline-flex items-center gap-1.5 px-3 py-4 text-[12px] font-semibold tracking-wide hover:bg-white/5 hover:text-white transition-colors uppercase whitespace-nowrap"
             >
-              <Shield className="h-4 w-4" /> Transparência
+              <Info className="h-4 w-4" /> Acesso a Transparência
             </Link>
             <div className="relative group">
               <button
@@ -231,7 +232,7 @@ export function SiteHeader() {
                 onClick={() => setOpen(false)}
                 className="flex-1 inline-flex items-center justify-center gap-2 h-[52px] px-4 rounded-xl bg-emerald-600 text-white font-semibold text-sm"
               >
-                <Shield className="h-4 w-4" /> Transparência
+                <Info className="h-4 w-4" /> Acesso a Transparência
               </Link>
               <a
                 href="https://radardatransparencia.com.br/"
