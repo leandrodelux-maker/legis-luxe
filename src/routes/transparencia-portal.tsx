@@ -24,7 +24,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { getTransparencyIcon } from "@/lib/transparency-icons";
-import { getTransparencyUrl } from "./transparencia-ativa";
+import { getTransparencyUrl } from "@/lib/transparency-url";
 
 export const Route = createFileRoute("/transparencia-portal")({
   head: () => ({
