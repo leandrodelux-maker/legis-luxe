@@ -43,24 +43,24 @@ export type QuickAccessItem = {
 const STORAGE_KEY = "cm:quick-access:v1";
 
 const DEFAULT_ITEMS: QuickAccessItem[] = [
-  { id: "1", category: "cidadaos", label: "Licitações", icon: "FileText", url: "/transparencia", external: false },
-  { id: "2", category: "cidadaos", label: "Contratos", icon: "ClipboardList", url: "/transparencia", external: false },
+  { id: "1", category: "cidadaos", label: "Licitações", icon: "FileText", url: "/transparencia-portal", external: false },
+  { id: "2", category: "cidadaos", label: "Contratos", icon: "ClipboardList", url: "/transparencia-portal", external: false },
   { id: "3", category: "cidadaos", label: "Nota Fiscal Eletrônica", tag: "NFSE", icon: "Monitor", url: "https://nfse.exemplo.gov.br", external: true },
-  { id: "4", category: "cidadaos", label: "Despesas", icon: "BookOpen", url: "/transparencia", external: false },
-  { id: "5", category: "cidadaos", label: "Folha de Pagamento", icon: "Users", url: "/transparencia", external: false },
-  { id: "6", category: "cidadaos", label: "Diárias e Passagens", icon: "Building2", url: "/transparencia", external: false },
+  { id: "4", category: "cidadaos", label: "Despesas", icon: "BookOpen", url: "/transparencia-portal", external: false },
+  { id: "5", category: "cidadaos", label: "Folha de Pagamento", icon: "Users", url: "/transparencia-portal", external: false },
+  { id: "6", category: "cidadaos", label: "Diárias e Passagens", icon: "Building2", url: "/transparencia-portal", external: false },
   { id: "7", category: "cidadaos", label: "Ouvidoria e Atendimento", icon: "Phone", url: "/contato", external: false },
   { id: "8", category: "cidadaos", label: "Emissão de Guias IPTU", tag: "IPTU", icon: "FileText", url: "https://iptu.exemplo.gov.br", external: true },
   { id: "9", category: "cidadaos", label: "Emissão de Guias ISS", tag: "GUIAS ISS", icon: "FileText", url: "https://iss.exemplo.gov.br", external: true },
-  { id: "10", category: "cidadaos", label: "Lei Aldir Blanc", tag: "PNAB", icon: "BookOpen", url: "/transparencia", external: false },
-  { id: "11", category: "cidadaos", label: "Ficha Funcional", tag: "FUNCIONÁRIOS", icon: "Users", url: "/transparencia", external: false },
+  { id: "10", category: "cidadaos", label: "Lei Aldir Blanc", tag: "PNAB", icon: "BookOpen", url: "/transparencia-portal", external: false },
+  { id: "11", category: "cidadaos", label: "Ficha Funcional", tag: "FUNCIONÁRIOS", icon: "Users", url: "/transparencia-portal", external: false },
   { id: "12", category: "cidadaos", label: "Webmail", tag: "E-MAIL", icon: "Mail", url: "https://webmail.exemplo.gov.br", external: true },
   { id: "13", category: "servidores", label: "Portal do Servidor", icon: "Users", url: "https://servidor.exemplo.gov.br", external: true },
   { id: "14", category: "servidores", label: "Holerite Online", icon: "Receipt", url: "https://holerite.exemplo.gov.br", external: true },
   { id: "15", category: "empresas", label: "Alvará Online", icon: "Building2", url: "https://alvara.exemplo.gov.br", external: true },
   { id: "16", category: "empresas", label: "NFS-e Empresa", tag: "NFSE", icon: "Monitor", url: "https://nfse.exemplo.gov.br", external: true },
-  { id: "17", category: "legislacao", label: "Lei Orgânica", icon: "Scale", url: "/transparencia", external: false },
-  { id: "18", category: "legislacao", label: "Regimento Interno", icon: "Gavel", url: "/transparencia", external: false },
+  { id: "17", category: "legislacao", label: "Lei Orgânica", icon: "Scale", url: "/transparencia-portal", external: false },
+  { id: "18", category: "legislacao", label: "Regimento Interno", icon: "Gavel", url: "/transparencia-portal", external: false },
 ];
 
 function load(): QuickAccessItem[] {
