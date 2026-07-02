@@ -248,37 +248,31 @@ function TransparenciaPortalPage() {
       {/* HERO */}
       <section className="relative overflow-hidden border-b border-border bg-gradient-to-br from-primary-deep via-primary to-primary-deep text-primary-foreground">
         <div className="absolute inset-0 opacity-10 [background-image:radial-gradient(circle_at_20%_20%,white,transparent_40%),radial-gradient(circle_at_80%_60%,white,transparent_40%)]" />
-        <div className="container-page relative py-14 md:py-20">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-gold">
-              <ShieldCheck className="h-3.5 w-3.5" /> Dados oficiais
+        <div className="container-page relative py-4 md:py-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/40 bg-white/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-gold">
+                  <ShieldCheck className="h-3 w-3" /> Oficial
+                </span>
+                <h1 className="font-display text-lg font-extrabold leading-tight md:text-xl">
+                  Portal da Transparência
+                </h1>
+              </div>
+              <p className="mt-1 text-xs text-primary-foreground/80">
+                {portalName} · <CalendarDays className="inline h-3 w-3 text-gold" /> Atualizado em {lastUpdate}
+              </p>
             </div>
-            <h1 className="mt-5 font-display text-4xl font-extrabold leading-tight md:text-5xl">
-              Portal da Transparência
-            </h1>
-            <p className="mt-4 max-w-2xl text-base leading-7 text-primary-foreground/85 md:text-lg">
-              Acesse todas as informações públicas da {portalName}: receitas, despesas, contratos, licitações,
-              folha de pagamento, planejamento e muito mais.
-            </p>
-
-            <div className="mt-6 flex flex-wrap gap-3 text-sm">
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-primary-foreground/90">
-                <Landmark className="h-4 w-4 text-gold" /> {portalName}
-              </span>
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-primary-foreground/90">
-                <CalendarDays className="h-4 w-4 text-gold" /> Última atualização: {lastUpdate}
-              </span>
-              {portalUrl && (
-                <a
-                  href={portalUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full border border-gold/60 bg-gold px-4 py-2 font-semibold text-primary-deep transition-colors hover:bg-gold/90"
-                >
-                  <ExternalLink className="h-4 w-4" /> Portal oficial completo
-                </a>
-              )}
-            </div>
+            {portalUrl && (
+              <a
+                href={portalUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-full border border-gold/60 bg-gold px-3 py-1.5 text-xs font-semibold text-primary-deep transition-colors hover:bg-gold/90"
+              >
+                <ExternalLink className="h-3.5 w-3.5" /> Portal oficial
+              </a>
+            )}
           </div>
         </div>
       </section>
