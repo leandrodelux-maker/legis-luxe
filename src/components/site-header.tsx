@@ -12,9 +12,11 @@ import {
   Search,
   Globe,
   Landmark,
+  Radar,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import radarLogo from "@/assets/radar-transparencia.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 
 type SiteSettings = {
