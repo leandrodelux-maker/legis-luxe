@@ -12,10 +12,12 @@ import {
   Search,
   Globe,
   Landmark,
+  
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
+import radarLogo from "@/assets/radar-transparencia.png.asset.json";
 
 type SiteSettings = {
   contact_phone: string | null;
@@ -133,16 +135,20 @@ export function SiteHeader() {
           <div className="hidden md:flex items-center gap-3">
             <Link
               to="/transparencia"
-              className="inline-flex items-center gap-2 h-11 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm shadow-sm transition-colors"
+              className="inline-flex items-center gap-2 h-[52px] px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm shadow-sm transition-colors"
             >
               <Shield className="h-4 w-4" /> Transparência
             </Link>
-            <Link
-              to="/contato"
-              className="inline-flex items-center gap-2 h-11 px-5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm shadow-sm transition-colors"
+            <a
+              href="https://radardatransparencia.com.br/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 h-[52px] px-4 rounded-xl bg-white hover:bg-slate-50 text-primary-deep font-semibold text-sm shadow-sm ring-1 ring-slate-200 transition-colors"
+              aria-label="Radar da Transparência Pública"
             >
-              <MessageSquare className="h-4 w-4" /> Ouvidoria
-            </Link>
+              <img src={radarLogo.url} alt="" className="h-8 w-auto" />
+              <span className="hidden xl:inline">Radar da Transparência</span>
+            </a>
           </div>
 
           <button
@@ -223,17 +229,19 @@ export function SiteHeader() {
               <Link
                 to="/transparencia"
                 onClick={() => setOpen(false)}
-                className="flex-1 inline-flex items-center justify-center gap-2 h-11 px-4 rounded-xl bg-emerald-600 text-white font-semibold text-sm"
+                className="flex-1 inline-flex items-center justify-center gap-2 h-[52px] px-4 rounded-xl bg-emerald-600 text-white font-semibold text-sm"
               >
                 <Shield className="h-4 w-4" /> Transparência
               </Link>
-              <Link
-                to="/contato"
+              <a
+                href="https://radardatransparencia.com.br/"
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={() => setOpen(false)}
-                className="flex-1 inline-flex items-center justify-center gap-2 h-11 px-4 rounded-xl bg-orange-500 text-white font-semibold text-sm"
+                className="flex-1 inline-flex items-center justify-center gap-2 h-[52px] px-4 rounded-xl bg-white text-primary-deep font-semibold text-sm ring-1 ring-white/20"
               >
-                <MessageSquare className="h-4 w-4" /> Ouvidoria
-              </Link>
+                <img src={radarLogo.url} alt="" className="h-7 w-auto" /> Radar
+              </a>
             </li>
           </ul>
         </nav>
