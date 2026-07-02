@@ -62,12 +62,13 @@ export function CrudPage<T extends { id: string }>({
 
   const load = async () => {
     setLoading(true);
-    // Expand query to include joined tables if necessary (simple join for 1 level)
     let q = (supabase as any).from(table).select("*");
     if (orderBy) q = q.order(orderBy.column, { ascending: orderBy.ascending ?? false });
-    const { data, error } = await q;
-    if (error) toast.error(error.message);
-    else setRows((data as T[]) ?? []);
+    const { data, error, status } = await q;
+    if (error) {
+      console.error(`[CRUD SELECT] ${table} falhou`, { status, code: error.code, message: error.message, details: error.details, hint: error.hint });
+      toast.error(`Falha ao carregar "${table}" (${error.code || status}): ${error.message}`);
+    } else setRows((data as T[]) ?? []);
     setLoading(false);
   };
 
