@@ -16,7 +16,11 @@ import { Route as TransparenciaRouteImport } from './routes/transparencia'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SessoesRouteImport } from './routes/sessoes'
 import { Route as ProjetosRouteImport } from './routes/projetos'
+import { Route as PerguntasFrequentesRouteImport } from './routes/perguntas-frequentes'
 import { Route as NoticiasRouteImport } from './routes/noticias'
+import { Route as MapaDoSiteRouteImport } from './routes/mapa-do-site'
+import { Route as LgpdRouteImport } from './routes/lgpd'
+import { Route as ESicRouteImport } from './routes/e-sic'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -101,9 +105,29 @@ const ProjetosRoute = ProjetosRouteImport.update({
   path: '/projetos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PerguntasFrequentesRoute = PerguntasFrequentesRouteImport.update({
+  id: '/perguntas-frequentes',
+  path: '/perguntas-frequentes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NoticiasRoute = NoticiasRouteImport.update({
   id: '/noticias',
   path: '/noticias',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MapaDoSiteRoute = MapaDoSiteRouteImport.update({
+  id: '/mapa-do-site',
+  path: '/mapa-do-site',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LgpdRoute = LgpdRouteImport.update({
+  id: '/lgpd',
+  path: '/lgpd',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ESicRoute = ESicRouteImport.update({
+  id: '/e-sic',
+  path: '/e-sic',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContatoRoute = ContatoRouteImport.update({
@@ -354,7 +378,11 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/contato': typeof ContatoRoute
+  '/e-sic': typeof ESicRoute
+  '/lgpd': typeof LgpdRoute
+  '/mapa-do-site': typeof MapaDoSiteRoute
   '/noticias': typeof NoticiasRoute
+  '/perguntas-frequentes': typeof PerguntasFrequentesRoute
   '/projetos': typeof ProjetosRoute
   '/sessoes': typeof SessoesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -411,7 +439,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/contato': typeof ContatoRoute
+  '/e-sic': typeof ESicRoute
+  '/lgpd': typeof LgpdRoute
+  '/mapa-do-site': typeof MapaDoSiteRoute
   '/noticias': typeof NoticiasRoute
+  '/perguntas-frequentes': typeof PerguntasFrequentesRoute
   '/projetos': typeof ProjetosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/transparencia': typeof TransparenciaRoute
@@ -469,7 +501,11 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/contato': typeof ContatoRoute
+  '/e-sic': typeof ESicRoute
+  '/lgpd': typeof LgpdRoute
+  '/mapa-do-site': typeof MapaDoSiteRoute
   '/noticias': typeof NoticiasRoute
+  '/perguntas-frequentes': typeof PerguntasFrequentesRoute
   '/projetos': typeof ProjetosRoute
   '/sessoes': typeof SessoesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -529,7 +565,11 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/contato'
+    | '/e-sic'
+    | '/lgpd'
+    | '/mapa-do-site'
     | '/noticias'
+    | '/perguntas-frequentes'
     | '/projetos'
     | '/sessoes'
     | '/sitemap.xml'
@@ -586,7 +626,11 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/contato'
+    | '/e-sic'
+    | '/lgpd'
+    | '/mapa-do-site'
     | '/noticias'
+    | '/perguntas-frequentes'
     | '/projetos'
     | '/sitemap.xml'
     | '/transparencia'
@@ -643,7 +687,11 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/contato'
+    | '/e-sic'
+    | '/lgpd'
+    | '/mapa-do-site'
     | '/noticias'
+    | '/perguntas-frequentes'
     | '/projetos'
     | '/sessoes'
     | '/sitemap.xml'
@@ -702,7 +750,11 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRoute
   ContatoRoute: typeof ContatoRoute
+  ESicRoute: typeof ESicRoute
+  LgpdRoute: typeof LgpdRoute
+  MapaDoSiteRoute: typeof MapaDoSiteRoute
   NoticiasRoute: typeof NoticiasRoute
+  PerguntasFrequentesRoute: typeof PerguntasFrequentesRoute
   ProjetosRoute: typeof ProjetosRoute
   SessoesRoute: typeof SessoesRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -766,11 +818,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjetosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/perguntas-frequentes': {
+      id: '/perguntas-frequentes'
+      path: '/perguntas-frequentes'
+      fullPath: '/perguntas-frequentes'
+      preLoaderRoute: typeof PerguntasFrequentesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/noticias': {
       id: '/noticias'
       path: '/noticias'
       fullPath: '/noticias'
       preLoaderRoute: typeof NoticiasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mapa-do-site': {
+      id: '/mapa-do-site'
+      path: '/mapa-do-site'
+      fullPath: '/mapa-do-site'
+      preLoaderRoute: typeof MapaDoSiteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lgpd': {
+      id: '/lgpd'
+      path: '/lgpd'
+      fullPath: '/lgpd'
+      preLoaderRoute: typeof LgpdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/e-sic': {
+      id: '/e-sic'
+      path: '/e-sic'
+      fullPath: '/e-sic'
+      preLoaderRoute: typeof ESicRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contato': {
@@ -1226,7 +1306,11 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRoute,
   ContatoRoute: ContatoRoute,
+  ESicRoute: ESicRoute,
+  LgpdRoute: LgpdRoute,
+  MapaDoSiteRoute: MapaDoSiteRoute,
   NoticiasRoute: NoticiasRoute,
+  PerguntasFrequentesRoute: PerguntasFrequentesRoute,
   ProjetosRoute: ProjetosRoute,
   SessoesRoute: SessoesRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
@@ -1241,13 +1325,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
