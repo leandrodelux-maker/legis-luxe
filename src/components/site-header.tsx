@@ -67,7 +67,7 @@ export function SiteHeader() {
       <div className="bg-primary-deep text-white text-xs">
         <div className="container-page flex h-10 items-center justify-between gap-4">
           <div className="hidden md:flex items-center gap-5">
-            <Link to="/contato" className="inline-flex items-center gap-1.5 hover:text-gold transition-colors">
+            <Link to="/mapa-do-site" className="inline-flex items-center gap-1.5 hover:text-gold transition-colors">
               <Map className="h-3.5 w-3.5" /> Mapa do Site
             </Link>
             <span className="opacity-30">|</span>
