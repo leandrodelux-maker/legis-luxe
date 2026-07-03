@@ -207,10 +207,10 @@ export function SiteHeader() {
 
               </button>
               <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all absolute right-0 top-full min-w-[220px] bg-white text-slate-700 shadow-xl rounded-md border border-slate-100 py-2 z-50">
-                <Link to="/contato" className="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-primary">e-SIC</Link>
+                <Link to="/e-sic" className="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-primary">e-SIC</Link>
                 <Link to="/contato" className="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-primary">Ouvidoria</Link>
-                <Link to="/contato" className="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-primary">Perguntas Frequentes</Link>
-                <Link to="/contato" className="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-primary">LGPD</Link>
+                <Link to="/perguntas-frequentes" className="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-primary">Perguntas Frequentes</Link>
+                <Link to="/lgpd" className="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-primary">LGPD</Link>
               </div>
             </div>
           </div>
