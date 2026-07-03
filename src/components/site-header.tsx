@@ -67,7 +67,7 @@ export function SiteHeader() {
       <div className="bg-primary-deep text-white text-xs">
         <div className="container-page flex h-10 items-center justify-between gap-4">
           <div className="hidden md:flex items-center gap-5">
-            <Link to="/contato" className="inline-flex items-center gap-1.5 hover:text-gold transition-colors">
+            <Link to="/mapa-do-site" className="inline-flex items-center gap-1.5 hover:text-gold transition-colors">
               <Map className="h-3.5 w-3.5" /> Mapa do Site
             </Link>
             <span className="opacity-30">|</span>
@@ -207,10 +207,10 @@ export function SiteHeader() {
 
               </button>
               <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all absolute right-0 top-full min-w-[220px] bg-white text-slate-700 shadow-xl rounded-md border border-slate-100 py-2 z-50">
-                <Link to="/contato" className="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-primary">e-SIC</Link>
+                <Link to="/e-sic" className="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-primary">e-SIC</Link>
                 <Link to="/contato" className="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-primary">Ouvidoria</Link>
-                <Link to="/contato" className="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-primary">Perguntas Frequentes</Link>
-                <Link to="/contato" className="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-primary">LGPD</Link>
+                <Link to="/perguntas-frequentes" className="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-primary">Perguntas Frequentes</Link>
+                <Link to="/lgpd" className="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-primary">LGPD</Link>
               </div>
             </div>
           </div>
