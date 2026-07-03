@@ -75,6 +75,7 @@ export function SiteFooter() {
             <li><Link to="/sessoes" className="hover:text-gold transition-colors">Sessões e Pautas</Link></li>
             <li><Link to="/noticias" className="hover:text-gold transition-colors">Notícias</Link></li>
             <li><Link to="/contato" className="hover:text-gold transition-colors">Ouvidoria</Link></li>
+            <li><Link to="/perguntas-frequentes" className="hover:text-gold transition-colors">Perguntas Frequentes</Link></li>
           </ul>
         </div>
 
@@ -84,9 +85,9 @@ export function SiteFooter() {
           </h3>
           <ul className="mt-4 space-y-2 text-sm text-primary-foreground/80">
             <li><Link to="/transparencia-portal" className="hover:text-gold transition-colors">Portal da Transparência</Link></li>
-            <li><a href="#" className="hover:text-gold transition-colors">Lei de Acesso à Informação</a></li>
-            <li><a href="#" className="hover:text-gold transition-colors">Licitações e Contratos</a></li>
-            <li><a href="#" className="hover:text-gold transition-colors">Folha de Pagamento</a></li>
+            <li><Link to="/e-sic" className="hover:text-gold transition-colors">e-SIC — Acesso à Informação</Link></li>
+            <li><Link to="/lgpd" className="hover:text-gold transition-colors">LGPD</Link></li>
+            <li><Link to="/mapa-do-site" className="hover:text-gold transition-colors">Mapa do Site</Link></li>
           </ul>
         </div>
 
@@ -115,9 +116,9 @@ export function SiteFooter() {
         <div className="container-page py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-primary-foreground/70">
           <p>© {new Date().getFullYear()} Câmara Municipal · Todos os direitos reservados</p>
           <div className="flex items-center gap-5">
-            <a href="#" className="hover:text-gold">Política de Privacidade</a>
-            <a href="#" className="hover:text-gold">LGPD</a>
-            <a href="#" className="hover:text-gold">Acessibilidade</a>
+            <Link to="/lgpd" className="hover:text-gold">LGPD</Link>
+            <Link to="/perguntas-frequentes" className="hover:text-gold">FAQ</Link>
+            <Link to="/mapa-do-site" className="hover:text-gold">Mapa do Site</Link>
           </div>
         </div>
       </div>
