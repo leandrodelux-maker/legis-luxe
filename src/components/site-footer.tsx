@@ -111,10 +111,13 @@ export function SiteFooter() {
         <div className="container-page py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-primary-foreground/70">
           <p>© {new Date().getFullYear()} Câmara Municipal · Todos os direitos reservados</p>
           <div className="flex items-center gap-5">
-            <Link to="/lgpd" className="hover:text-gold">LGPD</Link>
-            <Link to="/perguntas-frequentes" className="hover:text-gold">FAQ</Link>
-            <Link to="/mapa-do-site" className="hover:text-gold">Mapa do Site</Link>
+            {FOOTER_LEGAL_LINKS.map((l) => (
+              <Link key={l.to} to={l.to} className="hover:text-gold">
+                {l.label}
+              </Link>
+            ))}
           </div>
+
         </div>
       </div>
     </footer>
