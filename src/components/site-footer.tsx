@@ -3,6 +3,8 @@ import { Landmark, Mail, MapPin, Phone, MessageSquare as FacebookIcon, Camera as
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { FOOTER_COLUMNS, FOOTER_LEGAL_LINKS } from "@/lib/site-links";
+
 
 type SiteSettings = {
   footer_logo_url: string | null;
