@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import radarLogo from "@/assets/radar-transparencia.png.asset.json";
+import { ROUTES, INFO_ACCESS_LINKS } from "@/lib/site-links";
 
 type SiteSettings = {
   contact_phone: string | null;
@@ -29,12 +30,12 @@ type SiteSettings = {
 };
 
 const mainNav = [
-  { to: "/", label: "INÍCIO" },
-  { to: "/vereadores", label: "VEREADORES" },
-  { to: "/sessoes", label: "SESSÕES" },
-  { to: "/projetos", label: "FLUXO LEGISLATIVO" },
-  { to: "/noticias", label: "NOTÍCIAS" },
-  { to: "/contato", label: "CONTATO" },
+  { to: ROUTES.home, label: "INÍCIO" },
+  { to: ROUTES.vereadores, label: "VEREADORES" },
+  { to: ROUTES.sessoes, label: "SESSÕES" },
+  { to: ROUTES.projetos, label: "FLUXO LEGISLATIVO" },
+  { to: ROUTES.noticias, label: "NOTÍCIAS" },
+  { to: ROUTES.contato, label: "CONTATO" },
 ] as const;
 
 export function SiteHeader() {
@@ -67,7 +68,7 @@ export function SiteHeader() {
       <div className="bg-primary-deep text-white text-xs">
         <div className="container-page flex h-10 items-center justify-between gap-4">
           <div className="hidden md:flex items-center gap-5">
-            <Link to="/mapa-do-site" className="inline-flex items-center gap-1.5 hover:text-gold transition-colors">
+            <Link to={ROUTES.mapaDoSite} className="inline-flex items-center gap-1.5 hover:text-gold transition-colors">
               <Map className="h-3.5 w-3.5" /> Mapa do Site
             </Link>
             <span className="opacity-30">|</span>
@@ -151,7 +152,7 @@ export function SiteHeader() {
               <span className="hidden xl:inline">Radar da Transparência</span>
             </a>
             <Link
-              to="/transparencia-portal"
+              to={ROUTES.transparencia}
               className="inline-flex items-center gap-2 h-[60px] px-5 rounded-xl bg-primary hover:bg-primary-deep text-white font-semibold text-sm shadow-sm transition-colors whitespace-nowrap"
             >
               <Info className="h-4 w-4" /> Acesso a Transparência
@@ -192,7 +193,7 @@ export function SiteHeader() {
           </ul>
           <div className="flex items-center gap-1 text-white/90 shrink-0">
             <Link
-              to="/transparencia-portal"
+              to={ROUTES.transparencia}
               className="inline-flex items-center gap-1.5 px-3 py-4 text-[13px] font-semibold tracking-wide hover:bg-white/5 hover:text-white transition-colors uppercase whitespace-nowrap"
             >
               <Info className="h-4 w-4" /> Acesso a Transparência
@@ -207,10 +208,11 @@ export function SiteHeader() {
 
               </button>
               <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all absolute right-0 top-full min-w-[220px] bg-white text-slate-700 shadow-xl rounded-md border border-slate-100 py-2 z-50">
-                <Link to="/e-sic" className="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-primary">e-SIC</Link>
-                <Link to="/contato" className="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-primary">Ouvidoria</Link>
-                <Link to="/perguntas-frequentes" className="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-primary">Perguntas Frequentes</Link>
-                <Link to="/lgpd" className="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-primary">LGPD</Link>
+                {INFO_ACCESS_LINKS.map((l) => (
+                  <Link key={l.to} to={l.to} className="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-primary">
+                    {l.label}
+                  </Link>
+                ))}
               </div>
             </div>
           </div>
@@ -236,7 +238,7 @@ export function SiteHeader() {
             ))}
             <li className="pt-3 mt-2 border-t border-white/10 flex gap-2">
               <Link
-                to="/transparencia-portal"
+                to={ROUTES.transparencia}
                 onClick={() => setOpen(false)}
                 className="flex-1 inline-flex items-center justify-center gap-2 h-[52px] px-4 rounded-xl bg-emerald-600 text-white font-semibold text-sm"
               >
