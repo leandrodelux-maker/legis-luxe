@@ -1,5 +1,6 @@
 // Central registry of public site sections. New pages should be added here
-// so that they appear automatically no Mapa do Site, no sitemap.xml e no rodapé.
+// so that they appear automatically no Mapa do Site, no sitemap.xml, no rodapé
+// e nos menus do cabeçalho.
 
 export type SiteLink = {
   to: string;
@@ -12,6 +13,36 @@ export type SiteSection = {
   title: string;
   links: SiteLink[];
 };
+
+/**
+ * Fonte única de verdade das rotas públicas.
+ * Use SEMPRE ROUTES.x em headers, rodapé, sidebars e acessos rápidos —
+ * nunca strings literais — para que renomear uma rota atualize tudo.
+ */
+export const ROUTES = {
+  home: "/",
+  vereadores: "/vereadores",
+  vereadoresRanking: "/vereadores/ranking",
+  sessoes: "/sessoes",
+  sessoesAoVivo: "/sessoes/ao-vivo",
+  noticias: "/noticias",
+  projetos: "/projetos",
+  transparencia: "/transparencia-portal",
+  contato: "/contato",
+  esic: "/e-sic",
+  faq: "/perguntas-frequentes",
+  lgpd: "/lgpd",
+  mapaDoSite: "/mapa-do-site",
+} as const;
+
+/** Links do menu "Acesso à Informação" (cabeçalho). */
+export const INFO_ACCESS_LINKS: SiteLink[] = [
+  { to: ROUTES.esic, label: "e-SIC" },
+  { to: ROUTES.contato, label: "Ouvidoria" },
+  { to: ROUTES.faq, label: "Perguntas Frequentes" },
+  { to: ROUTES.lgpd, label: "LGPD" },
+];
+
 
 export const SITE_SECTIONS: SiteSection[] = [
   {
