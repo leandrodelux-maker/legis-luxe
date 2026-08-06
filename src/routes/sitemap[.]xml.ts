@@ -20,6 +20,7 @@ const CHANGEFREQ: Record<string, "daily" | "weekly" | "monthly"> = {
   "/transparencia-portal": "weekly",
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
