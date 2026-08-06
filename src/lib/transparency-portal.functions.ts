@@ -243,6 +243,8 @@ function absolutePortalUrl(base: string, route: string) {
 async function fetchPortalJson(url: string, token?: string, init?: RequestInit) {
   const res = await fetch(url, {
     ...init,
+    redirect: "error",
+    signal: AbortSignal.timeout(10_000),
     headers: {
       Accept: "application/json, text/plain, */*",
       "User-Agent": "Mozilla/5.0 Lovable",
