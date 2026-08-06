@@ -114,3 +114,55 @@ export const FOOTER_LEGAL_LINKS: SiteLink[] = [
 
 // Achatado (útil para sitemap.xml e buscas).
 export const ALL_SITE_LINKS: SiteLink[] = SITE_SECTIONS.flatMap((s) => s.links);
+
+/** Rótulo canônico por rota (derivado de todas as fontes de links). */
+export const ROUTE_LABELS: Record<string, string> = Object.fromEntries(
+  [
+    ...ALL_SITE_LINKS,
+    ...INFO_ACCESS_LINKS,
+    ...FOOTER_COLUMNS.flatMap((c) => c.links),
+  ].map((l) => [l.to, l.label]),
+);
+
+/** Rótulos extra para segmentos que não são páginas próprias. */
+const SEGMENT_LABELS: Record<string, string> = {
+  vereadores: "Vereadores",
+  sessoes: "Sessões",
+  noticias: "Notícias",
+  projetos: "Projetos de Lei",
+  ranking: "Ranking",
+  "ao-vivo": "Ao Vivo",
+  transparencia: "Transparência",
+  "transparencia-portal": "Portal da Transparência",
+  "transparencia-dados": "Dados da Transparência",
+};
+
+function humanize(segment: string) {
+  return decodeURIComponent(segment)
+    .replace(/-/g, " ")
+    .replace(/\b\p{L}/gu, (c) => c.toUpperCase());
+}
+
+export type Crumb = { to: string; label: string };
+
+/**
+ * Constrói a trilha de navegação a partir do pathname, usando ROUTES /
+ * SITE_SECTIONS como fonte dos rótulos. Retorna [] na home.
+ */
+export function buildBreadcrumbs(pathname: string): Crumb[] {
+  const clean = pathname.replace(/\/+$/, "");
+  if (!clean || clean === ROUTES.home) return [];
+
+  const segments = clean.split("/").filter(Boolean);
+  const crumbs: Crumb[] = [{ to: ROUTES.home, label: "Início" }];
+
+  let acc = "";
+  for (const segment of segments) {
+    acc += `/${segment}`;
+    crumbs.push({
+      to: acc,
+      label: ROUTE_LABELS[acc] ?? SEGMENT_LABELS[segment] ?? humanize(segment),
+    });
+  }
+  return crumbs;
+}
