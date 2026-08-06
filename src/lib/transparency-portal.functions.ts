@@ -293,14 +293,53 @@ async function fetchDataset(base: string, token: string, year: number, definitio
   }
 }
 
+const BLOCKED_HOST = /^(localhost$|127\.|10\.|0\.|169\.254\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|\[?::1\]?$|.*\.internal$|.*\.local$|metadata)/i;
+
+function assertSafePortalBase(raw: string): string {
+  const url = new URL(raw.trim());
+  if (url.protocol !== "https:") throw new Error("Portal inválido");
+  if (BLOCKED_HOST.test(url.hostname)) throw new Error("Portal inválido");
+  return `${url.origin}${url.pathname}`.replace(/\/+$/, "");
+}
+
+async function resolveConfiguredPortalBase(): Promise<string> {
+  const { createClient } = await import("@supabase/supabase-js");
+  const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
+  const supabase = createClient(process.env["SUPABASE_URL"]!, key, {
+    auth: { persistSession: false },
+    global: {
+      fetch: (input, init) => {
+        const h = new Headers(init?.headers);
+        if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`) h.delete("Authorization");
+        h.set("apikey", key);
+        return fetch(input, { ...init, headers: h });
+      },
+    },
+  });
+  const { data } = await supabase
+    .from("transparency_settings")
+    .select("portal_url, portal_base_url")
+    .eq("is_active", true)
+    .limit(1)
+    .maybeSingle();
+  const configured = (data as { portal_url?: string; portal_base_url?: string } | null)?.portal_url
+    ?? (data as { portal_base_url?: string } | null)?.portal_base_url;
+  if (!configured) throw new Error("Portal da transparência não configurado");
+  return assertSafePortalBase(configured);
+}
+
 export const getPortalData = createServerFn({ method: "GET" })
-  .inputValidator((d: { baseUrl: string }) => {
-    if (!d?.baseUrl || typeof d.baseUrl !== "string") throw new Error("baseUrl é obrigatório");
-    return d;
-  })
-  .handler(async ({ data }): Promise<PortalData> => {
-    const base = data.baseUrl.trim().replace(/\/+$/, "");
+  .handler(async (): Promise<PortalData> => {
+    // SSRF hardening: the outbound target is resolved server-side from the
+    // admin-configured transparency settings; callers cannot supply a URL.
+    let base: string;
+    try {
+      base = await resolveConfiguredPortalBase();
+    } catch (e) {
+      return { ok: false, menus: [], datasets: [], portalUrl: "", error: e instanceof Error ? e.message : "Portal indisponível" };
+    }
     const fallback: PortalData = { ok: false, menus: [], datasets: [], portalUrl: base + "/" };
+
     try {
       const json: any = await fetchPortalJson(`${base}/api/configuracao/carregamento-inicial`);
       const currentYear = Number(json.receitas?.ano || json.despesas?.ano || new Date().getFullYear());
