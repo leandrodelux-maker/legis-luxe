@@ -47,8 +47,8 @@
     "@supabase/supabase-js": "^2.108.0",
     "@tailwindcss/vite": "^4.2.1",
     "@tanstack/react-query": "^5.83.0",
-    "@tanstack/react-router": "^1.170.21",
-    "@tanstack/react-start": "^1.168.38",
+    "@tanstack/react-router": "^1.170.20",
+    "@tanstack/react-start": "^1.168.34",
     "@tanstack/router-plugin": "^1.168.25",
     "@tiptap/extension-image": "^3.26.0",
     "@tiptap/extension-link": "^3.26.0",
@@ -98,5 +98,8 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",
     "vite": "^7.3.1"
+  },
+  "overrides": {
+    "@tanstack/router-core": "1.171.15"
   }
 }
