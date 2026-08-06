@@ -9,135 +9,70 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TransparenciaPortalRouteImport } from './routes/transparencia-portal'
-import { Route as TransparenciaDadosRouteImport } from './routes/transparencia-dados'
-import { Route as TransparenciaAtivaRouteImport } from './routes/transparencia-ativa'
-import { Route as TransparenciaRouteImport } from './routes/transparencia'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as SessoesRouteImport } from './routes/sessoes'
-import { Route as ProjetosRouteImport } from './routes/projetos'
-import { Route as PerguntasFrequentesRouteImport } from './routes/perguntas-frequentes'
-import { Route as NoticiasRouteImport } from './routes/noticias'
-import { Route as MapaDoSiteRouteImport } from './routes/mapa-do-site'
-import { Route as LgpdRouteImport } from './routes/lgpd'
-import { Route as ESicRouteImport } from './routes/e-sic'
-import { Route as ContatoRouteImport } from './routes/contato'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as VereadoresIndexRouteImport } from './routes/vereadores.index'
-import { Route as SessoesIndexRouteImport } from './routes/sessoes/index'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ContatoRouteImport } from './routes/contato'
+import { Route as ESicRouteImport } from './routes/e-sic'
+import { Route as LgpdRouteImport } from './routes/lgpd'
+import { Route as MapaDoSiteRouteImport } from './routes/mapa-do-site'
+import { Route as NoticiasRouteImport } from './routes/noticias'
+import { Route as PerguntasFrequentesRouteImport } from './routes/perguntas-frequentes'
+import { Route as ProjetosRouteImport } from './routes/projetos'
+import { Route as SessoesRouteImport } from './routes/sessoes'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as TransparenciaRouteImport } from './routes/transparencia'
+import { Route as TransparenciaAtivaRouteImport } from './routes/transparencia-ativa'
+import { Route as TransparenciaDadosRouteImport } from './routes/transparencia-dados'
+import { Route as TransparenciaPortalRouteImport } from './routes/transparencia-portal'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
-import { Route as VereadoresRankingRouteImport } from './routes/vereadores.ranking'
-import { Route as VereadoresSlugRouteImport } from './routes/vereadores.$slug'
-import { Route as SessoesAoVivoRouteImport } from './routes/sessoes/ao-vivo'
-import { Route as AdminTransparenciaLinksRouteImport } from './routes/admin/transparencia-links'
-import { Route as AdminTransparenciaAtivaRouteImport } from './routes/admin/transparencia-ativa'
-import { Route as AdminMesaDiretoraRouteImport } from './routes/admin/mesa-diretora'
-import { Route as AdminExecutivoRouteImport } from './routes/admin/executivo'
-import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
 import { Route as AdminAuditoriaRouteImport } from './routes/admin/auditoria'
-import { Route as AdminVereadoresIndexRouteImport } from './routes/admin/vereadores/index'
-import { Route as AdminTransparenciaIndexRouteImport } from './routes/admin/transparencia/index'
-import { Route as AdminSessoesIndexRouteImport } from './routes/admin/sessoes/index'
-import { Route as AdminProjetosIndexRouteImport } from './routes/admin/projetos/index'
-import { Route as AdminConfiguracoesIndexRouteImport } from './routes/admin/configuracoes/index'
-import { Route as AdminConfiguracoesSiteIndexRouteImport } from './routes/admin/configuracoes-site/index'
-import { Route as AdminConfigIndexRouteImport } from './routes/admin/config/index'
-import { Route as AdminComunicacaoIndexRouteImport } from './routes/admin/comunicacao/index'
+import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
+import { Route as AdminExecutivoRouteImport } from './routes/admin/executivo'
+import { Route as AdminMesaDiretoraRouteImport } from './routes/admin/mesa-diretora'
+import { Route as AdminTransparenciaAtivaRouteImport } from './routes/admin/transparencia-ativa'
+import { Route as AdminTransparenciaLinksRouteImport } from './routes/admin/transparencia-links'
+import { Route as SessoesIndexRouteImport } from './routes/sessoes/index'
+import { Route as SessoesAoVivoRouteImport } from './routes/sessoes/ao-vivo'
+import { Route as VereadoresIndexRouteImport } from './routes/vereadores.index'
+import { Route as VereadoresSlugRouteImport } from './routes/vereadores.$slug'
+import { Route as VereadoresRankingRouteImport } from './routes/vereadores.ranking'
 import { Route as AdminAcessoRapidoIndexRouteImport } from './routes/admin/acesso-rapido/index'
-import { Route as AdminVereadoresMandatosRouteImport } from './routes/admin/vereadores/mandatos'
-import { Route as AdminVereadoresGaleriaRouteImport } from './routes/admin/vereadores/galeria'
-import { Route as AdminConfiguracoesSeoRouteImport } from './routes/admin/configuracoes/seo'
-import { Route as AdminConfiguracoesMenuRouteImport } from './routes/admin/configuracoes/menu'
-import { Route as AdminConfiguracoesLgpdRouteImport } from './routes/admin/configuracoes/lgpd'
-import { Route as AdminConfiguracoesIdentidadeRouteImport } from './routes/admin/configuracoes/identidade'
-import { Route as AdminConfiguracoesHomeRouteImport } from './routes/admin/configuracoes/home'
-import { Route as AdminConfiguracoesGeralRouteImport } from './routes/admin/configuracoes/geral'
-import { Route as AdminComunicacaoNovoRouteImport } from './routes/admin/comunicacao/novo'
-import { Route as AdminCmsSessoesExtrasRouteImport } from './routes/admin/cms/sessoes-extras'
-import { Route as AdminCmsPrestacaoContasRouteImport } from './routes/admin/cms/prestacao-contas'
-import { Route as AdminCmsPopupsRouteImport } from './routes/admin/cms/popups'
-import { Route as AdminCmsPaginasRouteImport } from './routes/admin/cms/paginas'
-import { Route as AdminCmsOuvidoriaRouteImport } from './routes/admin/cms/ouvidoria'
-import { Route as AdminCmsLicitacoesRouteImport } from './routes/admin/cms/licitacoes'
-import { Route as AdminCmsGaleriaRouteImport } from './routes/admin/cms/galeria'
-import { Route as AdminCmsFolhaRouteImport } from './routes/admin/cms/folha'
-import { Route as AdminCmsEsicRouteImport } from './routes/admin/cms/esic'
-import { Route as AdminCmsDiarioOficialRouteImport } from './routes/admin/cms/diario-oficial'
-import { Route as AdminCmsContratosRouteImport } from './routes/admin/cms/contratos'
-import { Route as AdminCmsCategoriasRouteImport } from './routes/admin/cms/categorias'
 import { Route as AdminCmsBannersRouteImport } from './routes/admin/cms/banners'
+import { Route as AdminCmsCategoriasRouteImport } from './routes/admin/cms/categorias'
+import { Route as AdminCmsContratosRouteImport } from './routes/admin/cms/contratos'
+import { Route as AdminCmsDiarioOficialRouteImport } from './routes/admin/cms/diario-oficial'
+import { Route as AdminCmsEsicRouteImport } from './routes/admin/cms/esic'
+import { Route as AdminCmsFolhaRouteImport } from './routes/admin/cms/folha'
+import { Route as AdminCmsGaleriaRouteImport } from './routes/admin/cms/galeria'
+import { Route as AdminCmsLicitacoesRouteImport } from './routes/admin/cms/licitacoes'
+import { Route as AdminCmsOuvidoriaRouteImport } from './routes/admin/cms/ouvidoria'
+import { Route as AdminCmsPaginasRouteImport } from './routes/admin/cms/paginas'
+import { Route as AdminCmsPopupsRouteImport } from './routes/admin/cms/popups'
+import { Route as AdminCmsPrestacaoContasRouteImport } from './routes/admin/cms/prestacao-contas'
+import { Route as AdminCmsSessoesExtrasRouteImport } from './routes/admin/cms/sessoes-extras'
+import { Route as AdminComunicacaoIndexRouteImport } from './routes/admin/comunicacao/index'
+import { Route as AdminComunicacaoNovoRouteImport } from './routes/admin/comunicacao/novo'
+import { Route as AdminConfigIndexRouteImport } from './routes/admin/config/index'
+import { Route as AdminConfiguracoesSiteIndexRouteImport } from './routes/admin/configuracoes-site/index'
+import { Route as AdminConfiguracoesIndexRouteImport } from './routes/admin/configuracoes/index'
+import { Route as AdminConfiguracoesGeralRouteImport } from './routes/admin/configuracoes/geral'
+import { Route as AdminConfiguracoesHomeRouteImport } from './routes/admin/configuracoes/home'
+import { Route as AdminConfiguracoesIdentidadeRouteImport } from './routes/admin/configuracoes/identidade'
+import { Route as AdminConfiguracoesLgpdRouteImport } from './routes/admin/configuracoes/lgpd'
+import { Route as AdminConfiguracoesMenuRouteImport } from './routes/admin/configuracoes/menu'
+import { Route as AdminConfiguracoesSeoRouteImport } from './routes/admin/configuracoes/seo'
+import { Route as AdminProjetosIndexRouteImport } from './routes/admin/projetos/index'
+import { Route as AdminSessoesIndexRouteImport } from './routes/admin/sessoes/index'
+import { Route as AdminTransparenciaIndexRouteImport } from './routes/admin/transparencia/index'
+import { Route as AdminVereadoresIndexRouteImport } from './routes/admin/vereadores/index'
+import { Route as AdminVereadoresGaleriaRouteImport } from './routes/admin/vereadores/galeria'
+import { Route as AdminVereadoresMandatosRouteImport } from './routes/admin/vereadores/mandatos'
 import { Route as AdminCmsPaginasIdRouteImport } from './routes/admin/cms/paginas.$id'
 
-const TransparenciaPortalRoute = TransparenciaPortalRouteImport.update({
-  id: '/transparencia-portal',
-  path: '/transparencia-portal',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TransparenciaDadosRoute = TransparenciaDadosRouteImport.update({
-  id: '/transparencia-dados',
-  path: '/transparencia-dados',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TransparenciaAtivaRoute = TransparenciaAtivaRouteImport.update({
-  id: '/transparencia-ativa',
-  path: '/transparencia-ativa',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TransparenciaRoute = TransparenciaRouteImport.update({
-  id: '/transparencia',
-  path: '/transparencia',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SessoesRoute = SessoesRouteImport.update({
-  id: '/sessoes',
-  path: '/sessoes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProjetosRoute = ProjetosRouteImport.update({
-  id: '/projetos',
-  path: '/projetos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PerguntasFrequentesRoute = PerguntasFrequentesRouteImport.update({
-  id: '/perguntas-frequentes',
-  path: '/perguntas-frequentes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NoticiasRoute = NoticiasRouteImport.update({
-  id: '/noticias',
-  path: '/noticias',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MapaDoSiteRoute = MapaDoSiteRouteImport.update({
-  id: '/mapa-do-site',
-  path: '/mapa-do-site',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LgpdRoute = LgpdRouteImport.update({
-  id: '/lgpd',
-  path: '/lgpd',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ESicRoute = ESicRouteImport.update({
-  id: '/e-sic',
-  path: '/e-sic',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContatoRoute = ContatoRouteImport.update({
-  id: '/contato',
-  path: '/contato',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -145,64 +80,79 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const VereadoresIndexRoute = VereadoresIndexRouteImport.update({
-  id: '/vereadores/',
-  path: '/vereadores/',
+const ContatoRoute = ContatoRouteImport.update({
+  id: '/contato',
+  path: '/contato',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SessoesIndexRoute = SessoesIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => SessoesRoute,
+const ESicRoute = ESicRouteImport.update({
+  id: '/e-sic',
+  path: '/e-sic',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LgpdRoute = LgpdRouteImport.update({
+  id: '/lgpd',
+  path: '/lgpd',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MapaDoSiteRoute = MapaDoSiteRouteImport.update({
+  id: '/mapa-do-site',
+  path: '/mapa-do-site',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NoticiasRoute = NoticiasRouteImport.update({
+  id: '/noticias',
+  path: '/noticias',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PerguntasFrequentesRoute = PerguntasFrequentesRouteImport.update({
+  id: '/perguntas-frequentes',
+  path: '/perguntas-frequentes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjetosRoute = ProjetosRouteImport.update({
+  id: '/projetos',
+  path: '/projetos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SessoesRoute = SessoesRouteImport.update({
+  id: '/sessoes',
+  path: '/sessoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TransparenciaRoute = TransparenciaRouteImport.update({
+  id: '/transparencia',
+  path: '/transparencia',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TransparenciaAtivaRoute = TransparenciaAtivaRouteImport.update({
+  id: '/transparencia-ativa',
+  path: '/transparencia-ativa',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TransparenciaDadosRoute = TransparenciaDadosRouteImport.update({
+  id: '/transparencia-dados',
+  path: '/transparencia-dados',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TransparenciaPortalRoute = TransparenciaPortalRouteImport.update({
+  id: '/transparencia-portal',
+  path: '/transparencia-portal',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const VereadoresRankingRoute = VereadoresRankingRouteImport.update({
-  id: '/vereadores/ranking',
-  path: '/vereadores/ranking',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const VereadoresSlugRoute = VereadoresSlugRouteImport.update({
-  id: '/vereadores/$slug',
-  path: '/vereadores/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SessoesAoVivoRoute = SessoesAoVivoRouteImport.update({
-  id: '/ao-vivo',
-  path: '/ao-vivo',
-  getParentRoute: () => SessoesRoute,
-} as any)
-const AdminTransparenciaLinksRoute = AdminTransparenciaLinksRouteImport.update({
-  id: '/transparencia-links',
-  path: '/transparencia-links',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminTransparenciaAtivaRoute = AdminTransparenciaAtivaRouteImport.update({
-  id: '/transparencia-ativa',
-  path: '/transparencia-ativa',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminMesaDiretoraRoute = AdminMesaDiretoraRouteImport.update({
-  id: '/mesa-diretora',
-  path: '/mesa-diretora',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminExecutivoRoute = AdminExecutivoRouteImport.update({
-  id: '/executivo',
-  path: '/executivo',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminDashboardRoute = AdminDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminAuditoriaRoute = AdminAuditoriaRouteImport.update({
@@ -210,29 +160,139 @@ const AdminAuditoriaRoute = AdminAuditoriaRouteImport.update({
   path: '/auditoria',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminVereadoresIndexRoute = AdminVereadoresIndexRouteImport.update({
+const AdminDashboardRoute = AdminDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminExecutivoRoute = AdminExecutivoRouteImport.update({
+  id: '/executivo',
+  path: '/executivo',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMesaDiretoraRoute = AdminMesaDiretoraRouteImport.update({
+  id: '/mesa-diretora',
+  path: '/mesa-diretora',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTransparenciaAtivaRoute = AdminTransparenciaAtivaRouteImport.update({
+  id: '/transparencia-ativa',
+  path: '/transparencia-ativa',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTransparenciaLinksRoute = AdminTransparenciaLinksRouteImport.update({
+  id: '/transparencia-links',
+  path: '/transparencia-links',
+  getParentRoute: () => AdminRoute,
+} as any)
+const SessoesIndexRoute = SessoesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SessoesRoute,
+} as any)
+const SessoesAoVivoRoute = SessoesAoVivoRouteImport.update({
+  id: '/ao-vivo',
+  path: '/ao-vivo',
+  getParentRoute: () => SessoesRoute,
+} as any)
+const VereadoresIndexRoute = VereadoresIndexRouteImport.update({
   id: '/vereadores/',
   path: '/vereadores/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VereadoresSlugRoute = VereadoresSlugRouteImport.update({
+  id: '/vereadores/$slug',
+  path: '/vereadores/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VereadoresRankingRoute = VereadoresRankingRouteImport.update({
+  id: '/vereadores/ranking',
+  path: '/vereadores/ranking',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminAcessoRapidoIndexRoute = AdminAcessoRapidoIndexRouteImport.update({
+  id: '/acesso-rapido/',
+  path: '/acesso-rapido/',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminTransparenciaIndexRoute = AdminTransparenciaIndexRouteImport.update({
-  id: '/transparencia/',
-  path: '/transparencia/',
+const AdminCmsBannersRoute = AdminCmsBannersRouteImport.update({
+  id: '/cms/banners',
+  path: '/cms/banners',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminSessoesIndexRoute = AdminSessoesIndexRouteImport.update({
-  id: '/sessoes/',
-  path: '/sessoes/',
+const AdminCmsCategoriasRoute = AdminCmsCategoriasRouteImport.update({
+  id: '/cms/categorias',
+  path: '/cms/categorias',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminProjetosIndexRoute = AdminProjetosIndexRouteImport.update({
-  id: '/projetos/',
-  path: '/projetos/',
+const AdminCmsContratosRoute = AdminCmsContratosRouteImport.update({
+  id: '/cms/contratos',
+  path: '/cms/contratos',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminConfiguracoesIndexRoute = AdminConfiguracoesIndexRouteImport.update({
-  id: '/configuracoes/',
-  path: '/configuracoes/',
+const AdminCmsDiarioOficialRoute = AdminCmsDiarioOficialRouteImport.update({
+  id: '/cms/diario-oficial',
+  path: '/cms/diario-oficial',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCmsEsicRoute = AdminCmsEsicRouteImport.update({
+  id: '/cms/esic',
+  path: '/cms/esic',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCmsFolhaRoute = AdminCmsFolhaRouteImport.update({
+  id: '/cms/folha',
+  path: '/cms/folha',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCmsGaleriaRoute = AdminCmsGaleriaRouteImport.update({
+  id: '/cms/galeria',
+  path: '/cms/galeria',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCmsLicitacoesRoute = AdminCmsLicitacoesRouteImport.update({
+  id: '/cms/licitacoes',
+  path: '/cms/licitacoes',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCmsOuvidoriaRoute = AdminCmsOuvidoriaRouteImport.update({
+  id: '/cms/ouvidoria',
+  path: '/cms/ouvidoria',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCmsPaginasRoute = AdminCmsPaginasRouteImport.update({
+  id: '/cms/paginas',
+  path: '/cms/paginas',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCmsPopupsRoute = AdminCmsPopupsRouteImport.update({
+  id: '/cms/popups',
+  path: '/cms/popups',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCmsPrestacaoContasRoute = AdminCmsPrestacaoContasRouteImport.update({
+  id: '/cms/prestacao-contas',
+  path: '/cms/prestacao-contas',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCmsSessoesExtrasRoute = AdminCmsSessoesExtrasRouteImport.update({
+  id: '/cms/sessoes-extras',
+  path: '/cms/sessoes-extras',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminComunicacaoIndexRoute = AdminComunicacaoIndexRouteImport.update({
+  id: '/comunicacao/',
+  path: '/comunicacao/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminComunicacaoNovoRoute = AdminComunicacaoNovoRouteImport.update({
+  id: '/comunicacao/novo',
+  path: '/comunicacao/novo',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminConfigIndexRoute = AdminConfigIndexRouteImport.update({
+  id: '/config/',
+  path: '/config/',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminConfiguracoesSiteIndexRoute =
@@ -241,44 +301,19 @@ const AdminConfiguracoesSiteIndexRoute =
     path: '/configuracoes-site/',
     getParentRoute: () => AdminRoute,
   } as any)
-const AdminConfigIndexRoute = AdminConfigIndexRouteImport.update({
-  id: '/config/',
-  path: '/config/',
+const AdminConfiguracoesIndexRoute = AdminConfiguracoesIndexRouteImport.update({
+  id: '/configuracoes/',
+  path: '/configuracoes/',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminComunicacaoIndexRoute = AdminComunicacaoIndexRouteImport.update({
-  id: '/comunicacao/',
-  path: '/comunicacao/',
+const AdminConfiguracoesGeralRoute = AdminConfiguracoesGeralRouteImport.update({
+  id: '/configuracoes/geral',
+  path: '/configuracoes/geral',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminAcessoRapidoIndexRoute = AdminAcessoRapidoIndexRouteImport.update({
-  id: '/acesso-rapido/',
-  path: '/acesso-rapido/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminVereadoresMandatosRoute = AdminVereadoresMandatosRouteImport.update({
-  id: '/vereadores/mandatos',
-  path: '/vereadores/mandatos',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminVereadoresGaleriaRoute = AdminVereadoresGaleriaRouteImport.update({
-  id: '/vereadores/galeria',
-  path: '/vereadores/galeria',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminConfiguracoesSeoRoute = AdminConfiguracoesSeoRouteImport.update({
-  id: '/configuracoes/seo',
-  path: '/configuracoes/seo',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminConfiguracoesMenuRoute = AdminConfiguracoesMenuRouteImport.update({
-  id: '/configuracoes/menu',
-  path: '/configuracoes/menu',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminConfiguracoesLgpdRoute = AdminConfiguracoesLgpdRouteImport.update({
-  id: '/configuracoes/lgpd',
-  path: '/configuracoes/lgpd',
+const AdminConfiguracoesHomeRoute = AdminConfiguracoesHomeRouteImport.update({
+  id: '/configuracoes/home',
+  path: '/configuracoes/home',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminConfiguracoesIdentidadeRoute =
@@ -287,84 +322,49 @@ const AdminConfiguracoesIdentidadeRoute =
     path: '/configuracoes/identidade',
     getParentRoute: () => AdminRoute,
   } as any)
-const AdminConfiguracoesHomeRoute = AdminConfiguracoesHomeRouteImport.update({
-  id: '/configuracoes/home',
-  path: '/configuracoes/home',
+const AdminConfiguracoesLgpdRoute = AdminConfiguracoesLgpdRouteImport.update({
+  id: '/configuracoes/lgpd',
+  path: '/configuracoes/lgpd',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminConfiguracoesGeralRoute = AdminConfiguracoesGeralRouteImport.update({
-  id: '/configuracoes/geral',
-  path: '/configuracoes/geral',
+const AdminConfiguracoesMenuRoute = AdminConfiguracoesMenuRouteImport.update({
+  id: '/configuracoes/menu',
+  path: '/configuracoes/menu',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminComunicacaoNovoRoute = AdminComunicacaoNovoRouteImport.update({
-  id: '/comunicacao/novo',
-  path: '/comunicacao/novo',
+const AdminConfiguracoesSeoRoute = AdminConfiguracoesSeoRouteImport.update({
+  id: '/configuracoes/seo',
+  path: '/configuracoes/seo',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminCmsSessoesExtrasRoute = AdminCmsSessoesExtrasRouteImport.update({
-  id: '/cms/sessoes-extras',
-  path: '/cms/sessoes-extras',
+const AdminProjetosIndexRoute = AdminProjetosIndexRouteImport.update({
+  id: '/projetos/',
+  path: '/projetos/',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminCmsPrestacaoContasRoute = AdminCmsPrestacaoContasRouteImport.update({
-  id: '/cms/prestacao-contas',
-  path: '/cms/prestacao-contas',
+const AdminSessoesIndexRoute = AdminSessoesIndexRouteImport.update({
+  id: '/sessoes/',
+  path: '/sessoes/',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminCmsPopupsRoute = AdminCmsPopupsRouteImport.update({
-  id: '/cms/popups',
-  path: '/cms/popups',
+const AdminTransparenciaIndexRoute = AdminTransparenciaIndexRouteImport.update({
+  id: '/transparencia/',
+  path: '/transparencia/',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminCmsPaginasRoute = AdminCmsPaginasRouteImport.update({
-  id: '/cms/paginas',
-  path: '/cms/paginas',
+const AdminVereadoresIndexRoute = AdminVereadoresIndexRouteImport.update({
+  id: '/vereadores/',
+  path: '/vereadores/',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminCmsOuvidoriaRoute = AdminCmsOuvidoriaRouteImport.update({
-  id: '/cms/ouvidoria',
-  path: '/cms/ouvidoria',
+const AdminVereadoresGaleriaRoute = AdminVereadoresGaleriaRouteImport.update({
+  id: '/vereadores/galeria',
+  path: '/vereadores/galeria',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminCmsLicitacoesRoute = AdminCmsLicitacoesRouteImport.update({
-  id: '/cms/licitacoes',
-  path: '/cms/licitacoes',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminCmsGaleriaRoute = AdminCmsGaleriaRouteImport.update({
-  id: '/cms/galeria',
-  path: '/cms/galeria',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminCmsFolhaRoute = AdminCmsFolhaRouteImport.update({
-  id: '/cms/folha',
-  path: '/cms/folha',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminCmsEsicRoute = AdminCmsEsicRouteImport.update({
-  id: '/cms/esic',
-  path: '/cms/esic',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminCmsDiarioOficialRoute = AdminCmsDiarioOficialRouteImport.update({
-  id: '/cms/diario-oficial',
-  path: '/cms/diario-oficial',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminCmsContratosRoute = AdminCmsContratosRouteImport.update({
-  id: '/cms/contratos',
-  path: '/cms/contratos',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminCmsCategoriasRoute = AdminCmsCategoriasRouteImport.update({
-  id: '/cms/categorias',
-  path: '/cms/categorias',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminCmsBannersRoute = AdminCmsBannersRouteImport.update({
-  id: '/cms/banners',
-  path: '/cms/banners',
+const AdminVereadoresMandatosRoute = AdminVereadoresMandatosRouteImport.update({
+  id: '/vereadores/mandatos',
+  path: '/vereadores/mandatos',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminCmsPaginasIdRoute = AdminCmsPaginasIdRouteImport.update({
@@ -769,102 +769,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/transparencia-portal': {
-      id: '/transparencia-portal'
-      path: '/transparencia-portal'
-      fullPath: '/transparencia-portal'
-      preLoaderRoute: typeof TransparenciaPortalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/transparencia-dados': {
-      id: '/transparencia-dados'
-      path: '/transparencia-dados'
-      fullPath: '/transparencia-dados'
-      preLoaderRoute: typeof TransparenciaDadosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/transparencia-ativa': {
-      id: '/transparencia-ativa'
-      path: '/transparencia-ativa'
-      fullPath: '/transparencia-ativa'
-      preLoaderRoute: typeof TransparenciaAtivaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/transparencia': {
-      id: '/transparencia'
-      path: '/transparencia'
-      fullPath: '/transparencia'
-      preLoaderRoute: typeof TransparenciaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sessoes': {
-      id: '/sessoes'
-      path: '/sessoes'
-      fullPath: '/sessoes'
-      preLoaderRoute: typeof SessoesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/projetos': {
-      id: '/projetos'
-      path: '/projetos'
-      fullPath: '/projetos'
-      preLoaderRoute: typeof ProjetosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/perguntas-frequentes': {
-      id: '/perguntas-frequentes'
-      path: '/perguntas-frequentes'
-      fullPath: '/perguntas-frequentes'
-      preLoaderRoute: typeof PerguntasFrequentesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/noticias': {
-      id: '/noticias'
-      path: '/noticias'
-      fullPath: '/noticias'
-      preLoaderRoute: typeof NoticiasRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mapa-do-site': {
-      id: '/mapa-do-site'
-      path: '/mapa-do-site'
-      fullPath: '/mapa-do-site'
-      preLoaderRoute: typeof MapaDoSiteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lgpd': {
-      id: '/lgpd'
-      path: '/lgpd'
-      fullPath: '/lgpd'
-      preLoaderRoute: typeof LgpdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/e-sic': {
-      id: '/e-sic'
-      path: '/e-sic'
-      fullPath: '/e-sic'
-      preLoaderRoute: typeof ESicRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contato': {
-      id: '/contato'
-      path: '/contato'
-      fullPath: '/contato'
-      preLoaderRoute: typeof ContatoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -874,88 +783,109 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/vereadores/': {
-      id: '/vereadores/'
-      path: '/vereadores'
-      fullPath: '/vereadores/'
-      preLoaderRoute: typeof VereadoresIndexRouteImport
+    '/contato': {
+      id: '/contato'
+      path: '/contato'
+      fullPath: '/contato'
+      preLoaderRoute: typeof ContatoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sessoes/': {
-      id: '/sessoes/'
-      path: '/'
-      fullPath: '/sessoes/'
-      preLoaderRoute: typeof SessoesIndexRouteImport
-      parentRoute: typeof SessoesRoute
+    '/e-sic': {
+      id: '/e-sic'
+      path: '/e-sic'
+      fullPath: '/e-sic'
+      preLoaderRoute: typeof ESicRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lgpd': {
+      id: '/lgpd'
+      path: '/lgpd'
+      fullPath: '/lgpd'
+      preLoaderRoute: typeof LgpdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mapa-do-site': {
+      id: '/mapa-do-site'
+      path: '/mapa-do-site'
+      fullPath: '/mapa-do-site'
+      preLoaderRoute: typeof MapaDoSiteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/noticias': {
+      id: '/noticias'
+      path: '/noticias'
+      fullPath: '/noticias'
+      preLoaderRoute: typeof NoticiasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/perguntas-frequentes': {
+      id: '/perguntas-frequentes'
+      path: '/perguntas-frequentes'
+      fullPath: '/perguntas-frequentes'
+      preLoaderRoute: typeof PerguntasFrequentesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projetos': {
+      id: '/projetos'
+      path: '/projetos'
+      fullPath: '/projetos'
+      preLoaderRoute: typeof ProjetosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sessoes': {
+      id: '/sessoes'
+      path: '/sessoes'
+      fullPath: '/sessoes'
+      preLoaderRoute: typeof SessoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/transparencia': {
+      id: '/transparencia'
+      path: '/transparencia'
+      fullPath: '/transparencia'
+      preLoaderRoute: typeof TransparenciaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/transparencia-ativa': {
+      id: '/transparencia-ativa'
+      path: '/transparencia-ativa'
+      fullPath: '/transparencia-ativa'
+      preLoaderRoute: typeof TransparenciaAtivaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/transparencia-dados': {
+      id: '/transparencia-dados'
+      path: '/transparencia-dados'
+      fullPath: '/transparencia-dados'
+      preLoaderRoute: typeof TransparenciaDadosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/transparencia-portal': {
+      id: '/transparencia-portal'
+      path: '/transparencia-portal'
+      fullPath: '/transparencia-portal'
+      preLoaderRoute: typeof TransparenciaPortalRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/': {
       id: '/admin/'
       path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/vereadores/ranking': {
-      id: '/vereadores/ranking'
-      path: '/vereadores/ranking'
-      fullPath: '/vereadores/ranking'
-      preLoaderRoute: typeof VereadoresRankingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/vereadores/$slug': {
-      id: '/vereadores/$slug'
-      path: '/vereadores/$slug'
-      fullPath: '/vereadores/$slug'
-      preLoaderRoute: typeof VereadoresSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sessoes/ao-vivo': {
-      id: '/sessoes/ao-vivo'
-      path: '/ao-vivo'
-      fullPath: '/sessoes/ao-vivo'
-      preLoaderRoute: typeof SessoesAoVivoRouteImport
-      parentRoute: typeof SessoesRoute
-    }
-    '/admin/transparencia-links': {
-      id: '/admin/transparencia-links'
-      path: '/transparencia-links'
-      fullPath: '/admin/transparencia-links'
-      preLoaderRoute: typeof AdminTransparenciaLinksRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/transparencia-ativa': {
-      id: '/admin/transparencia-ativa'
-      path: '/transparencia-ativa'
-      fullPath: '/admin/transparencia-ativa'
-      preLoaderRoute: typeof AdminTransparenciaAtivaRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/mesa-diretora': {
-      id: '/admin/mesa-diretora'
-      path: '/mesa-diretora'
-      fullPath: '/admin/mesa-diretora'
-      preLoaderRoute: typeof AdminMesaDiretoraRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/executivo': {
-      id: '/admin/executivo'
-      path: '/executivo'
-      fullPath: '/admin/executivo'
-      preLoaderRoute: typeof AdminExecutivoRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/dashboard': {
-      id: '/admin/dashboard'
-      path: '/dashboard'
-      fullPath: '/admin/dashboard'
-      preLoaderRoute: typeof AdminDashboardRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/auditoria': {
@@ -965,61 +895,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuditoriaRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/vereadores/': {
-      id: '/admin/vereadores/'
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/executivo': {
+      id: '/admin/executivo'
+      path: '/executivo'
+      fullPath: '/admin/executivo'
+      preLoaderRoute: typeof AdminExecutivoRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/mesa-diretora': {
+      id: '/admin/mesa-diretora'
+      path: '/mesa-diretora'
+      fullPath: '/admin/mesa-diretora'
+      preLoaderRoute: typeof AdminMesaDiretoraRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/transparencia-ativa': {
+      id: '/admin/transparencia-ativa'
+      path: '/transparencia-ativa'
+      fullPath: '/admin/transparencia-ativa'
+      preLoaderRoute: typeof AdminTransparenciaAtivaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/transparencia-links': {
+      id: '/admin/transparencia-links'
+      path: '/transparencia-links'
+      fullPath: '/admin/transparencia-links'
+      preLoaderRoute: typeof AdminTransparenciaLinksRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/sessoes/': {
+      id: '/sessoes/'
+      path: '/'
+      fullPath: '/sessoes/'
+      preLoaderRoute: typeof SessoesIndexRouteImport
+      parentRoute: typeof SessoesRoute
+    }
+    '/sessoes/ao-vivo': {
+      id: '/sessoes/ao-vivo'
+      path: '/ao-vivo'
+      fullPath: '/sessoes/ao-vivo'
+      preLoaderRoute: typeof SessoesAoVivoRouteImport
+      parentRoute: typeof SessoesRoute
+    }
+    '/vereadores/': {
+      id: '/vereadores/'
       path: '/vereadores'
-      fullPath: '/admin/vereadores/'
-      preLoaderRoute: typeof AdminVereadoresIndexRouteImport
-      parentRoute: typeof AdminRoute
+      fullPath: '/vereadores/'
+      preLoaderRoute: typeof VereadoresIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/admin/transparencia/': {
-      id: '/admin/transparencia/'
-      path: '/transparencia'
-      fullPath: '/admin/transparencia/'
-      preLoaderRoute: typeof AdminTransparenciaIndexRouteImport
-      parentRoute: typeof AdminRoute
+    '/vereadores/$slug': {
+      id: '/vereadores/$slug'
+      path: '/vereadores/$slug'
+      fullPath: '/vereadores/$slug'
+      preLoaderRoute: typeof VereadoresSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/admin/sessoes/': {
-      id: '/admin/sessoes/'
-      path: '/sessoes'
-      fullPath: '/admin/sessoes/'
-      preLoaderRoute: typeof AdminSessoesIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/projetos/': {
-      id: '/admin/projetos/'
-      path: '/projetos'
-      fullPath: '/admin/projetos/'
-      preLoaderRoute: typeof AdminProjetosIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/configuracoes/': {
-      id: '/admin/configuracoes/'
-      path: '/configuracoes'
-      fullPath: '/admin/configuracoes/'
-      preLoaderRoute: typeof AdminConfiguracoesIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/configuracoes-site/': {
-      id: '/admin/configuracoes-site/'
-      path: '/configuracoes-site'
-      fullPath: '/admin/configuracoes-site/'
-      preLoaderRoute: typeof AdminConfiguracoesSiteIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/config/': {
-      id: '/admin/config/'
-      path: '/config'
-      fullPath: '/admin/config/'
-      preLoaderRoute: typeof AdminConfigIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/comunicacao/': {
-      id: '/admin/comunicacao/'
-      path: '/comunicacao'
-      fullPath: '/admin/comunicacao/'
-      preLoaderRoute: typeof AdminComunicacaoIndexRouteImport
-      parentRoute: typeof AdminRoute
+    '/vereadores/ranking': {
+      id: '/vereadores/ranking'
+      path: '/vereadores/ranking'
+      fullPath: '/vereadores/ranking'
+      preLoaderRoute: typeof VereadoresRankingRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/acesso-rapido/': {
       id: '/admin/acesso-rapido/'
@@ -1028,144 +972,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAcessoRapidoIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/vereadores/mandatos': {
-      id: '/admin/vereadores/mandatos'
-      path: '/vereadores/mandatos'
-      fullPath: '/admin/vereadores/mandatos'
-      preLoaderRoute: typeof AdminVereadoresMandatosRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/vereadores/galeria': {
-      id: '/admin/vereadores/galeria'
-      path: '/vereadores/galeria'
-      fullPath: '/admin/vereadores/galeria'
-      preLoaderRoute: typeof AdminVereadoresGaleriaRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/configuracoes/seo': {
-      id: '/admin/configuracoes/seo'
-      path: '/configuracoes/seo'
-      fullPath: '/admin/configuracoes/seo'
-      preLoaderRoute: typeof AdminConfiguracoesSeoRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/configuracoes/menu': {
-      id: '/admin/configuracoes/menu'
-      path: '/configuracoes/menu'
-      fullPath: '/admin/configuracoes/menu'
-      preLoaderRoute: typeof AdminConfiguracoesMenuRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/configuracoes/lgpd': {
-      id: '/admin/configuracoes/lgpd'
-      path: '/configuracoes/lgpd'
-      fullPath: '/admin/configuracoes/lgpd'
-      preLoaderRoute: typeof AdminConfiguracoesLgpdRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/configuracoes/identidade': {
-      id: '/admin/configuracoes/identidade'
-      path: '/configuracoes/identidade'
-      fullPath: '/admin/configuracoes/identidade'
-      preLoaderRoute: typeof AdminConfiguracoesIdentidadeRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/configuracoes/home': {
-      id: '/admin/configuracoes/home'
-      path: '/configuracoes/home'
-      fullPath: '/admin/configuracoes/home'
-      preLoaderRoute: typeof AdminConfiguracoesHomeRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/configuracoes/geral': {
-      id: '/admin/configuracoes/geral'
-      path: '/configuracoes/geral'
-      fullPath: '/admin/configuracoes/geral'
-      preLoaderRoute: typeof AdminConfiguracoesGeralRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/comunicacao/novo': {
-      id: '/admin/comunicacao/novo'
-      path: '/comunicacao/novo'
-      fullPath: '/admin/comunicacao/novo'
-      preLoaderRoute: typeof AdminComunicacaoNovoRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/cms/sessoes-extras': {
-      id: '/admin/cms/sessoes-extras'
-      path: '/cms/sessoes-extras'
-      fullPath: '/admin/cms/sessoes-extras'
-      preLoaderRoute: typeof AdminCmsSessoesExtrasRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/cms/prestacao-contas': {
-      id: '/admin/cms/prestacao-contas'
-      path: '/cms/prestacao-contas'
-      fullPath: '/admin/cms/prestacao-contas'
-      preLoaderRoute: typeof AdminCmsPrestacaoContasRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/cms/popups': {
-      id: '/admin/cms/popups'
-      path: '/cms/popups'
-      fullPath: '/admin/cms/popups'
-      preLoaderRoute: typeof AdminCmsPopupsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/cms/paginas': {
-      id: '/admin/cms/paginas'
-      path: '/cms/paginas'
-      fullPath: '/admin/cms/paginas'
-      preLoaderRoute: typeof AdminCmsPaginasRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/cms/ouvidoria': {
-      id: '/admin/cms/ouvidoria'
-      path: '/cms/ouvidoria'
-      fullPath: '/admin/cms/ouvidoria'
-      preLoaderRoute: typeof AdminCmsOuvidoriaRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/cms/licitacoes': {
-      id: '/admin/cms/licitacoes'
-      path: '/cms/licitacoes'
-      fullPath: '/admin/cms/licitacoes'
-      preLoaderRoute: typeof AdminCmsLicitacoesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/cms/galeria': {
-      id: '/admin/cms/galeria'
-      path: '/cms/galeria'
-      fullPath: '/admin/cms/galeria'
-      preLoaderRoute: typeof AdminCmsGaleriaRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/cms/folha': {
-      id: '/admin/cms/folha'
-      path: '/cms/folha'
-      fullPath: '/admin/cms/folha'
-      preLoaderRoute: typeof AdminCmsFolhaRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/cms/esic': {
-      id: '/admin/cms/esic'
-      path: '/cms/esic'
-      fullPath: '/admin/cms/esic'
-      preLoaderRoute: typeof AdminCmsEsicRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/cms/diario-oficial': {
-      id: '/admin/cms/diario-oficial'
-      path: '/cms/diario-oficial'
-      fullPath: '/admin/cms/diario-oficial'
-      preLoaderRoute: typeof AdminCmsDiarioOficialRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/cms/contratos': {
-      id: '/admin/cms/contratos'
-      path: '/cms/contratos'
-      fullPath: '/admin/cms/contratos'
-      preLoaderRoute: typeof AdminCmsContratosRouteImport
+    '/admin/cms/banners': {
+      id: '/admin/cms/banners'
+      path: '/cms/banners'
+      fullPath: '/admin/cms/banners'
+      preLoaderRoute: typeof AdminCmsBannersRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/cms/categorias': {
@@ -1175,11 +986,200 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCmsCategoriasRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/cms/banners': {
-      id: '/admin/cms/banners'
-      path: '/cms/banners'
-      fullPath: '/admin/cms/banners'
-      preLoaderRoute: typeof AdminCmsBannersRouteImport
+    '/admin/cms/contratos': {
+      id: '/admin/cms/contratos'
+      path: '/cms/contratos'
+      fullPath: '/admin/cms/contratos'
+      preLoaderRoute: typeof AdminCmsContratosRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/cms/diario-oficial': {
+      id: '/admin/cms/diario-oficial'
+      path: '/cms/diario-oficial'
+      fullPath: '/admin/cms/diario-oficial'
+      preLoaderRoute: typeof AdminCmsDiarioOficialRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/cms/esic': {
+      id: '/admin/cms/esic'
+      path: '/cms/esic'
+      fullPath: '/admin/cms/esic'
+      preLoaderRoute: typeof AdminCmsEsicRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/cms/folha': {
+      id: '/admin/cms/folha'
+      path: '/cms/folha'
+      fullPath: '/admin/cms/folha'
+      preLoaderRoute: typeof AdminCmsFolhaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/cms/galeria': {
+      id: '/admin/cms/galeria'
+      path: '/cms/galeria'
+      fullPath: '/admin/cms/galeria'
+      preLoaderRoute: typeof AdminCmsGaleriaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/cms/licitacoes': {
+      id: '/admin/cms/licitacoes'
+      path: '/cms/licitacoes'
+      fullPath: '/admin/cms/licitacoes'
+      preLoaderRoute: typeof AdminCmsLicitacoesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/cms/ouvidoria': {
+      id: '/admin/cms/ouvidoria'
+      path: '/cms/ouvidoria'
+      fullPath: '/admin/cms/ouvidoria'
+      preLoaderRoute: typeof AdminCmsOuvidoriaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/cms/paginas': {
+      id: '/admin/cms/paginas'
+      path: '/cms/paginas'
+      fullPath: '/admin/cms/paginas'
+      preLoaderRoute: typeof AdminCmsPaginasRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/cms/popups': {
+      id: '/admin/cms/popups'
+      path: '/cms/popups'
+      fullPath: '/admin/cms/popups'
+      preLoaderRoute: typeof AdminCmsPopupsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/cms/prestacao-contas': {
+      id: '/admin/cms/prestacao-contas'
+      path: '/cms/prestacao-contas'
+      fullPath: '/admin/cms/prestacao-contas'
+      preLoaderRoute: typeof AdminCmsPrestacaoContasRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/cms/sessoes-extras': {
+      id: '/admin/cms/sessoes-extras'
+      path: '/cms/sessoes-extras'
+      fullPath: '/admin/cms/sessoes-extras'
+      preLoaderRoute: typeof AdminCmsSessoesExtrasRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/comunicacao/': {
+      id: '/admin/comunicacao/'
+      path: '/comunicacao'
+      fullPath: '/admin/comunicacao/'
+      preLoaderRoute: typeof AdminComunicacaoIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/comunicacao/novo': {
+      id: '/admin/comunicacao/novo'
+      path: '/comunicacao/novo'
+      fullPath: '/admin/comunicacao/novo'
+      preLoaderRoute: typeof AdminComunicacaoNovoRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/config/': {
+      id: '/admin/config/'
+      path: '/config'
+      fullPath: '/admin/config/'
+      preLoaderRoute: typeof AdminConfigIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/configuracoes-site/': {
+      id: '/admin/configuracoes-site/'
+      path: '/configuracoes-site'
+      fullPath: '/admin/configuracoes-site/'
+      preLoaderRoute: typeof AdminConfiguracoesSiteIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/configuracoes/': {
+      id: '/admin/configuracoes/'
+      path: '/configuracoes'
+      fullPath: '/admin/configuracoes/'
+      preLoaderRoute: typeof AdminConfiguracoesIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/configuracoes/geral': {
+      id: '/admin/configuracoes/geral'
+      path: '/configuracoes/geral'
+      fullPath: '/admin/configuracoes/geral'
+      preLoaderRoute: typeof AdminConfiguracoesGeralRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/configuracoes/home': {
+      id: '/admin/configuracoes/home'
+      path: '/configuracoes/home'
+      fullPath: '/admin/configuracoes/home'
+      preLoaderRoute: typeof AdminConfiguracoesHomeRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/configuracoes/identidade': {
+      id: '/admin/configuracoes/identidade'
+      path: '/configuracoes/identidade'
+      fullPath: '/admin/configuracoes/identidade'
+      preLoaderRoute: typeof AdminConfiguracoesIdentidadeRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/configuracoes/lgpd': {
+      id: '/admin/configuracoes/lgpd'
+      path: '/configuracoes/lgpd'
+      fullPath: '/admin/configuracoes/lgpd'
+      preLoaderRoute: typeof AdminConfiguracoesLgpdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/configuracoes/menu': {
+      id: '/admin/configuracoes/menu'
+      path: '/configuracoes/menu'
+      fullPath: '/admin/configuracoes/menu'
+      preLoaderRoute: typeof AdminConfiguracoesMenuRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/configuracoes/seo': {
+      id: '/admin/configuracoes/seo'
+      path: '/configuracoes/seo'
+      fullPath: '/admin/configuracoes/seo'
+      preLoaderRoute: typeof AdminConfiguracoesSeoRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/projetos/': {
+      id: '/admin/projetos/'
+      path: '/projetos'
+      fullPath: '/admin/projetos/'
+      preLoaderRoute: typeof AdminProjetosIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/sessoes/': {
+      id: '/admin/sessoes/'
+      path: '/sessoes'
+      fullPath: '/admin/sessoes/'
+      preLoaderRoute: typeof AdminSessoesIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/transparencia/': {
+      id: '/admin/transparencia/'
+      path: '/transparencia'
+      fullPath: '/admin/transparencia/'
+      preLoaderRoute: typeof AdminTransparenciaIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/vereadores/': {
+      id: '/admin/vereadores/'
+      path: '/vereadores'
+      fullPath: '/admin/vereadores/'
+      preLoaderRoute: typeof AdminVereadoresIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/vereadores/galeria': {
+      id: '/admin/vereadores/galeria'
+      path: '/vereadores/galeria'
+      fullPath: '/admin/vereadores/galeria'
+      preLoaderRoute: typeof AdminVereadoresGaleriaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/vereadores/mandatos': {
+      id: '/admin/vereadores/mandatos'
+      path: '/vereadores/mandatos'
+      fullPath: '/admin/vereadores/mandatos'
+      preLoaderRoute: typeof AdminVereadoresMandatosRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/cms/paginas/$id': {

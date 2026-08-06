@@ -78,7 +78,7 @@ type Vereador = Tables<"vereadores">;
 type MesaMember = {
   id: string;
   cargo: string;
-  vereadores: { id: string; nome: string; partido: string | null; foto_url: string | null; cargo: string | null };
+  vereadores: { id: string; slug?: string | null; nome: string; partido: string | null; foto_url: string | null; cargo: string | null };
 };
 type DbSessao = {
   id: string;
@@ -141,7 +141,7 @@ function HomePage() {
 
     supabase
       .from("mesa_diretora")
-      .select("id, cargo, vereadores(id, nome, partido, foto_url, cargo)")
+      .select("id, cargo, vereadores(id, slug, nome, partido, foto_url, cargo)")
       .eq("ativo", true)
       .order("ordem", { ascending: true })
       .then(({ data }) => {
@@ -336,7 +336,7 @@ function HomePage() {
                         </p>
                       </div>
                       <Button asChild variant="outline" size="sm" className="shrink-0">
-                        <Link to={`/vereadores/${m.vereadores.id}`}>
+                        <Link to="/vereadores/$slug" params={{ slug: m.vereadores.slug || m.vereadores.id }}>
                           Ver perfil <ArrowRight className="ml-1 h-3 w-3" />
                         </Link>
                       </Button>
@@ -631,7 +631,7 @@ function VereadorCard({ v, delay }: { v: Vereador; delay: number }) {
 
       <div className="p-4">
         <Button asChild variant="outline" className="w-full group/btn">
-          <Link to={`/vereadores/${v.id}`}>
+          <Link to="/vereadores/$slug" params={{ slug: v.slug || v.id }}>
             Ver perfil
             <ArrowRight className="ml-2 h-3.5 w-3.5 group-hover/btn:translate-x-1 transition-transform" />
           </Link>

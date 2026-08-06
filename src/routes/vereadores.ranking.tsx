@@ -27,6 +27,7 @@ export const Route = createFileRoute("/vereadores/ranking")({
 
 type Row = {
   id: string;
+  slug?: string | null;
   nome: string;
   partido: string | null;
   foto_url: string | null;
@@ -129,8 +130,8 @@ function RankingPage() {
                         <VereadorAvatar nome={v.nome} foto={v.foto_url} partido={v.partido} size={48} />
                         <div className="flex-1 min-w-0">
                           <Link
-                            to="/vereadores/$id"
-                            params={{ id: v.id }}
+                            to="/vereadores/$slug"
+                            params={{ slug: v.slug || v.id }}
                             className="font-semibold text-slate-900 hover:text-primary block truncate"
                           >
                             {v.nome}
