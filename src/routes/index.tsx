@@ -78,7 +78,7 @@ type Vereador = Tables<"vereadores">;
 type MesaMember = {
   id: string;
   cargo: string;
-  vereadores: { id: string; nome: string; partido: string | null; foto_url: string | null; cargo: string | null };
+  vereadores: { id: string; slug?: string | null; nome: string; partido: string | null; foto_url: string | null; cargo: string | null };
 };
 type DbSessao = {
   id: string;
