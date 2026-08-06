@@ -141,7 +141,7 @@ function HomePage() {
 
     supabase
       .from("mesa_diretora")
-      .select("id, cargo, vereadores(id, nome, partido, foto_url, cargo)")
+      .select("id, cargo, vereadores(id, slug, nome, partido, foto_url, cargo)")
       .eq("ativo", true)
       .order("ordem", { ascending: true })
       .then(({ data }) => {
