@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import type {} from "@tanstack/react-start/server";
+import type {} from "@tanstack/start-client-core/serverRoute";
 import { ALL_SITE_LINKS } from "@/lib/site-links";
 
 const BASE_URL = "";
