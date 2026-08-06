@@ -27,6 +27,7 @@ export const Route = createFileRoute("/vereadores/ranking")({
 
 type Row = {
   id: string;
+  slug?: string | null;
   nome: string;
   partido: string | null;
   foto_url: string | null;
