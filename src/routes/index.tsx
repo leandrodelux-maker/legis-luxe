@@ -336,7 +336,7 @@ function HomePage() {
                         </p>
                       </div>
                       <Button asChild variant="outline" size="sm" className="shrink-0">
-                        <Link to={`/vereadores/${m.vereadores.id}`}>
+                        <Link to="/vereadores/$slug" params={{ slug: m.vereadores.slug || m.vereadores.id }}>
                           Ver perfil <ArrowRight className="ml-1 h-3 w-3" />
                         </Link>
                       </Button>
@@ -631,7 +631,7 @@ function VereadorCard({ v, delay }: { v: Vereador; delay: number }) {
 
       <div className="p-4">
         <Button asChild variant="outline" className="w-full group/btn">
-          <Link to={`/vereadores/${v.id}`}>
+          <Link to="/vereadores/$slug" params={{ slug: v.slug || v.id }}>
             Ver perfil
             <ArrowRight className="ml-2 h-3.5 w-3.5 group-hover/btn:translate-x-1 transition-transform" />
           </Link>
