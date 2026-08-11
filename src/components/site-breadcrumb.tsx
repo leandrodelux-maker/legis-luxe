@@ -25,7 +25,7 @@ export function SiteBreadcrumb() {
   };
 
   return (
-    <div className="bg-primary-deep text-primary-foreground">
+    <div className="border-t border-border/60 bg-background">
       <nav
         aria-label="Trilha de navegação"
         className="container mx-auto flex items-center gap-1.5 overflow-x-auto px-4 py-2.5 text-sm"
