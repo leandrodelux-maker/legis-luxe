@@ -25,7 +25,7 @@ export function SiteBreadcrumb() {
   };
 
   return (
-    <div className="border-b border-border/60 bg-muted/40">
+    <div className="bg-primary-deep text-primary-foreground">
       <nav
         aria-label="Trilha de navegação"
         className="container mx-auto flex items-center gap-1.5 overflow-x-auto px-4 py-2.5 text-sm"
@@ -36,16 +36,16 @@ export function SiteBreadcrumb() {
             return (
               <li key={crumb.to} className="flex items-center gap-1.5">
                 {index > 0 && (
-                  <ChevronRight aria-hidden className="size-3.5 shrink-0 text-muted-foreground/70" />
+                  <ChevronRight aria-hidden className="size-3.5 shrink-0 text-primary-foreground/50" />
                 )}
                 {isLast ? (
-                  <span aria-current="page" className="font-medium text-foreground">
+                  <span aria-current="page" className="font-medium text-gold">
                     {crumb.label}
                   </span>
                 ) : (
                   <Link
                     to={crumb.to}
-                    className="flex items-center gap-1 text-muted-foreground transition-colors hover:text-primary"
+                    className="flex items-center gap-1 text-primary-foreground/75 transition-colors hover:text-gold"
                   >
                     {index === 0 && <Home aria-hidden className="size-3.5" />}
                     {crumb.label}
@@ -56,6 +56,7 @@ export function SiteBreadcrumb() {
           })}
         </ol>
       </nav>
+
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
     </div>
   );
