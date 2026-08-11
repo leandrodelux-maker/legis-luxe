@@ -148,10 +148,10 @@ function RootComponent() {
           <SkipLinks />
           <div className="flex min-h-dvh flex-col bg-background">
             {!isAdminPath && <SiteHeader />}
-            {!isAdminPath && <SiteBreadcrumb />}
             <main id="conteudo" tabIndex={-1} className={isAdminPath ? "flex-1" : "flex-1"}>
               <Outlet />
             </main>
+            {!isAdminPath && <SiteBreadcrumb />}
             {!isAdminPath && <SiteFooter />}
             {!isAdminPath && <LgpdBanner />}
             {!isAdminPath && <AccessibilityWidget />}
