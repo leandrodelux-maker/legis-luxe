@@ -87,6 +87,7 @@ function AdminTransparenciaLinks() {
       icon: row.icon ?? "ExternalLink",
       path: row.path ?? "",
       external_url: row.external_url ?? "",
+      category: row.category ?? "Informações Institucionais",
       sort_order: row.sort_order,
       is_active: row.is_active,
     });
