@@ -196,7 +196,20 @@ function AdminTransparenciaLinks() {
               </SelectContent>
             </Select>
           </div>
+          <div className="space-y-2 md:col-span-2">
+            <Label htmlFor="category">Categoria</Label>
+            <Select value={form.category} onValueChange={(value) => setForm({ ...form, category: value })}>
+              <SelectTrigger id="category"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {TRANSPARENCY_CATEGORIES.map((name) => (
+                  <SelectItem key={name} value={name}>{name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-slate-500">Define em qual grupo o card aparece na página pública.</p>
+          </div>
         </div>
+
 
         <div className="space-y-2">
           <Label htmlFor="description">Descrição</Label>
