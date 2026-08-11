@@ -111,6 +111,7 @@ function AdminTransparenciaLinks() {
       icon: form.icon || "ExternalLink",
       path: form.path.trim(),
       external_url: form.external_url?.trim() || null,
+      category: form.category || "Informações Institucionais",
       sort_order: Number(form.sort_order) || 0,
       is_active: form.is_active,
     };
