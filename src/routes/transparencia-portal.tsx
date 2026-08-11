@@ -67,74 +67,83 @@ type Category = {
   label: string;
   icon: LucideIcon;
   color: string; // tailwind bg
+  /** Categorias exatas do Portal Megasoft que pertencem a este grupo. */
+  cats: string[];
+  /** Fallback por texto, para links cadastrados sem categoria. */
+  pattern: RegExp;
   match: (link: TransparencyLink) => boolean;
 };
 
+function makeCategory(
+  c: Omit<Category, "match">,
+): Category {
+  return {
+    ...c,
+    match: (l) => {
+      const cat = (l.category ?? "").trim();
+      if (cat) return c.cats.includes(cat);
+      return c.pattern.test(`${l.title} ${l.description}`);
+    },
+  };
+}
+
 const CATEGORIES: Category[] = [
-  {
+  makeCategory({
     key: "receitas",
     label: "Receitas e Despesas",
     icon: TrendingDown,
     color: "bg-rose-400",
-    match: (l) =>
-      /receit|despes|empenh|pagament|liquid|financ/i.test(`${l.title} ${l.description} ${l.category ?? ""}`),
-  },
-  {
+    cats: ["Receita e Despesa"],
+    pattern: /receit|despes|empenh|pagament|liquid|financ/i,
+  }),
+  makeCategory({
     key: "contratos",
     label: "Contratos, Convênios e Licitações",
     icon: Gavel,
     color: "bg-orange-500",
-    match: (l) =>
-      /licita|contrat|conven|compra|edital/i.test(`${l.title} ${l.description} ${l.category ?? ""}`),
-  },
-  {
+    cats: ["Licitações e Contratos", "Convênios e Transferências"],
+    pattern: /licita|contrat|conven|compra|edital/i,
+  }),
+  makeCategory({
     key: "orgaos",
     label: "Órgãos e Servidores",
     icon: Users,
     color: "bg-amber-400",
-    match: (l) =>
-      /servidor|folha|di[aá]ria|patrim|estrutur|org[aã]|pessoal/i.test(
-        `${l.title} ${l.description} ${l.category ?? ""}`,
-      ),
-  },
-  {
+    cats: ["Recursos Humanos e Diárias"],
+    pattern: /servidor|folha|di[aá]ria|patrim|estrutur|org[aã]|pessoal/i,
+  }),
+  makeCategory({
     key: "planejamento",
-    label: "Planejamento e Políticas",
+    label: "Planejamento e Obras",
     icon: PieChart,
     color: "bg-primary-deep",
-    match: (l) =>
-      /planejament|ppa|ldo|loa|program|pol[ií]tic|obras|projet/i.test(
-        `${l.title} ${l.description} ${l.category ?? ""}`,
-      ),
-  },
-  {
+    cats: ["Obras"],
+    pattern: /planejament|ppa|ldo|loa|program|pol[ií]tic|obras|projet/i,
+  }),
+  makeCategory({
     key: "fiscal",
     label: "Responsabilidade Fiscal",
     icon: Scale,
     color: "bg-emerald-500",
-    match: (l) =>
-      /fiscal|rreo|rgf|lrf|prestaç[aã]o|contas|relat[oó]rio/i.test(
-        `${l.title} ${l.description} ${l.category ?? ""}`,
-      ),
-  },
-  {
+    cats: ["Planejamento e Prestação de Contas"],
+    pattern: /fiscal|rreo|rgf|lrf|prestaç[aã]o|contas|relat[oó]rio/i,
+  }),
+  makeCategory({
     key: "legislacao",
-    label: "Legislação e Dados",
+    label: "Legislação e Institucional",
     icon: BookOpen,
     color: "bg-teal-600",
-    match: (l) =>
-      /lei|legisla|di[aá]rio|dados|publicaç/i.test(`${l.title} ${l.description} ${l.category ?? ""}`),
-  },
-  {
+    cats: ["Atividades Finalísticas", "Informações Institucionais"],
+    pattern: /lei|legisla|di[aá]rio|dados|publicaç/i,
+  }),
+  makeCategory({
     key: "ouvidoria",
     label: "Ouvidoria e e-SIC",
     icon: MessageCircle,
     color: "bg-emerald-600",
-    match: (l) =>
-      /ouvidor|e-?sic|lai|acesso ?à ?informaç|denunc|privacidade|lgpd/i.test(
-        `${l.title} ${l.description} ${l.category ?? ""}`,
-      ),
-  },
+    cats: ["SIC e Ouvidoria", "LGPD e Governo Digital"],
+    pattern: /ouvidor|e-?sic|lai|acesso ?à ?informaç|denunc|privacidade|lgpd/i,
+  }),
 ];
 
 const GROUPS: { title: string; keys: string[] }[] = [
