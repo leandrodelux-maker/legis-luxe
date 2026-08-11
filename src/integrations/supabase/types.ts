@@ -1320,6 +1320,7 @@ export type Database = {
       }
       transparency_links: {
         Row: {
+          category: string
           created_at: string
           description: string
           external_url: string | null
@@ -1332,6 +1333,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          category?: string
           created_at?: string
           description?: string
           external_url?: string | null
@@ -1344,6 +1346,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          category?: string
           created_at?: string
           description?: string
           external_url?: string | null

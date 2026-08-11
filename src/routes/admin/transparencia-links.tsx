@@ -22,9 +22,24 @@ type LinkRow = {
   icon: string;
   path: string;
   external_url: string | null;
+  category: string;
   sort_order: number;
   is_active: boolean;
 };
+
+/** Categorias do Portal Megasoft usadas para agrupar os cards na página pública. */
+export const TRANSPARENCY_CATEGORIES = [
+  "Informações Institucionais",
+  "Receita e Despesa",
+  "Planejamento e Prestação de Contas",
+  "Recursos Humanos e Diárias",
+  "Licitações e Contratos",
+  "Obras",
+  "Convênios e Transferências",
+  "SIC e Ouvidoria",
+  "LGPD e Governo Digital",
+  "Atividades Finalísticas",
+] as const;
 
 const emptyForm: Omit<LinkRow, "id"> = {
   title: "",
@@ -32,6 +47,7 @@ const emptyForm: Omit<LinkRow, "id"> = {
   icon: "ExternalLink",
   path: "",
   external_url: "",
+  category: "Informações Institucionais",
   sort_order: 0,
   is_active: true,
 };
@@ -71,6 +87,7 @@ function AdminTransparenciaLinks() {
       icon: row.icon ?? "ExternalLink",
       path: row.path ?? "",
       external_url: row.external_url ?? "",
+      category: row.category ?? "Informações Institucionais",
       sort_order: row.sort_order,
       is_active: row.is_active,
     });
@@ -94,6 +111,7 @@ function AdminTransparenciaLinks() {
       icon: form.icon || "ExternalLink",
       path: form.path.trim(),
       external_url: form.external_url?.trim() || null,
+      category: form.category || "Informações Institucionais",
       sort_order: Number(form.sort_order) || 0,
       is_active: form.is_active,
     };
@@ -178,7 +196,20 @@ function AdminTransparenciaLinks() {
               </SelectContent>
             </Select>
           </div>
+          <div className="space-y-2 md:col-span-2">
+            <Label htmlFor="category">Categoria</Label>
+            <Select value={form.category} onValueChange={(value) => setForm({ ...form, category: value })}>
+              <SelectTrigger id="category"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {TRANSPARENCY_CATEGORIES.map((name) => (
+                  <SelectItem key={name} value={name}>{name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-slate-500">Define em qual grupo o card aparece na página pública.</p>
+          </div>
         </div>
+
 
         <div className="space-y-2">
           <Label htmlFor="description">Descrição</Label>
