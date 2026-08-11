@@ -25,7 +25,7 @@ export function SiteBreadcrumb() {
   };
 
   return (
-    <div className="bg-primary-deep text-primary-foreground">
+    <div className="border-t border-border/60 bg-background">
       <nav
         aria-label="Trilha de navegação"
         className="container mx-auto flex items-center gap-1.5 overflow-x-auto px-4 py-2.5 text-sm"
@@ -36,16 +36,16 @@ export function SiteBreadcrumb() {
             return (
               <li key={crumb.to} className="flex items-center gap-1.5">
                 {index > 0 && (
-                  <ChevronRight aria-hidden className="size-3.5 shrink-0 text-primary-foreground/50" />
+                  <ChevronRight aria-hidden className="size-3.5 shrink-0 text-muted-foreground/70" />
                 )}
                 {isLast ? (
-                  <span aria-current="page" className="font-medium text-gold">
+                  <span aria-current="page" className="font-medium text-foreground">
                     {crumb.label}
                   </span>
                 ) : (
                   <Link
                     to={crumb.to}
-                    className="flex items-center gap-1 text-primary-foreground/75 transition-colors hover:text-gold"
+                    className="flex items-center gap-1 text-muted-foreground transition-colors hover:text-primary"
                   >
                     {index === 0 && <Home aria-hidden className="size-3.5" />}
                     {crumb.label}

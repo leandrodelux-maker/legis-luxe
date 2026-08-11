@@ -80,7 +80,7 @@ function RankingPage() {
   return (
     <div className="bg-slate-50 min-h-screen pb-20">
       <section className="bg-gradient-to-br from-primary-deep to-primary text-primary-foreground">
-        <div className="container-page py-16">
+        <div className="container-page py-11">
           <div className="text-xs uppercase tracking-[0.2em] text-gold flex items-center gap-3">
             <Trophy className="w-4 h-4" /> Ranking parlamentar
           </div>

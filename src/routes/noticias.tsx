@@ -53,7 +53,7 @@ function NoticiasPage() {
   return (
     <>
       <section className="bg-gradient-to-br from-primary-deep to-primary text-primary-foreground">
-        <div className="container-page py-16 md:py-20">
+        <div className="container-page py-11 md:py-14">
           <div className="text-xs uppercase tracking-[0.2em] text-gold flex items-center gap-3">
             <span className="gold-divider" /> Comunicação Institucional
           </div>

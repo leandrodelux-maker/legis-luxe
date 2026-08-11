@@ -85,7 +85,7 @@ function ContatoPage() {
     <>
       <section className="bg-gradient-to-br from-primary-deep to-primary text-primary-foreground relative overflow-hidden">
         <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-gold/10 rounded-full blur-3xl" />
-        <div className="container-page py-16 md:py-24 relative z-10">
+        <div className="container-page py-11 md:py-16 relative z-10">
           <div className="text-xs uppercase tracking-[0.2em] text-gold flex items-center gap-3">
             <span className="gold-divider" /> Transparência e Diálogo
           </div>
