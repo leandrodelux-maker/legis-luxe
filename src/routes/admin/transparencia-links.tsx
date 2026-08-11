@@ -22,9 +22,24 @@ type LinkRow = {
   icon: string;
   path: string;
   external_url: string | null;
+  category: string;
   sort_order: number;
   is_active: boolean;
 };
+
+/** Categorias do Portal Megasoft usadas para agrupar os cards na página pública. */
+export const TRANSPARENCY_CATEGORIES = [
+  "Informações Institucionais",
+  "Receita e Despesa",
+  "Planejamento e Prestação de Contas",
+  "Recursos Humanos e Diárias",
+  "Licitações e Contratos",
+  "Obras",
+  "Convênios e Transferências",
+  "SIC e Ouvidoria",
+  "LGPD e Governo Digital",
+  "Atividades Finalísticas",
+] as const;
 
 const emptyForm: Omit<LinkRow, "id"> = {
   title: "",
@@ -32,6 +47,7 @@ const emptyForm: Omit<LinkRow, "id"> = {
   icon: "ExternalLink",
   path: "",
   external_url: "",
+  category: "Informações Institucionais",
   sort_order: 0,
   is_active: true,
 };
