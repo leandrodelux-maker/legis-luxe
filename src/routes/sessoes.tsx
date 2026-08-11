@@ -286,7 +286,7 @@ function SessoesPage() {
                         </Badge>
                         <span className="text-sm font-bold text-muted-foreground">{dateStr}</span>
                       </div>
-                      <h4 className="font-display text-2xl font-bold">Resumo dos Trabalhos</h4>
+                      <h4 className="font-display text-2xl font-bold">{s.titulo || "Resumo dos Trabalhos"}</h4>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div className="p-3 rounded-lg bg-secondary/50 border border-border/50 text-center">
                           <div className="text-lg font-bold text-primary">{s.qtd_pautas}</div>
