@@ -102,6 +102,7 @@ export function VereadorAvatar({
           width={size}
           height={size}
           className="w-full h-full object-cover"
+          style={{ objectPosition }}
           onLoad={() => setState("ok")}
           onError={(e) => {
             reportError("remote", foto);
