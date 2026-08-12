@@ -187,7 +187,8 @@ function VereadorDetailPage() {
               partido={vereador.partido}
               size={240}
               rounded="2xl"
-              className="border-4 border-white/20 shadow-2xl"
+              fit="contain"
+              className="border-4 border-white/20 shadow-2xl bg-white"
             />
 
             <div className="text-center md:text-left flex-1">

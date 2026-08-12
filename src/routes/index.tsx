@@ -566,7 +566,8 @@ function VereadorCard({ v, delay }: { v: Vereador; delay: number }) {
           partido={v.partido}
           size={400}
           rounded="lg"
-          className="!h-full !w-full !rounded-none object-cover transition-transform duration-700 group-hover:scale-105"
+          fit="contain"
+          className="!h-full !w-full !rounded-none bg-white transition-transform duration-700 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-primary-deep via-primary-deep/30 to-transparent opacity-90" />
 
