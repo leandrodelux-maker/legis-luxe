@@ -46,6 +46,7 @@ export function VereadorAvatar({
   className,
   rounded = "full",
   showLabelOnError = false,
+  objectPosition = "center 18%",
 }: Props) {
   const { isAdmin } = useSupabaseAuth();
   const [state, setState] = useState<"loading" | "ok" | "placeholder" | "initials">(
