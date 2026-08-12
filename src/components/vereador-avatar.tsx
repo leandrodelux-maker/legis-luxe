@@ -25,6 +25,8 @@ type Props = {
   showLabelOnError?: boolean;
   /** Enquadramento da foto (object-position). Padrão: topo, para não cortar a cabeça */
   objectPosition?: string;
+  /** "cover" recorta para preencher; "contain" mostra a foto inteira sem cortar */
+  fit?: "cover" | "contain";
 };
 
 /**
@@ -47,6 +49,7 @@ export function VereadorAvatar({
   rounded = "full",
   showLabelOnError = false,
   objectPosition = "center 18%",
+  fit = "cover",
 }: Props) {
   const { isAdmin } = useSupabaseAuth();
   const [state, setState] = useState<"loading" | "ok" | "placeholder" | "initials">(
@@ -101,8 +104,8 @@ export function VereadorAvatar({
           loading="lazy"
           width={size}
           height={size}
-          className="w-full h-full object-cover"
-          style={{ objectPosition }}
+          className={cn("w-full h-full", fit === "contain" ? "object-contain" : "object-cover")}
+          style={{ objectPosition: fit === "contain" ? "center top" : objectPosition }}
           onLoad={() => setState("ok")}
           onError={(e) => {
             reportError("remote", foto);
