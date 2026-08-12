@@ -199,7 +199,7 @@ function VereadoresPage() {
                     style={{ animationDelay: `${i * 50}ms` }}
                   >
                     <div className={`relative bg-secondary/50 flex items-center justify-center overflow-hidden ${
-                      viewMode === "list" ? "w-full md:w-48 aspect-square md:aspect-auto" : "aspect-square"
+                      viewMode === "list" ? "w-full md:w-48 aspect-[3/4] md:aspect-auto" : "aspect-[3/4]"
                     }`}>
                       <VereadorAvatar
                         nome={v.nome}
