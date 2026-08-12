@@ -23,6 +23,8 @@ type Props = {
   rounded?: "full" | "lg" | "xl" | "2xl";
   /** Mostra rótulo com nome + partido sobre o avatar quando há erro */
   showLabelOnError?: boolean;
+  /** Enquadramento da foto (object-position). Padrão: topo, para não cortar a cabeça */
+  objectPosition?: string;
 };
 
 /**
