@@ -198,8 +198,8 @@ function VereadoresPage() {
                     }`}
                     style={{ animationDelay: `${i * 50}ms` }}
                   >
-                    <div className={`relative bg-secondary/50 flex items-center justify-center overflow-hidden ${
-                      viewMode === "list" ? "w-full md:w-48 aspect-square md:aspect-auto" : "aspect-square"
+                    <div className={`relative bg-white flex items-center justify-center overflow-hidden ${
+                      viewMode === "list" ? "w-full md:w-48 aspect-[3/4] md:aspect-auto" : "aspect-[3/4]"
                     }`}>
                       <VereadorAvatar
                         nome={v.nome}
@@ -208,7 +208,8 @@ function VereadoresPage() {
                         size={viewMode === "list" ? 192 : 320}
                         rounded="lg"
                         showLabelOnError
-                        className="!rounded-none w-full h-full"
+                        fit="contain"
+                        className="!rounded-none w-full h-full bg-white"
                       />
                       {v.partido && (
                         <div className="absolute top-4 left-4">
