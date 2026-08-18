@@ -213,6 +213,8 @@ function AdminSessoes() {
           label: "Votos",
           render: (r) => <Badge variant="outline">{r.qtd_votacoes ?? 0}</Badge>,
         },
+        {
+          key: "acoes_extra",
           label: "Presença/Votos",
           render: (r) => (
             <div className="flex gap-2">
