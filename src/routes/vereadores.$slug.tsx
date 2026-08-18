@@ -104,10 +104,9 @@ function VereadorDetailPage() {
             .order("data_apresentacao", { ascending: false })
             .limit(100),
           supabase.from("sessoes_presencas")
-            .select("id, presente, sessao:sessoes(id, titulo, data_sessao, tipo)")
+            .select("id, presente, sessao:sessoes(id, titulo, data_sessao, tipo, ata_url)")
             .eq("vereador_id", id)
-            .order("created_at", { ascending: false })
-            .limit(100),
+            .limit(500),
           supabase.from("sessoes_votacoes")
             .select("id, voto, created_at, sessao:sessoes(id, titulo, data_sessao)")
             .eq("vereador_id", id)
