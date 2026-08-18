@@ -31,6 +31,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { VereadorAvatar } from "@/components/vereador-avatar";
+import { useContactInfo } from "@/hooks/use-contact-info";
 
 export const Route = createFileRoute("/vereadores/$slug")({
   component: VereadorDetailPage,
