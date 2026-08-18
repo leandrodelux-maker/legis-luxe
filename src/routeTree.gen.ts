@@ -16,7 +16,6 @@ import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as ESicRouteImport } from './routes/e-sic'
 import { Route as LgpdRouteImport } from './routes/lgpd'
 import { Route as MapaDoSiteRouteImport } from './routes/mapa-do-site'
-import { Route as NoticiasRouteImport } from './routes/noticias'
 import { Route as PerguntasFrequentesRouteImport } from './routes/perguntas-frequentes'
 import { Route as ProjetosRouteImport } from './routes/projetos'
 import { Route as SessoesRouteImport } from './routes/sessoes'
@@ -37,11 +36,14 @@ import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
 import { Route as AdminDocumentosOficiaisRouteImport } from './routes/admin/documentos-oficiais'
 import { Route as AdminExecutivoRouteImport } from './routes/admin/executivo'
 import { Route as AdminMesaDiretoraRouteImport } from './routes/admin/mesa-diretora'
+import { Route as AdminNoticiasRouteImport } from './routes/admin/noticias'
 import { Route as AdminTransparenciaAtivaRouteImport } from './routes/admin/transparencia-ativa'
 import { Route as AdminTransparenciaLinksRouteImport } from './routes/admin/transparencia-links'
 import { Route as AtosLegislativosCartaDeServicosRouteImport } from './routes/atos-legislativos.carta-de-servicos'
 import { Route as AtosLegislativosLeiOrganicaMunicipalRouteImport } from './routes/atos-legislativos.lei-organica-municipal'
 import { Route as AtosLegislativosRegimentoInternoRouteImport } from './routes/atos-legislativos.regimento-interno'
+import { Route as NoticiasIndexRouteImport } from './routes/noticias.index'
+import { Route as NoticiasSlugRouteImport } from './routes/noticias.$slug'
 import { Route as SessoesIndexRouteImport } from './routes/sessoes/index'
 import { Route as SessoesAoVivoRouteImport } from './routes/sessoes/ao-vivo'
 import { Route as VereadoresIndexRouteImport } from './routes/vereadores.index'
@@ -113,11 +115,6 @@ const LgpdRoute = LgpdRouteImport.update({
 const MapaDoSiteRoute = MapaDoSiteRouteImport.update({
   id: '/mapa-do-site',
   path: '/mapa-do-site',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NoticiasRoute = NoticiasRouteImport.update({
-  id: '/noticias',
-  path: '/noticias',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PerguntasFrequentesRoute = PerguntasFrequentesRouteImport.update({
@@ -221,6 +218,11 @@ const AdminMesaDiretoraRoute = AdminMesaDiretoraRouteImport.update({
   path: '/mesa-diretora',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminNoticiasRoute = AdminNoticiasRouteImport.update({
+  id: '/noticias',
+  path: '/noticias',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminTransparenciaAtivaRoute = AdminTransparenciaAtivaRouteImport.update({
   id: '/transparencia-ativa',
   path: '/transparencia-ativa',
@@ -249,6 +251,16 @@ const AtosLegislativosRegimentoInternoRoute =
     path: '/atos-legislativos/regimento-interno',
     getParentRoute: () => rootRouteImport,
   } as any)
+const NoticiasIndexRoute = NoticiasIndexRouteImport.update({
+  id: '/noticias/',
+  path: '/noticias/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NoticiasSlugRoute = NoticiasSlugRouteImport.update({
+  id: '/noticias/$slug',
+  path: '/noticias/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SessoesIndexRoute = SessoesIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -445,7 +457,6 @@ export interface FileRoutesByFullPath {
   '/e-sic': typeof ESicRoute
   '/lgpd': typeof LgpdRoute
   '/mapa-do-site': typeof MapaDoSiteRoute
-  '/noticias': typeof NoticiasRoute
   '/perguntas-frequentes': typeof PerguntasFrequentesRoute
   '/projetos': typeof ProjetosRoute
   '/sessoes': typeof SessoesRouteWithChildren
@@ -465,15 +476,18 @@ export interface FileRoutesByFullPath {
   '/admin/documentos-oficiais': typeof AdminDocumentosOficiaisRoute
   '/admin/executivo': typeof AdminExecutivoRoute
   '/admin/mesa-diretora': typeof AdminMesaDiretoraRoute
+  '/admin/noticias': typeof AdminNoticiasRoute
   '/admin/transparencia-ativa': typeof AdminTransparenciaAtivaRoute
   '/admin/transparencia-links': typeof AdminTransparenciaLinksRoute
   '/atos-legislativos/carta-de-servicos': typeof AtosLegislativosCartaDeServicosRoute
   '/atos-legislativos/lei-organica-municipal': typeof AtosLegislativosLeiOrganicaMunicipalRoute
   '/atos-legislativos/regimento-interno': typeof AtosLegislativosRegimentoInternoRoute
+  '/noticias/$slug': typeof NoticiasSlugRoute
   '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
   '/vereadores/$slug': typeof VereadoresSlugRoute
   '/vereadores/ranking': typeof VereadoresRankingRoute
   '/admin/': typeof AdminIndexRoute
+  '/noticias/': typeof NoticiasIndexRoute
   '/sessoes/': typeof SessoesIndexRoute
   '/vereadores/': typeof VereadoresIndexRoute
   '/admin/cms/banners': typeof AdminCmsBannersRoute
@@ -516,7 +530,6 @@ export interface FileRoutesByTo {
   '/e-sic': typeof ESicRoute
   '/lgpd': typeof LgpdRoute
   '/mapa-do-site': typeof MapaDoSiteRoute
-  '/noticias': typeof NoticiasRoute
   '/perguntas-frequentes': typeof PerguntasFrequentesRoute
   '/projetos': typeof ProjetosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -535,15 +548,18 @@ export interface FileRoutesByTo {
   '/admin/documentos-oficiais': typeof AdminDocumentosOficiaisRoute
   '/admin/executivo': typeof AdminExecutivoRoute
   '/admin/mesa-diretora': typeof AdminMesaDiretoraRoute
+  '/admin/noticias': typeof AdminNoticiasRoute
   '/admin/transparencia-ativa': typeof AdminTransparenciaAtivaRoute
   '/admin/transparencia-links': typeof AdminTransparenciaLinksRoute
   '/atos-legislativos/carta-de-servicos': typeof AtosLegislativosCartaDeServicosRoute
   '/atos-legislativos/lei-organica-municipal': typeof AtosLegislativosLeiOrganicaMunicipalRoute
   '/atos-legislativos/regimento-interno': typeof AtosLegislativosRegimentoInternoRoute
+  '/noticias/$slug': typeof NoticiasSlugRoute
   '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
   '/vereadores/$slug': typeof VereadoresSlugRoute
   '/vereadores/ranking': typeof VereadoresRankingRoute
   '/admin': typeof AdminIndexRoute
+  '/noticias': typeof NoticiasIndexRoute
   '/sessoes': typeof SessoesIndexRoute
   '/vereadores': typeof VereadoresIndexRoute
   '/admin/cms/banners': typeof AdminCmsBannersRoute
@@ -588,7 +604,6 @@ export interface FileRoutesById {
   '/e-sic': typeof ESicRoute
   '/lgpd': typeof LgpdRoute
   '/mapa-do-site': typeof MapaDoSiteRoute
-  '/noticias': typeof NoticiasRoute
   '/perguntas-frequentes': typeof PerguntasFrequentesRoute
   '/projetos': typeof ProjetosRoute
   '/sessoes': typeof SessoesRouteWithChildren
@@ -608,15 +623,18 @@ export interface FileRoutesById {
   '/admin/documentos-oficiais': typeof AdminDocumentosOficiaisRoute
   '/admin/executivo': typeof AdminExecutivoRoute
   '/admin/mesa-diretora': typeof AdminMesaDiretoraRoute
+  '/admin/noticias': typeof AdminNoticiasRoute
   '/admin/transparencia-ativa': typeof AdminTransparenciaAtivaRoute
   '/admin/transparencia-links': typeof AdminTransparenciaLinksRoute
   '/atos-legislativos/carta-de-servicos': typeof AtosLegislativosCartaDeServicosRoute
   '/atos-legislativos/lei-organica-municipal': typeof AtosLegislativosLeiOrganicaMunicipalRoute
   '/atos-legislativos/regimento-interno': typeof AtosLegislativosRegimentoInternoRoute
+  '/noticias/$slug': typeof NoticiasSlugRoute
   '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
   '/vereadores/$slug': typeof VereadoresSlugRoute
   '/vereadores/ranking': typeof VereadoresRankingRoute
   '/admin/': typeof AdminIndexRoute
+  '/noticias/': typeof NoticiasIndexRoute
   '/sessoes/': typeof SessoesIndexRoute
   '/vereadores/': typeof VereadoresIndexRoute
   '/admin/cms/banners': typeof AdminCmsBannersRoute
@@ -662,7 +680,6 @@ export interface FileRouteTypes {
     | '/e-sic'
     | '/lgpd'
     | '/mapa-do-site'
-    | '/noticias'
     | '/perguntas-frequentes'
     | '/projetos'
     | '/sessoes'
@@ -682,15 +699,18 @@ export interface FileRouteTypes {
     | '/admin/documentos-oficiais'
     | '/admin/executivo'
     | '/admin/mesa-diretora'
+    | '/admin/noticias'
     | '/admin/transparencia-ativa'
     | '/admin/transparencia-links'
     | '/atos-legislativos/carta-de-servicos'
     | '/atos-legislativos/lei-organica-municipal'
     | '/atos-legislativos/regimento-interno'
+    | '/noticias/$slug'
     | '/sessoes/ao-vivo'
     | '/vereadores/$slug'
     | '/vereadores/ranking'
     | '/admin/'
+    | '/noticias/'
     | '/sessoes/'
     | '/vereadores/'
     | '/admin/cms/banners'
@@ -733,7 +753,6 @@ export interface FileRouteTypes {
     | '/e-sic'
     | '/lgpd'
     | '/mapa-do-site'
-    | '/noticias'
     | '/perguntas-frequentes'
     | '/projetos'
     | '/sitemap.xml'
@@ -752,15 +771,18 @@ export interface FileRouteTypes {
     | '/admin/documentos-oficiais'
     | '/admin/executivo'
     | '/admin/mesa-diretora'
+    | '/admin/noticias'
     | '/admin/transparencia-ativa'
     | '/admin/transparencia-links'
     | '/atos-legislativos/carta-de-servicos'
     | '/atos-legislativos/lei-organica-municipal'
     | '/atos-legislativos/regimento-interno'
+    | '/noticias/$slug'
     | '/sessoes/ao-vivo'
     | '/vereadores/$slug'
     | '/vereadores/ranking'
     | '/admin'
+    | '/noticias'
     | '/sessoes'
     | '/vereadores'
     | '/admin/cms/banners'
@@ -804,7 +826,6 @@ export interface FileRouteTypes {
     | '/e-sic'
     | '/lgpd'
     | '/mapa-do-site'
-    | '/noticias'
     | '/perguntas-frequentes'
     | '/projetos'
     | '/sessoes'
@@ -824,15 +845,18 @@ export interface FileRouteTypes {
     | '/admin/documentos-oficiais'
     | '/admin/executivo'
     | '/admin/mesa-diretora'
+    | '/admin/noticias'
     | '/admin/transparencia-ativa'
     | '/admin/transparencia-links'
     | '/atos-legislativos/carta-de-servicos'
     | '/atos-legislativos/lei-organica-municipal'
     | '/atos-legislativos/regimento-interno'
+    | '/noticias/$slug'
     | '/sessoes/ao-vivo'
     | '/vereadores/$slug'
     | '/vereadores/ranking'
     | '/admin/'
+    | '/noticias/'
     | '/sessoes/'
     | '/vereadores/'
     | '/admin/cms/banners'
@@ -877,7 +901,6 @@ export interface RootRouteChildren {
   ESicRoute: typeof ESicRoute
   LgpdRoute: typeof LgpdRoute
   MapaDoSiteRoute: typeof MapaDoSiteRoute
-  NoticiasRoute: typeof NoticiasRoute
   PerguntasFrequentesRoute: typeof PerguntasFrequentesRoute
   ProjetosRoute: typeof ProjetosRoute
   SessoesRoute: typeof SessoesRouteWithChildren
@@ -893,8 +916,10 @@ export interface RootRouteChildren {
   AtosLegislativosCartaDeServicosRoute: typeof AtosLegislativosCartaDeServicosRoute
   AtosLegislativosLeiOrganicaMunicipalRoute: typeof AtosLegislativosLeiOrganicaMunicipalRoute
   AtosLegislativosRegimentoInternoRoute: typeof AtosLegislativosRegimentoInternoRoute
+  NoticiasSlugRoute: typeof NoticiasSlugRoute
   VereadoresSlugRoute: typeof VereadoresSlugRoute
   VereadoresRankingRoute: typeof VereadoresRankingRoute
+  NoticiasIndexRoute: typeof NoticiasIndexRoute
   VereadoresIndexRoute: typeof VereadoresIndexRoute
 }
 
@@ -947,13 +972,6 @@ declare module '@tanstack/react-router' {
       path: '/mapa-do-site'
       fullPath: '/mapa-do-site'
       preLoaderRoute: typeof MapaDoSiteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/noticias': {
-      id: '/noticias'
-      path: '/noticias'
-      fullPath: '/noticias'
-      preLoaderRoute: typeof NoticiasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/perguntas-frequentes': {
@@ -1096,6 +1114,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMesaDiretoraRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/noticias': {
+      id: '/admin/noticias'
+      path: '/noticias'
+      fullPath: '/admin/noticias'
+      preLoaderRoute: typeof AdminNoticiasRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/transparencia-ativa': {
       id: '/admin/transparencia-ativa'
       path: '/transparencia-ativa'
@@ -1129,6 +1154,20 @@ declare module '@tanstack/react-router' {
       path: '/atos-legislativos/regimento-interno'
       fullPath: '/atos-legislativos/regimento-interno'
       preLoaderRoute: typeof AtosLegislativosRegimentoInternoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/noticias/': {
+      id: '/noticias/'
+      path: '/noticias'
+      fullPath: '/noticias/'
+      preLoaderRoute: typeof NoticiasIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/noticias/$slug': {
+      id: '/noticias/$slug'
+      path: '/noticias/$slug'
+      fullPath: '/noticias/$slug'
+      preLoaderRoute: typeof NoticiasSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sessoes/': {
@@ -1413,6 +1452,7 @@ interface AdminRouteChildren {
   AdminDocumentosOficiaisRoute: typeof AdminDocumentosOficiaisRoute
   AdminExecutivoRoute: typeof AdminExecutivoRoute
   AdminMesaDiretoraRoute: typeof AdminMesaDiretoraRoute
+  AdminNoticiasRoute: typeof AdminNoticiasRoute
   AdminTransparenciaAtivaRoute: typeof AdminTransparenciaAtivaRoute
   AdminTransparenciaLinksRoute: typeof AdminTransparenciaLinksRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -1457,6 +1497,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminDocumentosOficiaisRoute: AdminDocumentosOficiaisRoute,
   AdminExecutivoRoute: AdminExecutivoRoute,
   AdminMesaDiretoraRoute: AdminMesaDiretoraRoute,
+  AdminNoticiasRoute: AdminNoticiasRoute,
   AdminTransparenciaAtivaRoute: AdminTransparenciaAtivaRoute,
   AdminTransparenciaLinksRoute: AdminTransparenciaLinksRoute,
   AdminIndexRoute: AdminIndexRoute,
@@ -1516,7 +1557,6 @@ const rootRouteChildren: RootRouteChildren = {
   ESicRoute: ESicRoute,
   LgpdRoute: LgpdRoute,
   MapaDoSiteRoute: MapaDoSiteRoute,
-  NoticiasRoute: NoticiasRoute,
   PerguntasFrequentesRoute: PerguntasFrequentesRoute,
   ProjetosRoute: ProjetosRoute,
   SessoesRoute: SessoesRouteWithChildren,
@@ -1533,8 +1573,10 @@ const rootRouteChildren: RootRouteChildren = {
   AtosLegislativosLeiOrganicaMunicipalRoute:
     AtosLegislativosLeiOrganicaMunicipalRoute,
   AtosLegislativosRegimentoInternoRoute: AtosLegislativosRegimentoInternoRoute,
+  NoticiasSlugRoute: NoticiasSlugRoute,
   VereadoresSlugRoute: VereadoresSlugRoute,
   VereadoresRankingRoute: VereadoresRankingRoute,
+  NoticiasIndexRoute: NoticiasIndexRoute,
   VereadoresIndexRoute: VereadoresIndexRoute,
 }
 export const routeTree = rootRouteImport

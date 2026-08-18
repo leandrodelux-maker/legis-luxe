@@ -87,7 +87,7 @@ const groups: Group[] = [
   {
     label: "Comunicação",
     items: [
-      { label: "Notícias", path: "/admin/comunicacao", icon: Newspaper },
+      { label: "Notícias", path: "/admin/noticias", icon: Newspaper },
       { label: "Categorias", path: "/admin/cms/categorias", icon: FileEdit },
       { label: "Páginas", path: "/admin/cms/paginas", icon: FileText },
       { label: "Banners", path: "/admin/cms/banners", icon: GalleryHorizontalEnd },
