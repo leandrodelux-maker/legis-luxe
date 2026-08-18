@@ -37,6 +37,7 @@ import { Route as AdminMesaDiretoraRouteImport } from './routes/admin/mesa-diret
 import { Route as AdminTransparenciaAtivaRouteImport } from './routes/admin/transparencia-ativa'
 import { Route as AdminTransparenciaLinksRouteImport } from './routes/admin/transparencia-links'
 import { Route as AtosLegislativosCartaDeServicosRouteImport } from './routes/atos-legislativos.carta-de-servicos'
+import { Route as AtosLegislativosLeiOrganicaMunicipalRouteImport } from './routes/atos-legislativos.lei-organica-municipal'
 import { Route as SessoesIndexRouteImport } from './routes/sessoes/index'
 import { Route as SessoesAoVivoRouteImport } from './routes/sessoes/ao-vivo'
 import { Route as VereadoresIndexRouteImport } from './routes/vereadores.index'
@@ -215,6 +216,12 @@ const AtosLegislativosCartaDeServicosRoute =
   AtosLegislativosCartaDeServicosRouteImport.update({
     id: '/atos-legislativos/carta-de-servicos',
     path: '/atos-legislativos/carta-de-servicos',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AtosLegislativosLeiOrganicaMunicipalRoute =
+  AtosLegislativosLeiOrganicaMunicipalRouteImport.update({
+    id: '/atos-legislativos/lei-organica-municipal',
+    path: '/atos-legislativos/lei-organica-municipal',
     getParentRoute: () => rootRouteImport,
   } as any)
 const SessoesIndexRoute = SessoesIndexRouteImport.update({
@@ -433,6 +440,7 @@ export interface FileRoutesByFullPath {
   '/admin/transparencia-ativa': typeof AdminTransparenciaAtivaRoute
   '/admin/transparencia-links': typeof AdminTransparenciaLinksRoute
   '/atos-legislativos/carta-de-servicos': typeof AtosLegislativosCartaDeServicosRoute
+  '/atos-legislativos/lei-organica-municipal': typeof AtosLegislativosLeiOrganicaMunicipalRoute
   '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
   '/vereadores/$slug': typeof VereadoresSlugRoute
   '/vereadores/ranking': typeof VereadoresRankingRoute
@@ -498,6 +506,7 @@ export interface FileRoutesByTo {
   '/admin/transparencia-ativa': typeof AdminTransparenciaAtivaRoute
   '/admin/transparencia-links': typeof AdminTransparenciaLinksRoute
   '/atos-legislativos/carta-de-servicos': typeof AtosLegislativosCartaDeServicosRoute
+  '/atos-legislativos/lei-organica-municipal': typeof AtosLegislativosLeiOrganicaMunicipalRoute
   '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
   '/vereadores/$slug': typeof VereadoresSlugRoute
   '/vereadores/ranking': typeof VereadoresRankingRoute
@@ -566,6 +575,7 @@ export interface FileRoutesById {
   '/admin/transparencia-ativa': typeof AdminTransparenciaAtivaRoute
   '/admin/transparencia-links': typeof AdminTransparenciaLinksRoute
   '/atos-legislativos/carta-de-servicos': typeof AtosLegislativosCartaDeServicosRoute
+  '/atos-legislativos/lei-organica-municipal': typeof AtosLegislativosLeiOrganicaMunicipalRoute
   '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
   '/vereadores/$slug': typeof VereadoresSlugRoute
   '/vereadores/ranking': typeof VereadoresRankingRoute
@@ -635,6 +645,7 @@ export interface FileRouteTypes {
     | '/admin/transparencia-ativa'
     | '/admin/transparencia-links'
     | '/atos-legislativos/carta-de-servicos'
+    | '/atos-legislativos/lei-organica-municipal'
     | '/sessoes/ao-vivo'
     | '/vereadores/$slug'
     | '/vereadores/ranking'
@@ -700,6 +711,7 @@ export interface FileRouteTypes {
     | '/admin/transparencia-ativa'
     | '/admin/transparencia-links'
     | '/atos-legislativos/carta-de-servicos'
+    | '/atos-legislativos/lei-organica-municipal'
     | '/sessoes/ao-vivo'
     | '/vereadores/$slug'
     | '/vereadores/ranking'
@@ -767,6 +779,7 @@ export interface FileRouteTypes {
     | '/admin/transparencia-ativa'
     | '/admin/transparencia-links'
     | '/atos-legislativos/carta-de-servicos'
+    | '/atos-legislativos/lei-organica-municipal'
     | '/sessoes/ao-vivo'
     | '/vereadores/$slug'
     | '/vereadores/ranking'
@@ -829,6 +842,7 @@ export interface RootRouteChildren {
   ACamaraMesaDiretoraRoute: typeof ACamaraMesaDiretoraRoute
   ACamaraRoteiroDasSessoesRoute: typeof ACamaraRoteiroDasSessoesRoute
   AtosLegislativosCartaDeServicosRoute: typeof AtosLegislativosCartaDeServicosRoute
+  AtosLegislativosLeiOrganicaMunicipalRoute: typeof AtosLegislativosLeiOrganicaMunicipalRoute
   VereadoresSlugRoute: typeof VereadoresSlugRoute
   VereadoresRankingRoute: typeof VereadoresRankingRoute
   VereadoresIndexRoute: typeof VereadoresIndexRoute
@@ -1030,6 +1044,13 @@ declare module '@tanstack/react-router' {
       path: '/atos-legislativos/carta-de-servicos'
       fullPath: '/atos-legislativos/carta-de-servicos'
       preLoaderRoute: typeof AtosLegislativosCartaDeServicosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/atos-legislativos/lei-organica-municipal': {
+      id: '/atos-legislativos/lei-organica-municipal'
+      path: '/atos-legislativos/lei-organica-municipal'
+      fullPath: '/atos-legislativos/lei-organica-municipal'
+      preLoaderRoute: typeof AtosLegislativosLeiOrganicaMunicipalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sessoes/': {
@@ -1425,6 +1446,8 @@ const rootRouteChildren: RootRouteChildren = {
   ACamaraMesaDiretoraRoute: ACamaraMesaDiretoraRoute,
   ACamaraRoteiroDasSessoesRoute: ACamaraRoteiroDasSessoesRoute,
   AtosLegislativosCartaDeServicosRoute: AtosLegislativosCartaDeServicosRoute,
+  AtosLegislativosLeiOrganicaMunicipalRoute:
+    AtosLegislativosLeiOrganicaMunicipalRoute,
   VereadoresSlugRoute: VereadoresSlugRoute,
   VereadoresRankingRoute: VereadoresRankingRoute,
   VereadoresIndexRoute: VereadoresIndexRoute,
