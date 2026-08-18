@@ -62,6 +62,7 @@ export const CAMARA_LINKS: SiteLink[] = [
 
 /** Links do menu "Atos Legislativos" (cabeçalho). */
 export const ATOS_LEGISLATIVOS_LINKS: SiteLink[] = [
+  { to: ROUTES.projetos, label: "Projetos de Leis" },
   { to: ROUTES.cartaServicos, label: "Carta de Serviços" },
   { to: ROUTES.leiOrganica, label: "Lei Orgânica Municipal" },
   { to: ROUTES.regimentoInterno, label: "Regimento Interno" },
@@ -72,7 +73,7 @@ export const SITE_SECTIONS: SiteSection[] = [
   {
     title: "Atos Legislativos",
     links: [
-      { to: ROUTES.projetos, label: "Atos Legislativos", description: "Fluxo e tramitação das matérias legislativas." },
+      { to: ROUTES.projetos, label: "Projetos de Leis", description: "Fluxo e tramitação das matérias legislativas." },
       { to: ROUTES.cartaServicos, label: "Carta de Serviços", description: "Serviços prestados pela Câmara ao cidadão." },
       { to: ROUTES.leiOrganica, label: "Lei Orgânica Municipal", description: "Norma máxima de organização do município." },
       { to: ROUTES.regimentoInterno, label: "Regimento Interno", description: "Regras de funcionamento da Casa Legislativa." },
