@@ -152,6 +152,97 @@ export type Database = {
         }
         Relationships: []
       }
+      comissoes: {
+        Row: {
+          ativo: boolean
+          competencia: string | null
+          created_at: string
+          icone: string | null
+          id: string
+          nome: string
+          ordem: number
+          sigla: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          competencia?: string | null
+          created_at?: string
+          icone?: string | null
+          id?: string
+          nome: string
+          ordem?: number
+          sigla: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          competencia?: string | null
+          created_at?: string
+          icone?: string | null
+          id?: string
+          nome?: string
+          ordem?: number
+          sigla?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      comissoes_membros: {
+        Row: {
+          comissao_id: string
+          created_at: string
+          funcao: string
+          id: string
+          nome: string
+          ordem: number
+          updated_at: string
+          vereador_id: string | null
+        }
+        Insert: {
+          comissao_id: string
+          created_at?: string
+          funcao: string
+          id?: string
+          nome: string
+          ordem?: number
+          updated_at?: string
+          vereador_id?: string | null
+        }
+        Update: {
+          comissao_id?: string
+          created_at?: string
+          funcao?: string
+          id?: string
+          nome?: string
+          ordem?: number
+          updated_at?: string
+          vereador_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comissoes_membros_comissao_id_fkey"
+            columns: ["comissao_id"]
+            isOneToOne: false
+            referencedRelation: "comissoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comissoes_membros_vereador_id_fkey"
+            columns: ["vereador_id"]
+            isOneToOne: false
+            referencedRelation: "vereadores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comissoes_membros_vereador_id_fkey"
+            columns: ["vereador_id"]
+            isOneToOne: false
+            referencedRelation: "vereadores_ranking"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       diario_oficial: {
         Row: {
           conteudo: string | null
@@ -188,6 +279,48 @@ export type Database = {
           resumo?: string | null
           titulo?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      documentos_oficiais: {
+        Row: {
+          categoria: string
+          created_at: string
+          data_documento: string | null
+          descricao: string | null
+          download_url: string
+          id: string
+          ordem: number
+          publicado: boolean
+          titulo: string
+          updated_at: string
+          viewer_url: string | null
+        }
+        Insert: {
+          categoria: string
+          created_at?: string
+          data_documento?: string | null
+          descricao?: string | null
+          download_url: string
+          id?: string
+          ordem?: number
+          publicado?: boolean
+          titulo: string
+          updated_at?: string
+          viewer_url?: string | null
+        }
+        Update: {
+          categoria?: string
+          created_at?: string
+          data_documento?: string | null
+          descricao?: string | null
+          download_url?: string
+          id?: string
+          ordem?: number
+          publicado?: boolean
+          titulo?: string
+          updated_at?: string
+          viewer_url?: string | null
         }
         Relationships: []
       }
