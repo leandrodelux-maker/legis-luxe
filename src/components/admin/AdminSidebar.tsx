@@ -20,6 +20,7 @@ import {
   Building2,
   ScrollText,
   Crown,
+  Scale,
   Image as ImageIcon,
   FileEdit,
   FileBarChart,
