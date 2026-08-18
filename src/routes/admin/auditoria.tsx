@@ -46,7 +46,8 @@ function AuditoriaPage() {
     return (
       r.action.toLowerCase().includes(s) ||
       r.entity_type.toLowerCase().includes(s) ||
-      (r.user_email ?? "").toLowerCase().includes(s)
+      (r.user_email ?? "").toLowerCase().includes(s) ||
+      JSON.stringify(r.metadata ?? {}).toLowerCase().includes(s)
     );
   });
 
