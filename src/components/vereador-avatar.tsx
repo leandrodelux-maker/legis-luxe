@@ -27,6 +27,8 @@ type Props = {
   objectPosition?: string;
   /** "cover" recorta para preencher; "contain" mostra a foto inteira sem cortar */
   fit?: "cover" | "contain";
+  /** Preenche o contêiner pai (ignora `size` nas dimensões) */
+  fill?: boolean;
 };
 
 /**
