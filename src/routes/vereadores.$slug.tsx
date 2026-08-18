@@ -38,7 +38,7 @@ export const Route = createFileRoute("/vereadores/$slug")({
 
 type Vereador = any;
 type Projeto = any;
-type PresencaRow = { id: string; presente: boolean; sessao: { id: string; titulo: string; data_sessao: string; tipo: string | null } | null };
+type PresencaRow = { id: string; presente: boolean; sessao: { id: string; titulo: string; data_sessao: string; tipo: string | null; ata_url: string | null } | null };
 type VotacaoRow = { id: string; voto: string; created_at: string; sessao: { id: string; titulo: string; data_sessao: string } | null };
 type Mandato = any;
 type GaleriaItem = any;
