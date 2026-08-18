@@ -6,6 +6,7 @@ import { VereadorAvatar } from "@/components/vereador-avatar";
 import { SectionHeading } from "@/components/section-heading";
 import { ROUTES } from "@/lib/site-links";
 import { getCommitteeIcon } from "@/lib/committee-icons";
+import type { LucideIcon } from "lucide-react";
 
 export const Route = createFileRoute("/a-camara/comissoes")({
   head: () => ({
@@ -39,7 +40,7 @@ type Vereador = {
 type Comissao = {
   nome: string;
   sigla: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: LucideIcon;
   competencia: string;
   membros: { nome: string; funcao: string }[];
 };
