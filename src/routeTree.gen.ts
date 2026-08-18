@@ -31,6 +31,7 @@ import { Route as ACamaraMesaDiretoraRouteImport } from './routes/a-camara.mesa-
 import { Route as ACamaraRoteiroDasSessoesRouteImport } from './routes/a-camara.roteiro-das-sessoes'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminAuditoriaRouteImport } from './routes/admin/auditoria'
+import { Route as AdminComissoesRouteImport } from './routes/admin/comissoes'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
 import { Route as AdminDocumentosOficiaisRouteImport } from './routes/admin/documentos-oficiais'
 import { Route as AdminExecutivoRouteImport } from './routes/admin/executivo'
@@ -187,6 +188,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
 const AdminAuditoriaRoute = AdminAuditoriaRouteImport.update({
   id: '/auditoria',
   path: '/auditoria',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminComissoesRoute = AdminComissoesRouteImport.update({
+  id: '/comissoes',
+  path: '/comissoes',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
@@ -447,6 +453,7 @@ export interface FileRoutesByFullPath {
   '/a-camara/mesa-diretora': typeof ACamaraMesaDiretoraRoute
   '/a-camara/roteiro-das-sessoes': typeof ACamaraRoteiroDasSessoesRoute
   '/admin/auditoria': typeof AdminAuditoriaRoute
+  '/admin/comissoes': typeof AdminComissoesRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/documentos-oficiais': typeof AdminDocumentosOficiaisRoute
   '/admin/executivo': typeof AdminExecutivoRoute
@@ -515,6 +522,7 @@ export interface FileRoutesByTo {
   '/a-camara/mesa-diretora': typeof ACamaraMesaDiretoraRoute
   '/a-camara/roteiro-das-sessoes': typeof ACamaraRoteiroDasSessoesRoute
   '/admin/auditoria': typeof AdminAuditoriaRoute
+  '/admin/comissoes': typeof AdminComissoesRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/documentos-oficiais': typeof AdminDocumentosOficiaisRoute
   '/admin/executivo': typeof AdminExecutivoRoute
@@ -586,6 +594,7 @@ export interface FileRoutesById {
   '/a-camara/mesa-diretora': typeof ACamaraMesaDiretoraRoute
   '/a-camara/roteiro-das-sessoes': typeof ACamaraRoteiroDasSessoesRoute
   '/admin/auditoria': typeof AdminAuditoriaRoute
+  '/admin/comissoes': typeof AdminComissoesRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/documentos-oficiais': typeof AdminDocumentosOficiaisRoute
   '/admin/executivo': typeof AdminExecutivoRoute
@@ -658,6 +667,7 @@ export interface FileRouteTypes {
     | '/a-camara/mesa-diretora'
     | '/a-camara/roteiro-das-sessoes'
     | '/admin/auditoria'
+    | '/admin/comissoes'
     | '/admin/dashboard'
     | '/admin/documentos-oficiais'
     | '/admin/executivo'
@@ -726,6 +736,7 @@ export interface FileRouteTypes {
     | '/a-camara/mesa-diretora'
     | '/a-camara/roteiro-das-sessoes'
     | '/admin/auditoria'
+    | '/admin/comissoes'
     | '/admin/dashboard'
     | '/admin/documentos-oficiais'
     | '/admin/executivo'
@@ -796,6 +807,7 @@ export interface FileRouteTypes {
     | '/a-camara/mesa-diretora'
     | '/a-camara/roteiro-das-sessoes'
     | '/admin/auditoria'
+    | '/admin/comissoes'
     | '/admin/dashboard'
     | '/admin/documentos-oficiais'
     | '/admin/executivo'
@@ -1028,6 +1040,13 @@ declare module '@tanstack/react-router' {
       path: '/auditoria'
       fullPath: '/admin/auditoria'
       preLoaderRoute: typeof AdminAuditoriaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/comissoes': {
+      id: '/admin/comissoes'
+      path: '/comissoes'
+      fullPath: '/admin/comissoes'
+      preLoaderRoute: typeof AdminComissoesRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/dashboard': {
@@ -1369,6 +1388,7 @@ const AdminCmsPaginasRouteWithChildren = AdminCmsPaginasRoute._addFileChildren(
 
 interface AdminRouteChildren {
   AdminAuditoriaRoute: typeof AdminAuditoriaRoute
+  AdminComissoesRoute: typeof AdminComissoesRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminDocumentosOficiaisRoute: typeof AdminDocumentosOficiaisRoute
   AdminExecutivoRoute: typeof AdminExecutivoRoute
@@ -1411,6 +1431,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAuditoriaRoute: AdminAuditoriaRoute,
+  AdminComissoesRoute: AdminComissoesRoute,
   AdminDashboardRoute: AdminDashboardRoute,
   AdminDocumentosOficiaisRoute: AdminDocumentosOficiaisRoute,
   AdminExecutivoRoute: AdminExecutivoRoute,
