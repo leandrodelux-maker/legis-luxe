@@ -40,7 +40,7 @@ export const Route = createFileRoute("/vereadores/")({
   component: VereadoresPage,
 });
 
-type Vereador = Tables<"vereadores">;
+type Vereador = Omit<Tables<"vereadores">, "email" | "telefone">;
 
 function VereadoresPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -54,7 +54,7 @@ function VereadoresPage() {
       try {
         const { data, error } = await supabase
           .from("vereadores")
-          .select("*")
+          .select("id, nome, partido, cargo, foto_url, biografia, gabinete, mandato_inicio, mandato_fim, ativo, ordem, created_at, updated_at, data_nascimento, naturalidade, escolaridade, profissao, redes_sociais, stats, data_posse, mandato_atual, slug, legislatura, comissoes")
           .eq("ativo", true)
           .order("ordem", { ascending: true });
 
@@ -243,8 +243,8 @@ function VereadoresPage() {
                           <div className="text-[8px] uppercase tracking-tighter text-muted-foreground font-bold">Gabinete</div>
                         </div>
                         <div className="text-center">
-                          <div className="text-xs font-bold text-primary">{v.telefone || "-"}</div>
-                          <div className="text-[8px] uppercase tracking-tighter text-muted-foreground font-bold">Contato</div>
+                          <div className="text-xs font-bold text-primary">{v.partido || "-"}</div>
+                          <div className="text-[8px] uppercase tracking-tighter text-muted-foreground font-bold">Partido</div>
                         </div>
                       </div>
 

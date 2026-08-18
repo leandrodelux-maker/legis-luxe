@@ -74,7 +74,7 @@ type HeroData = {
   hero_eyebrow: string;
 };
 
-type Vereador = Tables<"vereadores">;
+type Vereador = Omit<Tables<"vereadores">, "email" | "telefone">;
 type MesaMember = {
   id: string;
   cargo: string;
@@ -130,7 +130,7 @@ function HomePage() {
 
     supabase
       .from("vereadores")
-      .select("*")
+      .select("id, nome, partido, cargo, foto_url, biografia, gabinete, mandato_inicio, mandato_fim, ativo, ordem, created_at, updated_at, data_nascimento, naturalidade, escolaridade, profissao, redes_sociais, stats, data_posse, mandato_atual, slug, legislatura, comissoes")
       .eq("ativo", true)
       .order("ordem", { ascending: true })
       .limit(8)
@@ -615,15 +615,6 @@ function VereadorCard({ v, delay }: { v: Vereador; delay: number }) {
                 aria-label="Twitter"
               >
                 <TwitterIcon className="h-3.5 w-3.5" />
-              </a>
-            )}
-            {v.email && (
-              <a
-                href={`mailto:${v.email}`}
-                className="h-8 w-8 rounded-full bg-white/15 hover:bg-gold hover:text-gold-foreground flex items-center justify-center transition-colors"
-                aria-label="E-mail"
-              >
-                <Mail className="h-3.5 w-3.5" />
               </a>
             )}
           </div>

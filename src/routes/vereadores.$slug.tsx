@@ -31,6 +31,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { VereadorAvatar } from "@/components/vereador-avatar";
+import { useContactInfo } from "@/hooks/use-contact-info";
 
 export const Route = createFileRoute("/vereadores/$slug")({
   component: VereadorDetailPage,
@@ -69,6 +70,7 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 
 function VereadorDetailPage() {
   const { slug } = Route.useParams();
+const contato = useContactInfo();
   const [vereador, setVereador] = useState<Vereador | null>(null);
   const [projetos, setProjetos] = useState<Projeto[]>([]);
   const [presencas, setPresencas] = useState<PresencaRow[]>([]);
@@ -90,7 +92,7 @@ function VereadorDetailPage() {
         const isUuid = UUID_RE.test(slug);
         const query = (supabase as any)
           .from("vereadores")
-          .select("*")
+          .select("id, nome, partido, cargo, foto_url, biografia, gabinete, mandato_inicio, mandato_fim, ativo, ordem, created_at, updated_at, data_nascimento, naturalidade, escolaridade, profissao, redes_sociais, stats, data_posse, mandato_atual, slug, legislatura, comissoes")
           .limit(1);
         const { data: vData, error: vErr } = isUuid
           ? await query.eq("id", slug).maybeSingle()
@@ -291,16 +293,20 @@ function VereadorDetailPage() {
               </CardContent>
             </Card>
 
-            {/* Contato */}
+            {/* Contato institucional */}
             <Card className="border-none shadow-xl">
               <CardContent className="p-6 space-y-4">
                 <h3 className="font-display font-bold text-xl mb-2">Contato</h3>
                 <div className="space-y-4">
-                  <ContactRow icon={<Mail className="w-5 h-5 text-primary" />} label="E-mail" value={vereador.email} />
-                  <ContactRow icon={<Phone className="w-5 h-5 text-primary" />} label="Telefone" value={vereador.telefone} />
+                  <ContactRow icon={<Mail className="w-5 h-5 text-primary" />} label="E-mail institucional" value={contato.email} />
+                  <ContactRow icon={<Phone className="w-5 h-5 text-primary" />} label="Telefone institucional" value={contato.telefone} />
                   <ContactRow icon={<MapPin className="w-5 h-5 text-primary" />} label="Gabinete" value={vereador.gabinete || "Câmara Municipal"} />
                 </div>
+                <p className="text-[11px] text-slate-400">
+                  O atendimento a vereadores é feito pelos canais oficiais da Câmara.
+                </p>
               </CardContent>
+
             </Card>
 
             {/* Mandatos / cargos */}
