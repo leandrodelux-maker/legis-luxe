@@ -37,6 +37,7 @@ import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
 import { Route as AdminDocumentosOficiaisRouteImport } from './routes/admin/documentos-oficiais'
 import { Route as AdminExecutivoRouteImport } from './routes/admin/executivo'
 import { Route as AdminMesaDiretoraRouteImport } from './routes/admin/mesa-diretora'
+import { Route as AdminNoticiasRouteImport } from './routes/admin/noticias'
 import { Route as AdminTransparenciaAtivaRouteImport } from './routes/admin/transparencia-ativa'
 import { Route as AdminTransparenciaLinksRouteImport } from './routes/admin/transparencia-links'
 import { Route as AtosLegislativosCartaDeServicosRouteImport } from './routes/atos-legislativos.carta-de-servicos'
@@ -219,6 +220,11 @@ const AdminExecutivoRoute = AdminExecutivoRouteImport.update({
 const AdminMesaDiretoraRoute = AdminMesaDiretoraRouteImport.update({
   id: '/mesa-diretora',
   path: '/mesa-diretora',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminNoticiasRoute = AdminNoticiasRouteImport.update({
+  id: '/noticias',
+  path: '/noticias',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminTransparenciaAtivaRoute = AdminTransparenciaAtivaRouteImport.update({
@@ -465,6 +471,7 @@ export interface FileRoutesByFullPath {
   '/admin/documentos-oficiais': typeof AdminDocumentosOficiaisRoute
   '/admin/executivo': typeof AdminExecutivoRoute
   '/admin/mesa-diretora': typeof AdminMesaDiretoraRoute
+  '/admin/noticias': typeof AdminNoticiasRoute
   '/admin/transparencia-ativa': typeof AdminTransparenciaAtivaRoute
   '/admin/transparencia-links': typeof AdminTransparenciaLinksRoute
   '/atos-legislativos/carta-de-servicos': typeof AtosLegislativosCartaDeServicosRoute
@@ -535,6 +542,7 @@ export interface FileRoutesByTo {
   '/admin/documentos-oficiais': typeof AdminDocumentosOficiaisRoute
   '/admin/executivo': typeof AdminExecutivoRoute
   '/admin/mesa-diretora': typeof AdminMesaDiretoraRoute
+  '/admin/noticias': typeof AdminNoticiasRoute
   '/admin/transparencia-ativa': typeof AdminTransparenciaAtivaRoute
   '/admin/transparencia-links': typeof AdminTransparenciaLinksRoute
   '/atos-legislativos/carta-de-servicos': typeof AtosLegislativosCartaDeServicosRoute
@@ -608,6 +616,7 @@ export interface FileRoutesById {
   '/admin/documentos-oficiais': typeof AdminDocumentosOficiaisRoute
   '/admin/executivo': typeof AdminExecutivoRoute
   '/admin/mesa-diretora': typeof AdminMesaDiretoraRoute
+  '/admin/noticias': typeof AdminNoticiasRoute
   '/admin/transparencia-ativa': typeof AdminTransparenciaAtivaRoute
   '/admin/transparencia-links': typeof AdminTransparenciaLinksRoute
   '/atos-legislativos/carta-de-servicos': typeof AtosLegislativosCartaDeServicosRoute
@@ -682,6 +691,7 @@ export interface FileRouteTypes {
     | '/admin/documentos-oficiais'
     | '/admin/executivo'
     | '/admin/mesa-diretora'
+    | '/admin/noticias'
     | '/admin/transparencia-ativa'
     | '/admin/transparencia-links'
     | '/atos-legislativos/carta-de-servicos'
@@ -752,6 +762,7 @@ export interface FileRouteTypes {
     | '/admin/documentos-oficiais'
     | '/admin/executivo'
     | '/admin/mesa-diretora'
+    | '/admin/noticias'
     | '/admin/transparencia-ativa'
     | '/admin/transparencia-links'
     | '/atos-legislativos/carta-de-servicos'
@@ -824,6 +835,7 @@ export interface FileRouteTypes {
     | '/admin/documentos-oficiais'
     | '/admin/executivo'
     | '/admin/mesa-diretora'
+    | '/admin/noticias'
     | '/admin/transparencia-ativa'
     | '/admin/transparencia-links'
     | '/atos-legislativos/carta-de-servicos'
@@ -1094,6 +1106,13 @@ declare module '@tanstack/react-router' {
       path: '/mesa-diretora'
       fullPath: '/admin/mesa-diretora'
       preLoaderRoute: typeof AdminMesaDiretoraRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/noticias': {
+      id: '/admin/noticias'
+      path: '/noticias'
+      fullPath: '/admin/noticias'
+      preLoaderRoute: typeof AdminNoticiasRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/transparencia-ativa': {
@@ -1413,6 +1432,7 @@ interface AdminRouteChildren {
   AdminDocumentosOficiaisRoute: typeof AdminDocumentosOficiaisRoute
   AdminExecutivoRoute: typeof AdminExecutivoRoute
   AdminMesaDiretoraRoute: typeof AdminMesaDiretoraRoute
+  AdminNoticiasRoute: typeof AdminNoticiasRoute
   AdminTransparenciaAtivaRoute: typeof AdminTransparenciaAtivaRoute
   AdminTransparenciaLinksRoute: typeof AdminTransparenciaLinksRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -1457,6 +1477,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminDocumentosOficiaisRoute: AdminDocumentosOficiaisRoute,
   AdminExecutivoRoute: AdminExecutivoRoute,
   AdminMesaDiretoraRoute: AdminMesaDiretoraRoute,
+  AdminNoticiasRoute: AdminNoticiasRoute,
   AdminTransparenciaAtivaRoute: AdminTransparenciaAtivaRoute,
   AdminTransparenciaLinksRoute: AdminTransparenciaLinksRoute,
   AdminIndexRoute: AdminIndexRoute,
