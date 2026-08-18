@@ -15,6 +15,8 @@ type SiteSettings = {
 
 export function SiteFooter() {
   const [settings, setSettings] = useState<SiteSettings | null>(null);
+  const contact = useContactInfo();
+
 
   useEffect(() => {
     supabase
