@@ -46,7 +46,8 @@ function AuditoriaPage() {
     return (
       r.action.toLowerCase().includes(s) ||
       r.entity_type.toLowerCase().includes(s) ||
-      (r.user_email ?? "").toLowerCase().includes(s)
+      (r.user_email ?? "").toLowerCase().includes(s) ||
+      JSON.stringify(r.metadata ?? {}).toLowerCase().includes(s)
     );
   });
 
@@ -79,7 +80,7 @@ function AuditoriaPage() {
                 <th className="px-4 py-3 text-left font-semibold">Usuário</th>
                 <th className="px-4 py-3 text-left font-semibold">Ação</th>
                 <th className="px-4 py-3 text-left font-semibold">Entidade</th>
-                <th className="px-4 py-3 text-left font-semibold">ID</th>
+                <th className="px-4 py-3 text-left font-semibold">Campos modificados</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -97,14 +98,16 @@ function AuditoriaPage() {
                 </tr>
               ) : (
                 filtered.map((r) => (
-                  <tr key={r.id} className="hover:bg-muted/30">
+                  <tr key={r.id} className="hover:bg-muted/30 align-top">
                     <td className="px-4 py-3 whitespace-nowrap text-muted-foreground text-xs">
                       {format(new Date(r.created_at), "dd/MM/yyyy HH:mm:ss", { locale: ptBR })}
                     </td>
                     <td className="px-4 py-3">{r.user_email ?? <span className="text-muted-foreground">Sistema</span>}</td>
                     <td className="px-4 py-3 font-medium">{r.action}</td>
                     <td className="px-4 py-3"><Badge variant="outline">{r.entity_type}</Badge></td>
-                    <td className="px-4 py-3 font-mono text-xs text-muted-foreground">{r.entity_id ?? "—"}</td>
+                    <td className="px-4 py-3">
+                      <ChangedFields metadata={r.metadata} />
+                    </td>
                   </tr>
                 ))
               )}
@@ -115,3 +118,50 @@ function AuditoriaPage() {
     </div>
   );
 }
+
+const FIELD_LABELS: Record<string, string> = {
+  contact_phone: "Telefone",
+  contact_email: "E-mail",
+  contact_hours: "Horário de atendimento",
+  whatsapp: "WhatsApp",
+  endereco: "Endereço",
+  nome_camara: "Nome da Câmara",
+  redes_sociais: "Redes sociais",
+  cookies_enabled: "Aviso de cookies (ativo)",
+  cookies_text: "Texto de cookies",
+  privacy_policy: "Política de Privacidade",
+  terms_of_use: "Termos de Uso",
+};
+
+function short(v: unknown) {
+  if (v === null || v === undefined) return "—";
+  const s = typeof v === "string" ? v : JSON.stringify(v);
+  return s.length > 60 ? `${s.slice(0, 60)}…` : s;
+}
+
+function ChangedFields({ metadata }: { metadata: any }) {
+  const alteracoes = Array.isArray(metadata?.alteracoes) ? metadata.alteracoes : null;
+  if (!alteracoes || alteracoes.length === 0) {
+    return <span className="text-muted-foreground text-xs">—</span>;
+  }
+  return (
+    <ul className="space-y-1.5 min-w-[18rem]">
+      {alteracoes.map((c: any, i: number) => (
+        <li key={i} className="text-xs">
+          <div className="flex items-center gap-2">
+            <span className="font-medium">{FIELD_LABELS[c.campo] ?? c.campo}</span>
+            <Badge variant="secondary" className="text-[10px] uppercase">
+              {c.grupo === "lgpd" ? "LGPD" : "Contato"}
+            </Badge>
+          </div>
+          <div className="text-muted-foreground">
+            <span className="line-through">{short(c.de)}</span>
+            {" → "}
+            <span className="text-foreground">{short(c.para)}</span>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
