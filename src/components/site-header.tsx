@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import radarLogo from "@/assets/radar-transparencia.png.asset.json";
-import { ROUTES, INFO_ACCESS_LINKS, CAMARA_LINKS } from "@/lib/site-links";
+import { ROUTES, INFO_ACCESS_LINKS, CAMARA_LINKS, ATOS_LEGISLATIVOS_LINKS } from "@/lib/site-links";
 
 type SiteSettings = {
   contact_phone: string | null;
@@ -34,7 +34,7 @@ const mainNav = [
   { to: ROUTES.historia, label: "A CÂMARA", children: CAMARA_LINKS },
   { to: ROUTES.vereadores, label: "VEREADORES" },
   { to: ROUTES.sessoes, label: "SESSÕES" },
-  { to: ROUTES.projetos, label: "FLUXO LEGISLATIVO" },
+  { to: ROUTES.projetos, label: "ATOS LEGISLATIVOS", children: ATOS_LEGISLATIVOS_LINKS },
   { to: ROUTES.noticias, label: "NOTÍCIAS" },
   { to: ROUTES.contato, label: "CONTATO" },
 ] as const;
