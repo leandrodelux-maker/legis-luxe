@@ -191,7 +191,7 @@ function AdminSessoes() {
       title="Sessões"
       description="Agenda e histórico das sessões plenárias."
       table="sessoes"
-      orderBy={{ column: "data_session", ascending: false }}
+      orderBy={{ column: "data_sessao", ascending: false }}
       defaultValues={{ status: "agendada" }}
       columns={[
         { key: "titulo", label: "Título" },
