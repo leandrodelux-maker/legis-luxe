@@ -121,6 +121,15 @@ function SessoesPage() {
   const [historicoSessoes, setHistoricoSessoes] = useState<DbSessao[]>([]);
   const [liveUrl, setLiveUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const PER_PAGE = 10;
+  const totalPages = Math.max(1, Math.ceil(historicoSessoes.length / PER_PAGE));
+  const currentPage = Math.min(page, totalPages);
+  const historicoPagina = historicoSessoes.slice(
+    (currentPage - 1) * PER_PAGE,
+    currentPage * PER_PAGE,
+  );
+
 
   useEffect(() => {
     async function loadData() {
