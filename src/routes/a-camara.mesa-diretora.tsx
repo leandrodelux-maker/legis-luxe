@@ -163,7 +163,8 @@ function MesaDiretoraPage() {
                         nome={m.vereadores.nome}
                         foto={m.vereadores.foto_url}
                         partido={m.vereadores.partido}
-                        size={9999}
+                        size={220}
+                        fill
                         rounded="lg"
                         fit="contain"
                         className="h-full w-full rounded-none border-0 bg-white"
