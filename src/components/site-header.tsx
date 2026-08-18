@@ -1,4 +1,6 @@
 import { Link } from "@tanstack/react-router";
+import { CONTACT_FALLBACK } from "@/hooks/use-contact-info";
+
 import {
   Mail,
   Phone,
