@@ -41,7 +41,9 @@ export const Route = createFileRoute("/e-sic")({
 });
 
 function ESicPage() {
+  const contact = useContactInfo();
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "err">("idle");
+
   const [protocolo, setProtocolo] = useState<string>("");
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
