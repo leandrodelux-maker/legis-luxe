@@ -191,7 +191,7 @@ function AdminSessoes() {
       title="Sessões"
       description="Agenda e histórico das sessões plenárias."
       table="sessoes"
-      orderBy={{ column: "data_session", ascending: false }}
+      orderBy={{ column: "data_sessao", ascending: false }}
       defaultValues={{ status: "agendada" }}
       columns={[
         { key: "titulo", label: "Título" },
@@ -201,8 +201,20 @@ function AdminSessoes() {
           label: "Data",
           render: (r) => new Date(r.data_sessao).toLocaleString("pt-BR"),
         },
-        { 
-          key: "acoes_extra", 
+        {
+          key: "qtd_presencas",
+          label: "Presenças",
+          render: (r) => (
+            <Badge variant="secondary">{r.qtd_presencas ?? 0} presentes</Badge>
+          ),
+        },
+        {
+          key: "qtd_votacoes",
+          label: "Votos",
+          render: (r) => <Badge variant="outline">{r.qtd_votacoes ?? 0}</Badge>,
+        },
+        {
+          key: "acoes_extra",
           label: "Presença/Votos",
           render: (r) => (
             <div className="flex gap-2">
@@ -219,7 +231,6 @@ function AdminSessoes() {
         { name: "local", label: "Local" },
         { name: "status", label: "Status", placeholder: "agendada | realizada | cancelada" },
         { name: "qtd_pautas", label: "Qtd. Pautas", type: "number" },
-        { name: "qtd_presencas", label: "Qtd. Presenças (Automático via Lista)", type: "number" },
         { name: "ata_publicada", label: "ATA Publicada?", type: "checkbox" },
         { name: "pauta", label: "Pauta (Texto)", type: "textarea" },
         { name: "ata_url", label: "Arquivo da ATA (PDF)", type: "file" },

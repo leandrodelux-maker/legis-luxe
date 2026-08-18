@@ -1806,6 +1806,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      sync_sessao_counters: { Args: { _sessao_id: string }; Returns: undefined }
     }
     Enums: {
       app_role: "admin" | "editor"
