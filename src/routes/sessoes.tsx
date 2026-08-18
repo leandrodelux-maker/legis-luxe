@@ -360,9 +360,69 @@ function SessoesPage() {
                   </div>
                 );
               })}
-              <Button variant="ghost" className="w-full py-8 text-muted-foreground hover:text-primary">
-                Carregar mais sessões anteriores...
-              </Button>
+              {historicoSessoes.length === 0 && !loading && (
+                <div className="text-center py-20 bg-secondary/20 rounded-2xl border border-dashed border-border text-muted-foreground font-medium">
+                  Nenhuma sessão anterior registrada.
+                </div>
+              )}
+
+              {historicoSessoes.length > PER_PAGE && (
+                <nav
+                  aria-label="Paginação do histórico de sessões"
+                  className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-border"
+                >
+                  <p className="text-sm text-muted-foreground">
+                    Mostrando{" "}
+                    <strong className="text-foreground">
+                      {(currentPage - 1) * PER_PAGE + 1}–
+                      {Math.min(currentPage * PER_PAGE, historicoSessoes.length)}
+                    </strong>{" "}
+                    de {historicoSessoes.length} sessões
+                  </p>
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={currentPage === 1}
+                      onClick={() => setPage(currentPage - 1)}
+                    >
+                      <ChevronLeft className="h-4 w-4" /> Anterior
+                    </Button>
+                    {Array.from({ length: totalPages }, (_, idx) => idx + 1)
+                      .filter(
+                        (p) =>
+                          p === 1 ||
+                          p === totalPages ||
+                          Math.abs(p - currentPage) <= 1,
+                      )
+                      .map((p, idx, arr) => (
+                        <span key={p} className="flex items-center gap-1">
+                          {idx > 0 && p - arr[idx - 1] > 1 && (
+                            <span className="px-1 text-muted-foreground">…</span>
+                          )}
+                          <Button
+                            variant={p === currentPage ? "default" : "outline"}
+                            size="sm"
+                            className="w-9"
+                            aria-current={p === currentPage ? "page" : undefined}
+                            onClick={() => setPage(p)}
+                          >
+                            {p}
+                          </Button>
+                        </span>
+                      ))}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={currentPage === totalPages}
+                      onClick={() => setPage(currentPage + 1)}
+                    >
+                      Próxima <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </nav>
+              )}
+
             </div>
           </TabsContent>
 
