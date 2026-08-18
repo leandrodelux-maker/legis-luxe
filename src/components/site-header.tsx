@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import radarLogo from "@/assets/radar-transparencia.png.asset.json";
-import { ROUTES, INFO_ACCESS_LINKS } from "@/lib/site-links";
+import { ROUTES, INFO_ACCESS_LINKS, CAMARA_LINKS } from "@/lib/site-links";
 
 type SiteSettings = {
   contact_phone: string | null;
