@@ -90,7 +90,7 @@ function VereadorDetailPage() {
         const isUuid = UUID_RE.test(slug);
         const query = (supabase as any)
           .from("vereadores")
-          .select("*")
+          .select("id, nome, partido, cargo, foto_url, biografia, gabinete, mandato_inicio, mandato_fim, ativo, ordem, created_at, updated_at, data_nascimento, naturalidade, escolaridade, profissao, redes_sociais, stats, data_posse, mandato_atual, slug, legislatura, comissoes")
           .limit(1);
         const { data: vData, error: vErr } = isUuid
           ? await query.eq("id", slug).maybeSingle()
