@@ -74,7 +74,7 @@ type HeroData = {
   hero_eyebrow: string;
 };
 
-type Vereador = Tables<"vereadores">;
+type Vereador = Omit<Tables<"vereadores">, "email" | "telefone">;
 type MesaMember = {
   id: string;
   cargo: string;
