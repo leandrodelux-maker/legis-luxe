@@ -92,7 +92,7 @@ const contato = useContactInfo();
         const isUuid = UUID_RE.test(slug);
         const query = (supabase as any)
           .from("vereadores")
-          .select("id, nome, partido, cargo, foto_url, biografia, gabinete, mandato_inicio, mandato_fim, ativo, ordem, created_at, updated_at, data_nascimento, naturalidade, escolaridade, profissao, redes_sociais, stats, data_posse, mandato_atual, slug, legislatura, comissoes")
+          .select("id, nome, partido, cargo, foto_url, biografia, gabinete, mandato_inicio, mandato_fim, ativo, ordem, created_at, updated_at, naturalidade, escolaridade, profissao, redes_sociais, stats, data_posse, mandato_atual, slug, legislatura, comissoes")
           .limit(1);
         const { data: vData, error: vErr } = isUuid
           ? await query.eq("id", slug).maybeSingle()
@@ -376,8 +376,6 @@ const contato = useContactInfo();
                   {/* INFORMAÇÕES PESSOAIS */}
                   <TabsContent value="info" className="mt-0">
                     <div className="grid md:grid-cols-2 gap-6">
-                      <InfoRow icon={<Calendar className="w-6 h-6 text-gold" />} label="Nascimento"
-                        value={vereador.data_nascimento ? new Date(vereador.data_nascimento).toLocaleDateString("pt-BR") : null} />
                       <InfoRow icon={<MapPin className="w-6 h-6 text-gold" />} label="Naturalidade" value={vereador.naturalidade} />
                       <InfoRow icon={<GraduationCap className="w-6 h-6 text-gold" />} label="Escolaridade" value={vereador.escolaridade} />
                       <InfoRow icon={<Briefcase className="w-6 h-6 text-gold" />} label="Profissão" value={vereador.profissao} />

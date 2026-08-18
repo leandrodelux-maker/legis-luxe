@@ -74,7 +74,7 @@ type HeroData = {
   hero_eyebrow: string;
 };
 
-type Vereador = Omit<Tables<"vereadores">, "email" | "telefone">;
+type Vereador = Omit<Tables<"vereadores">, "email" | "telefone" | "data_nascimento">;
 type MesaMember = {
   id: string;
   cargo: string;
@@ -130,7 +130,7 @@ function HomePage() {
 
     supabase
       .from("vereadores")
-      .select("id, nome, partido, cargo, foto_url, biografia, gabinete, mandato_inicio, mandato_fim, ativo, ordem, created_at, updated_at, data_nascimento, naturalidade, escolaridade, profissao, redes_sociais, stats, data_posse, mandato_atual, slug, legislatura, comissoes")
+      .select("id, nome, partido, cargo, foto_url, biografia, gabinete, mandato_inicio, mandato_fim, ativo, ordem, created_at, updated_at, naturalidade, escolaridade, profissao, redes_sociais, stats, data_posse, mandato_atual, slug, legislatura, comissoes")
       .eq("ativo", true)
       .order("ordem", { ascending: true })
       .limit(8)
