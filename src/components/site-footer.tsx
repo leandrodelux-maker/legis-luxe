@@ -92,18 +92,23 @@ export function SiteFooter() {
           <ul className="mt-4 space-y-3 text-sm text-primary-foreground/80">
             <li className="flex items-start gap-2.5">
               <MapPin className="h-4 w-4 mt-0.5 text-gold shrink-0" />
-              <span>Av. Principal, 1000 — Centro<br />CEP 00000-000</span>
+              <span>{contact.endereco}</span>
             </li>
             <li className="flex items-center gap-2.5">
               <Phone className="h-4 w-4 text-gold shrink-0" />
-              <a href="tel:+5500000000000" className="hover:text-gold">(00) 0000-0000</a>
+              <a href={contact.telefoneHref} className="hover:text-gold">{contact.telefone}</a>
             </li>
             <li className="flex items-center gap-2.5">
               <Mail className="h-4 w-4 text-gold shrink-0" />
-              <a href="mailto:contato@camara.gov.br" className="hover:text-gold">contato@camara.gov.br</a>
+              <a href={`mailto:${contact.email}`} className="hover:text-gold break-all">{contact.email}</a>
+            </li>
+            <li className="flex items-start gap-2.5">
+              <Clock className="h-4 w-4 mt-0.5 text-gold shrink-0" />
+              <span>{contact.horario}</span>
             </li>
           </ul>
         </div>
+
       </div>
 
       <div className="border-t border-white/10">
