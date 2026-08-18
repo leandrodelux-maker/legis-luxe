@@ -101,17 +101,17 @@ export function SiteHeader() {
         <div className="container-page py-5 flex items-center justify-between gap-6">
           <Link to="/" className="flex items-center gap-3 shrink-0">
             {settings?.header_logo_url ? (
-              <img 
-                src={settings.header_logo_url} 
+              <img
+                src={settings.header_logo_url}
                 alt="Logo Câmara Municipal"
                 decoding="async"
-                style={{ height: `${settings.header_logo_height}px` }}
+                style={{ height: `${(settings.header_logo_height || 80) * 1.15}px` }}
                 className="w-auto object-contain"
               />
             ) : (
               <>
-                <div className="grid h-14 w-14 place-items-center rounded-lg bg-gradient-to-br from-primary-deep to-primary text-white shadow-md ring-1 ring-gold/30">
-                  <Landmark className="h-7 w-7" />
+                <div className="grid h-16 w-16 place-items-center rounded-lg bg-gradient-to-br from-primary-deep to-primary text-white shadow-md ring-1 ring-gold/30">
+                  <Landmark className="h-8 w-8" />
                 </div>
                 <div className="leading-tight">
                   <div className="font-display font-extrabold text-xl md:text-2xl text-primary-deep tracking-tight uppercase">
