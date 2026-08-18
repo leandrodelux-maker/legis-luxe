@@ -105,6 +105,15 @@ export const SITE_SECTIONS: SiteSection[] = [
 /** Colunas de links do rodapé, derivadas das rotas canônicas. */
 export const FOOTER_COLUMNS: SiteSection[] = [
   {
+    title: "A Câmara",
+    links: [
+      { to: ROUTES.historia, label: "História" },
+      { to: ROUTES.mesaDiretora, label: "Mesa Diretora" },
+      { to: ROUTES.comissoes, label: "Comissões" },
+      { to: ROUTES.roteiroSessoes, label: "Roteiro das Sessões" },
+    ],
+  },
+  {
     title: "Institucional",
     links: [
       { to: ROUTES.vereadores, label: "Vereadores" },
