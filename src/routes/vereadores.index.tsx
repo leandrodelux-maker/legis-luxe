@@ -40,7 +40,7 @@ export const Route = createFileRoute("/vereadores/")({
   component: VereadoresPage,
 });
 
-type Vereador = Omit<Tables<"vereadores">, "email" | "telefone">;
+type Vereador = Omit<Tables<"vereadores">, "email" | "telefone" | "data_nascimento">;
 
 function VereadoresPage() {
   const [searchTerm, setSearchTerm] = useState("");
