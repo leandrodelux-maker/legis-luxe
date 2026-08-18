@@ -219,7 +219,6 @@ function AdminSessoes() {
         { name: "local", label: "Local" },
         { name: "status", label: "Status", placeholder: "agendada | realizada | cancelada" },
         { name: "qtd_pautas", label: "Qtd. Pautas", type: "number" },
-        { name: "qtd_presencas", label: "Qtd. Presenças (Automático via Lista)", type: "number" },
         { name: "ata_publicada", label: "ATA Publicada?", type: "checkbox" },
         { name: "pauta", label: "Pauta (Texto)", type: "textarea" },
         { name: "ata_url", label: "Arquivo da ATA (PDF)", type: "file" },
