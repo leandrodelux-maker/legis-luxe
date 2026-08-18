@@ -52,9 +52,10 @@ export function SiteHeader() {
       .then(({ data }) => setSettings(data as SiteSettings | null));
   }, []);
 
-  const phone = settings?.contact_phone ?? "(64) 9482-1176";
-  const email = settings?.contact_email ?? "contato@camaramunicipal.gov.br";
-  const hours = settings?.contact_hours ?? "Seg a Sex, 8h às 17h";
+  const phone = settings?.contact_phone ?? CONTACT_FALLBACK.telefone;
+  const email = settings?.contact_email ?? CONTACT_FALLBACK.email;
+  const hours = settings?.contact_hours ?? CONTACT_FALLBACK.horario;
+
 
   return (
     <>
