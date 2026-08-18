@@ -16,7 +16,9 @@ import {
   ClipboardList,
   Vote,
   ChevronRight,
+  ChevronLeft,
   Loader2
+
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionHeading } from "@/components/section-heading";
@@ -119,6 +121,15 @@ function SessoesPage() {
   const [historicoSessoes, setHistoricoSessoes] = useState<DbSessao[]>([]);
   const [liveUrl, setLiveUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const PER_PAGE = 10;
+  const totalPages = Math.max(1, Math.ceil(historicoSessoes.length / PER_PAGE));
+  const currentPage = Math.min(page, totalPages);
+  const historicoPagina = historicoSessoes.slice(
+    (currentPage - 1) * PER_PAGE,
+    currentPage * PER_PAGE,
+  );
+
 
   useEffect(() => {
     async function loadData() {
@@ -249,7 +260,7 @@ function SessoesPage() {
 
           <TabsContent value="historico" className="animate-[fade-up_0.5s_ease-out]">
             <div className="space-y-6">
-              {historicoSessoes.map((s, i) => {
+              {historicoPagina.map((s, i) => {
                 const dateObj = new Date(s.data_sessao);
                 const dateStr = dateObj.toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" });
                 const videoId = s.video_url?.includes("v=") ? s.video_url.split("v=")[1].split("&")[0] : null;
@@ -349,9 +360,69 @@ function SessoesPage() {
                   </div>
                 );
               })}
-              <Button variant="ghost" className="w-full py-8 text-muted-foreground hover:text-primary">
-                Carregar mais sessões anteriores...
-              </Button>
+              {historicoSessoes.length === 0 && !loading && (
+                <div className="text-center py-20 bg-secondary/20 rounded-2xl border border-dashed border-border text-muted-foreground font-medium">
+                  Nenhuma sessão anterior registrada.
+                </div>
+              )}
+
+              {historicoSessoes.length > PER_PAGE && (
+                <nav
+                  aria-label="Paginação do histórico de sessões"
+                  className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-border"
+                >
+                  <p className="text-sm text-muted-foreground">
+                    Mostrando{" "}
+                    <strong className="text-foreground">
+                      {(currentPage - 1) * PER_PAGE + 1}–
+                      {Math.min(currentPage * PER_PAGE, historicoSessoes.length)}
+                    </strong>{" "}
+                    de {historicoSessoes.length} sessões
+                  </p>
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={currentPage === 1}
+                      onClick={() => setPage(currentPage - 1)}
+                    >
+                      <ChevronLeft className="h-4 w-4" /> Anterior
+                    </Button>
+                    {Array.from({ length: totalPages }, (_, idx) => idx + 1)
+                      .filter(
+                        (p) =>
+                          p === 1 ||
+                          p === totalPages ||
+                          Math.abs(p - currentPage) <= 1,
+                      )
+                      .map((p, idx, arr) => (
+                        <span key={p} className="flex items-center gap-1">
+                          {idx > 0 && p - arr[idx - 1] > 1 && (
+                            <span className="px-1 text-muted-foreground">…</span>
+                          )}
+                          <Button
+                            variant={p === currentPage ? "default" : "outline"}
+                            size="sm"
+                            className="w-9"
+                            aria-current={p === currentPage ? "page" : undefined}
+                            onClick={() => setPage(p)}
+                          >
+                            {p}
+                          </Button>
+                        </span>
+                      ))}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={currentPage === totalPages}
+                      onClick={() => setPage(currentPage + 1)}
+                    >
+                      Próxima <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </nav>
+              )}
+
             </div>
           </TabsContent>
 
