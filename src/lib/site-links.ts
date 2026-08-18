@@ -21,6 +21,10 @@ export type SiteSection = {
  */
 export const ROUTES = {
   home: "/",
+  historia: "/a-camara/historia",
+  comissoes: "/a-camara/comissoes",
+  mesaDiretora: "/a-camara/mesa-diretora",
+  roteiroSessoes: "/a-camara/roteiro-das-sessoes",
   vereadores: "/vereadores",
   vereadoresRanking: "/vereadores/ranking",
   sessoes: "/sessoes",
