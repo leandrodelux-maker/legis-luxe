@@ -23,6 +23,8 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { useContactInfo } from "@/hooks/use-contact-info";
+
 
 export const Route = createFileRoute("/contato")({
   head: () => ({
