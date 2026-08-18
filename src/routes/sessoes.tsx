@@ -260,7 +260,7 @@ function SessoesPage() {
 
           <TabsContent value="historico" className="animate-[fade-up_0.5s_ease-out]">
             <div className="space-y-6">
-              {historicoSessoes.map((s, i) => {
+              {historicoPagina.map((s, i) => {
                 const dateObj = new Date(s.data_sessao);
                 const dateStr = dateObj.toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" });
                 const videoId = s.video_url?.includes("v=") ? s.video_url.split("v=")[1].split("&")[0] : null;
