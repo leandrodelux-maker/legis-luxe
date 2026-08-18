@@ -201,8 +201,18 @@ function AdminSessoes() {
           label: "Data",
           render: (r) => new Date(r.data_sessao).toLocaleString("pt-BR"),
         },
-        { 
-          key: "acoes_extra", 
+        {
+          key: "qtd_presencas",
+          label: "Presenças",
+          render: (r) => (
+            <Badge variant="secondary">{r.qtd_presencas ?? 0} presentes</Badge>
+          ),
+        },
+        {
+          key: "qtd_votacoes",
+          label: "Votos",
+          render: (r) => <Badge variant="outline">{r.qtd_votacoes ?? 0}</Badge>,
+        },
           label: "Presença/Votos",
           render: (r) => (
             <div className="flex gap-2">
