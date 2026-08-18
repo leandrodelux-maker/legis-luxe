@@ -31,6 +31,7 @@ type SiteSettings = {
 
 const mainNav = [
   { to: ROUTES.home, label: "INÍCIO" },
+  { to: ROUTES.historia, label: "A CÂMARA", children: CAMARA_LINKS },
   { to: ROUTES.vereadores, label: "VEREADORES" },
   { to: ROUTES.sessoes, label: "SESSÕES" },
   { to: ROUTES.projetos, label: "FLUXO LEGISLATIVO" },
