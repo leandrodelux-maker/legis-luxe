@@ -6,6 +6,7 @@ import {
   type LegalDocument,
 } from "@/components/document-library";
 import { WPFD_DOWNLOAD, WPFD_PREVIEW, buildGoogleViewer } from "@/lib/legal-documents";
+import { useOfficialDocuments } from "@/lib/official-documents";
 
 export const Route = createFileRoute("/atos-legislativos/lei-organica-municipal")({
   head: () => ({
@@ -28,7 +29,7 @@ export const Route = createFileRoute("/atos-legislativos/lei-organica-municipal"
   component: LeiOrganicaPage,
 });
 
-const DOCS: LegalDocument[] = [
+const FALLBACK_DOCS: LegalDocument[] = [
   {
     title: "Lei Orgânica do Município de Adelândia",
     date: "06/10/2023",
@@ -57,6 +58,8 @@ const TOPICS = [
 ];
 
 function LeiOrganicaPage() {
+  const { documents } = useOfficialDocuments("lei-organica-municipal", FALLBACK_DOCS);
+
   return (
     <>
       <DocumentPageHero
@@ -86,7 +89,7 @@ function LeiOrganicaPage() {
           Visualize o texto integral no portal ou baixe o arquivo em PDF.
         </p>
         <div className="mt-6">
-          <DocumentLibrary documents={DOCS} />
+          <DocumentLibrary documents={documents} />
         </div>
       </section>
     </>

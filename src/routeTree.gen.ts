@@ -31,7 +31,10 @@ import { Route as ACamaraMesaDiretoraRouteImport } from './routes/a-camara.mesa-
 import { Route as ACamaraRoteiroDasSessoesRouteImport } from './routes/a-camara.roteiro-das-sessoes'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminAuditoriaRouteImport } from './routes/admin/auditoria'
+import { Route as AdminComissoesRouteImport } from './routes/admin/comissoes'
+import { Route as AdminComissoesMembrosRouteImport } from './routes/admin/comissoes-membros'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
+import { Route as AdminDocumentosOficiaisRouteImport } from './routes/admin/documentos-oficiais'
 import { Route as AdminExecutivoRouteImport } from './routes/admin/executivo'
 import { Route as AdminMesaDiretoraRouteImport } from './routes/admin/mesa-diretora'
 import { Route as AdminTransparenciaAtivaRouteImport } from './routes/admin/transparencia-ativa'
@@ -188,9 +191,24 @@ const AdminAuditoriaRoute = AdminAuditoriaRouteImport.update({
   path: '/auditoria',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminComissoesRoute = AdminComissoesRouteImport.update({
+  id: '/comissoes',
+  path: '/comissoes',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminComissoesMembrosRoute = AdminComissoesMembrosRouteImport.update({
+  id: '/comissoes-membros',
+  path: '/comissoes-membros',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminDocumentosOficiaisRoute = AdminDocumentosOficiaisRouteImport.update({
+  id: '/documentos-oficiais',
+  path: '/documentos-oficiais',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminExecutivoRoute = AdminExecutivoRouteImport.update({
@@ -441,7 +459,10 @@ export interface FileRoutesByFullPath {
   '/a-camara/mesa-diretora': typeof ACamaraMesaDiretoraRoute
   '/a-camara/roteiro-das-sessoes': typeof ACamaraRoteiroDasSessoesRoute
   '/admin/auditoria': typeof AdminAuditoriaRoute
+  '/admin/comissoes': typeof AdminComissoesRoute
+  '/admin/comissoes-membros': typeof AdminComissoesMembrosRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/documentos-oficiais': typeof AdminDocumentosOficiaisRoute
   '/admin/executivo': typeof AdminExecutivoRoute
   '/admin/mesa-diretora': typeof AdminMesaDiretoraRoute
   '/admin/transparencia-ativa': typeof AdminTransparenciaAtivaRoute
@@ -508,7 +529,10 @@ export interface FileRoutesByTo {
   '/a-camara/mesa-diretora': typeof ACamaraMesaDiretoraRoute
   '/a-camara/roteiro-das-sessoes': typeof ACamaraRoteiroDasSessoesRoute
   '/admin/auditoria': typeof AdminAuditoriaRoute
+  '/admin/comissoes': typeof AdminComissoesRoute
+  '/admin/comissoes-membros': typeof AdminComissoesMembrosRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/documentos-oficiais': typeof AdminDocumentosOficiaisRoute
   '/admin/executivo': typeof AdminExecutivoRoute
   '/admin/mesa-diretora': typeof AdminMesaDiretoraRoute
   '/admin/transparencia-ativa': typeof AdminTransparenciaAtivaRoute
@@ -578,7 +602,10 @@ export interface FileRoutesById {
   '/a-camara/mesa-diretora': typeof ACamaraMesaDiretoraRoute
   '/a-camara/roteiro-das-sessoes': typeof ACamaraRoteiroDasSessoesRoute
   '/admin/auditoria': typeof AdminAuditoriaRoute
+  '/admin/comissoes': typeof AdminComissoesRoute
+  '/admin/comissoes-membros': typeof AdminComissoesMembrosRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/documentos-oficiais': typeof AdminDocumentosOficiaisRoute
   '/admin/executivo': typeof AdminExecutivoRoute
   '/admin/mesa-diretora': typeof AdminMesaDiretoraRoute
   '/admin/transparencia-ativa': typeof AdminTransparenciaAtivaRoute
@@ -649,7 +676,10 @@ export interface FileRouteTypes {
     | '/a-camara/mesa-diretora'
     | '/a-camara/roteiro-das-sessoes'
     | '/admin/auditoria'
+    | '/admin/comissoes'
+    | '/admin/comissoes-membros'
     | '/admin/dashboard'
+    | '/admin/documentos-oficiais'
     | '/admin/executivo'
     | '/admin/mesa-diretora'
     | '/admin/transparencia-ativa'
@@ -716,7 +746,10 @@ export interface FileRouteTypes {
     | '/a-camara/mesa-diretora'
     | '/a-camara/roteiro-das-sessoes'
     | '/admin/auditoria'
+    | '/admin/comissoes'
+    | '/admin/comissoes-membros'
     | '/admin/dashboard'
+    | '/admin/documentos-oficiais'
     | '/admin/executivo'
     | '/admin/mesa-diretora'
     | '/admin/transparencia-ativa'
@@ -785,7 +818,10 @@ export interface FileRouteTypes {
     | '/a-camara/mesa-diretora'
     | '/a-camara/roteiro-das-sessoes'
     | '/admin/auditoria'
+    | '/admin/comissoes'
+    | '/admin/comissoes-membros'
     | '/admin/dashboard'
+    | '/admin/documentos-oficiais'
     | '/admin/executivo'
     | '/admin/mesa-diretora'
     | '/admin/transparencia-ativa'
@@ -1018,11 +1054,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuditoriaRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/comissoes': {
+      id: '/admin/comissoes'
+      path: '/comissoes'
+      fullPath: '/admin/comissoes'
+      preLoaderRoute: typeof AdminComissoesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/comissoes-membros': {
+      id: '/admin/comissoes-membros'
+      path: '/comissoes-membros'
+      fullPath: '/admin/comissoes-membros'
+      preLoaderRoute: typeof AdminComissoesMembrosRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/dashboard': {
       id: '/admin/dashboard'
       path: '/dashboard'
       fullPath: '/admin/dashboard'
       preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/documentos-oficiais': {
+      id: '/admin/documentos-oficiais'
+      path: '/documentos-oficiais'
+      fullPath: '/admin/documentos-oficiais'
+      preLoaderRoute: typeof AdminDocumentosOficiaisRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/executivo': {
@@ -1350,7 +1407,10 @@ const AdminCmsPaginasRouteWithChildren = AdminCmsPaginasRoute._addFileChildren(
 
 interface AdminRouteChildren {
   AdminAuditoriaRoute: typeof AdminAuditoriaRoute
+  AdminComissoesRoute: typeof AdminComissoesRoute
+  AdminComissoesMembrosRoute: typeof AdminComissoesMembrosRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminDocumentosOficiaisRoute: typeof AdminDocumentosOficiaisRoute
   AdminExecutivoRoute: typeof AdminExecutivoRoute
   AdminMesaDiretoraRoute: typeof AdminMesaDiretoraRoute
   AdminTransparenciaAtivaRoute: typeof AdminTransparenciaAtivaRoute
@@ -1391,7 +1451,10 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAuditoriaRoute: AdminAuditoriaRoute,
+  AdminComissoesRoute: AdminComissoesRoute,
+  AdminComissoesMembrosRoute: AdminComissoesMembrosRoute,
   AdminDashboardRoute: AdminDashboardRoute,
+  AdminDocumentosOficiaisRoute: AdminDocumentosOficiaisRoute,
   AdminExecutivoRoute: AdminExecutivoRoute,
   AdminMesaDiretoraRoute: AdminMesaDiretoraRoute,
   AdminTransparenciaAtivaRoute: AdminTransparenciaAtivaRoute,

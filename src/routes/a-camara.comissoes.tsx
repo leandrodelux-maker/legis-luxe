@@ -5,6 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { VereadorAvatar } from "@/components/vereador-avatar";
 import { SectionHeading } from "@/components/section-heading";
 import { ROUTES } from "@/lib/site-links";
+import { getCommitteeIcon } from "@/lib/committee-icons";
+import type { LucideIcon } from "lucide-react";
 
 export const Route = createFileRoute("/a-camara/comissoes")({
   head: () => ({
@@ -38,12 +40,12 @@ type Vereador = {
 type Comissao = {
   nome: string;
   sigla: string;
-  icon: typeof Scale;
+  icon: LucideIcon;
   competencia: string;
   membros: { nome: string; funcao: string }[];
 };
 
-const COMISSOES: Comissao[] = [
+const FALLBACK_COMISSOES: Comissao[] = [
   {
     nome: "Comissão de Constituição, Justiça e Redação",
     sigla: "CCJR",
@@ -93,12 +95,42 @@ function normalize(s: string) {
 
 function ComissoesPage() {
   const [vereadores, setVereadores] = useState<Vereador[]>([]);
+  const [comissoes, setComissoes] = useState<Comissao[]>(FALLBACK_COMISSOES);
 
   useEffect(() => {
     supabase
       .from("vereadores")
       .select("id, slug, nome, partido, foto_url")
       .then(({ data }) => setVereadores((data as Vereador[]) ?? []));
+  }, []);
+
+  // Comissões gerenciadas pelo painel administrativo
+  useEffect(() => {
+    (async () => {
+      const [{ data: rows }, { data: membros }] = await Promise.all([
+        (supabase as any)
+          .from("comissoes")
+          .select("id, nome, sigla, icone, competencia, ordem, ativo")
+          .eq("ativo", true)
+          .order("ordem", { ascending: true }),
+        (supabase as any)
+          .from("comissoes_membros")
+          .select("comissao_id, nome, funcao, ordem")
+          .order("ordem", { ascending: true }),
+      ]);
+      if (!rows?.length) return;
+      setComissoes(
+        (rows as any[]).map((c) => ({
+          nome: c.nome,
+          sigla: c.sigla,
+          icon: getCommitteeIcon(c.icone),
+          competencia: c.competencia ?? "",
+          membros: ((membros as any[]) ?? [])
+            .filter((m) => m.comissao_id === c.id)
+            .map((m) => ({ nome: m.nome, funcao: m.funcao })),
+        })),
+      );
+    })();
   }, []);
 
   const byName = useMemo(() => {
@@ -125,7 +157,7 @@ function ComissoesPage() {
             em plenário, garantindo o exame técnico e o debate qualificado das matérias.
           </p>
           <div className="mt-5 flex flex-wrap gap-2">
-            {COMISSOES.map((c) => (
+            {comissoes.map((c) => (
               <a
                 key={c.sigla}
                 href={`#${c.sigla.toLowerCase()}`}
@@ -139,7 +171,7 @@ function ComissoesPage() {
       </section>
 
       <section className="container-page space-y-10 py-10 md:py-14">
-        {COMISSOES.map((c) => (
+        {comissoes.map((c) => (
           <article
             key={c.sigla}
             id={c.sigla.toLowerCase()}
