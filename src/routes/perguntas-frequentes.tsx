@@ -120,7 +120,7 @@ function FaqPage() {
       {/* SEARCH + CATS */}
       <section className="border-b border-border bg-secondary/40">
         <div className="container-page py-6 flex flex-col gap-4">
-          <div className="relative mx-auto w-full max-w-2xl">
+          <div className="relative w-full">
             <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <input
               value={q}
@@ -154,32 +154,30 @@ function FaqPage() {
             Nenhuma pergunta encontrada.
           </div>
         ) : (
-          <div className="mx-auto max-w-3xl">
-            <Accordion type="single" collapsible className="space-y-3">
-              {filtered.map((f, i) => (
-                <AccordionItem
-                  key={i}
-                  value={`item-${i}`}
-                  className="rounded-xl border border-border bg-card px-4"
-                >
-                  <AccordionTrigger className="text-left text-base font-semibold">
-                    <div className="flex items-start gap-3">
-                      <span className="mt-0.5 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary">
-                        {f.cat}
-                      </span>
-                      <span>{f.q}</span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="text-sm text-muted-foreground leading-7">
-                    {f.a}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </div>
+          <Accordion type="single" collapsible className="space-y-3">
+            {filtered.map((f, i) => (
+              <AccordionItem
+                key={i}
+                value={`item-${i}`}
+                className="rounded-xl border border-border bg-card px-4"
+              >
+                <AccordionTrigger className="text-left text-base font-semibold">
+                  <div className="flex items-start gap-3">
+                    <span className="mt-0.5 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary">
+                      {f.cat}
+                    </span>
+                    <span>{f.q}</span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="text-sm text-muted-foreground leading-7">
+                  {f.a}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         )}
 
-        <div className="mx-auto mt-10 max-w-3xl text-center text-sm text-muted-foreground">
+        <div className="mt-10 text-center text-sm text-muted-foreground">
           Não encontrou o que procurava?{" "}
           <Link to="/e-sic" className="text-primary hover:underline">Faça um pedido pelo e-SIC</Link>{" "}
           ou{" "}
