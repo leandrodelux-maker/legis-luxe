@@ -120,7 +120,13 @@ function VereadorDetailPage() {
 
         if (cancelled) return;
         setProjetos((pr.data as any[]) ?? []);
-        setPresencas((pres.data as any[]) ?? []);
+        setPresencas(
+          (((pres.data as any[]) ?? []) as PresencaRow[]).slice().sort((a, b) => {
+            const da = a.sessao?.data_sessao ? new Date(a.sessao.data_sessao).getTime() : 0;
+            const db = b.sessao?.data_sessao ? new Date(b.sessao.data_sessao).getTime() : 0;
+            return db - da;
+          }),
+        );
         setVotacoes((vot.data as any[]) ?? []);
         setMandatos((mand.data as any[]) ?? []);
         setGaleria((gal.data as any[]) ?? []);
