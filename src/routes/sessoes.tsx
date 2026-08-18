@@ -16,7 +16,9 @@ import {
   ClipboardList,
   Vote,
   ChevronRight,
+  ChevronLeft,
   Loader2
+
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionHeading } from "@/components/section-heading";
