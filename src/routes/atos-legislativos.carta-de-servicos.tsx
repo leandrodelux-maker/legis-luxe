@@ -6,6 +6,7 @@ import {
   type LegalDocument,
 } from "@/components/document-library";
 import { WPFD_DOWNLOAD, WPFD_PREVIEW, buildGoogleViewer } from "@/lib/legal-documents";
+import { useOfficialDocuments } from "@/lib/official-documents";
 
 export const Route = createFileRoute("/atos-legislativos/carta-de-servicos")({
   head: () => ({
@@ -28,7 +29,7 @@ export const Route = createFileRoute("/atos-legislativos/carta-de-servicos")({
   component: CartaDeServicosPage,
 });
 
-const DOCS: LegalDocument[] = [
+const FALLBACK_DOCS: LegalDocument[] = [
   {
     title: "Carta de Serviços ao Usuário",
     date: "29/12/2022",
@@ -57,6 +58,8 @@ const HIGHLIGHTS = [
 ];
 
 function CartaDeServicosPage() {
+  const { documents } = useOfficialDocuments("carta-de-servicos", FALLBACK_DOCS);
+
   return (
     <>
       <DocumentPageHero
@@ -86,7 +89,7 @@ function CartaDeServicosPage() {
           Visualize diretamente no portal ou faça o download em PDF.
         </p>
         <div className="mt-6">
-          <DocumentLibrary documents={DOCS} />
+          <DocumentLibrary documents={documents} />
         </div>
       </section>
     </>

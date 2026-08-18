@@ -6,6 +6,7 @@ import {
   type LegalDocument,
 } from "@/components/document-library";
 import { WPFD_DOWNLOAD, WPFD_PREVIEW, buildGoogleViewer } from "@/lib/legal-documents";
+import { useOfficialDocuments } from "@/lib/official-documents";
 
 export const Route = createFileRoute("/atos-legislativos/regimento-interno")({
   head: () => ({
@@ -28,7 +29,7 @@ export const Route = createFileRoute("/atos-legislativos/regimento-interno")({
   component: RegimentoInternoPage,
 });
 
-const DOCS: LegalDocument[] = [
+const FALLBACK_DOCS: LegalDocument[] = [
   {
     title: "Regimento Interno — Câmara Municipal",
     date: "06/10/2023",
@@ -57,6 +58,8 @@ const TOPICS = [
 ];
 
 function RegimentoInternoPage() {
+  const { documents } = useOfficialDocuments("regimento-interno", FALLBACK_DOCS);
+
   return (
     <>
       <DocumentPageHero
@@ -86,7 +89,7 @@ function RegimentoInternoPage() {
           Visualize no portal ou baixe o PDF do Regimento Interno.
         </p>
         <div className="mt-6">
-          <DocumentLibrary documents={DOCS} />
+          <DocumentLibrary documents={documents} />
         </div>
       </section>
     </>
