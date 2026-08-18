@@ -77,6 +77,10 @@ function VereadorDetailPage() {
   const [galeria, setGaleria] = useState<GaleriaItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [tipoFiltro, setTipoFiltro] = useState<string>("Todos");
+  const [presencaBusca, setPresencaBusca] = useState("");
+  const [presencaFiltro, setPresencaFiltro] = useState<"todas" | "presentes" | "ausentes">("todas");
+  const [presencaPagina, setPresencaPagina] = useState(1);
+  const PRESENCAS_POR_PAGINA = 10;
 
   useEffect(() => {
     let cancelled = false;
