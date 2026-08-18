@@ -51,7 +51,7 @@ export const Route = createFileRoute("/")({
     ],
     links: [
       { rel: "canonical", href: "/" },
-      { rel: "preload", as: "image", href: heroImg, fetchpriority: "high" } as any,
+      { rel: "preload", as: "image", href: heroImg, fetchPriority: "high" } as any,
     ],
   }),
   component: HomePage,
