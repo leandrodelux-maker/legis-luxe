@@ -243,8 +243,8 @@ function VereadoresPage() {
                           <div className="text-[8px] uppercase tracking-tighter text-muted-foreground font-bold">Gabinete</div>
                         </div>
                         <div className="text-center">
-                          <div className="text-xs font-bold text-primary">{v.telefone || "-"}</div>
-                          <div className="text-[8px] uppercase tracking-tighter text-muted-foreground font-bold">Contato</div>
+                          <div className="text-xs font-bold text-primary">{v.partido || "-"}</div>
+                          <div className="text-[8px] uppercase tracking-tighter text-muted-foreground font-bold">Partido</div>
                         </div>
                       </div>
 
