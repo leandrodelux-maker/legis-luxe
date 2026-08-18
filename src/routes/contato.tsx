@@ -139,21 +139,36 @@ function ContatoPage() {
                   <h4 className="font-display font-bold">Outros Canais</h4>
                   <div className="grid gap-3">
                     <div className="flex items-center gap-4 p-4 rounded-xl border border-border bg-card">
-                      <Phone className="w-5 h-5 text-gold" />
+                      <Phone className="w-5 h-5 text-gold shrink-0" />
                       <div>
-                        <p className="text-xs text-muted-foreground">Telefone</p>
-                        <p className="font-bold">(00) 0000-0000</p>
+                        <p className="text-xs text-muted-foreground">Telefone Atendimento</p>
+                        <a href={contact.telefoneHref} className="font-bold hover:text-primary">{contact.telefone}</a>
                       </div>
                     </div>
                     <div className="flex items-center gap-4 p-4 rounded-xl border border-border bg-card">
-                      <MapPin className="w-5 h-5 text-gold" />
+                      <Mail className="w-5 h-5 text-gold shrink-0" />
                       <div>
-                        <p className="text-xs text-muted-foreground">Presencial</p>
-                        <p className="font-bold text-sm">Av. Principal, 1000 - Centro</p>
+                        <p className="text-xs text-muted-foreground">Envie um e-mail</p>
+                        <a href={`mailto:${contact.email}`} className="font-bold text-sm break-all hover:text-primary">{contact.email}</a>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4 p-4 rounded-xl border border-border bg-card">
+                      <MapPin className="w-5 h-5 text-gold shrink-0" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">Nosso endereço</p>
+                        <p className="font-bold text-sm">{contact.endereco}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4 p-4 rounded-xl border border-border bg-card">
+                      <Clock className="w-5 h-5 text-gold shrink-0" />
+                      <div>
+                        <p className="text-xs text-muted-foreground">Horário Atendimento</p>
+                        <p className="font-bold text-sm">{contact.horario}</p>
                       </div>
                     </div>
                   </div>
                 </div>
+
               </div>
 
               <form onSubmit={handleSubmit} className="lg:col-span-3 card-premium p-8 md:p-10 space-y-8">
