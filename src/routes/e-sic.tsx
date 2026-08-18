@@ -11,7 +11,10 @@ import {
   Scale,
   Mail,
   Phone,
+  MapPin,
 } from "lucide-react";
+import { useContactInfo } from "@/hooks/use-contact-info";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -38,7 +41,9 @@ export const Route = createFileRoute("/e-sic")({
 });
 
 function ESicPage() {
+  const contact = useContactInfo();
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "err">("idle");
+
   const [protocolo, setProtocolo] = useState<string>("");
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -172,13 +177,22 @@ function ESicPage() {
         <div className="mx-auto mt-8 grid max-w-3xl gap-4 sm:grid-cols-2">
           <div className="rounded-xl border border-border bg-card p-5">
             <div className="flex items-center gap-2 text-primary"><Mail className="h-4 w-4" /> <span className="font-semibold">E-mail</span></div>
-            <a href="mailto:sic@camara.gov.br" className="mt-1 block text-sm text-muted-foreground hover:text-primary">sic@camara.gov.br</a>
+            <a href={`mailto:${contact.email}`} className="mt-1 block break-all text-sm text-muted-foreground hover:text-primary">{contact.email}</a>
           </div>
           <div className="rounded-xl border border-border bg-card p-5">
             <div className="flex items-center gap-2 text-primary"><Phone className="h-4 w-4" /> <span className="font-semibold">Telefone</span></div>
-            <a href="tel:+5500000000000" className="mt-1 block text-sm text-muted-foreground hover:text-primary">(00) 0000-0000</a>
+            <a href={contact.telefoneHref} className="mt-1 block text-sm text-muted-foreground hover:text-primary">{contact.telefone}</a>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-5">
+            <div className="flex items-center gap-2 text-primary"><MapPin className="h-4 w-4" /> <span className="font-semibold">Endereço</span></div>
+            <p className="mt-1 text-sm text-muted-foreground">{contact.endereco}</p>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-5">
+            <div className="flex items-center gap-2 text-primary"><Clock className="h-4 w-4" /> <span className="font-semibold">Horário</span></div>
+            <p className="mt-1 text-sm text-muted-foreground">{contact.horario}</p>
           </div>
         </div>
+
 
         <div className="mx-auto mt-6 max-w-3xl text-center text-sm text-muted-foreground">
           Veja também as <Link to="/perguntas-frequentes" className="text-primary hover:underline">Perguntas Frequentes</Link> ou consulte o <Link to="/transparencia-portal" className="text-primary hover:underline">Portal da Transparência</Link>.
