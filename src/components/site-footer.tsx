@@ -1,9 +1,11 @@
 import { Link } from "@tanstack/react-router";
-import { Landmark, Mail, MapPin, Phone, MessageSquare as FacebookIcon, Camera as InstagramIcon, PlayCircle as YoutubeIcon } from "lucide-react";
+import { Landmark, Mail, MapPin, Phone, Clock, MessageSquare as FacebookIcon, Camera as InstagramIcon, PlayCircle as YoutubeIcon } from "lucide-react";
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { FOOTER_COLUMNS, FOOTER_LEGAL_LINKS } from "@/lib/site-links";
+import { useContactInfo } from "@/hooks/use-contact-info";
+
 
 
 type SiteSettings = {
