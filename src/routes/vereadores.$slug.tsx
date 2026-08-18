@@ -342,7 +342,7 @@ function VereadorDetailPage() {
                       { v: "biografia", l: "Biografia" },
                       { v: "info", l: "Informações" },
                       { v: "projetos", l: `Projetos (${projetos.length})` },
-                      { v: "presencas", l: `Presenças (${computed.totalSessoes})` },
+                      { v: "presencas", l: `Sessões (${computed.totalSessoes})` },
                       { v: "votacoes", l: `Votações (${votacoes.length})` },
                       ...(galeria.length > 0 ? [{ v: "galeria", l: `Galeria` }] : []),
                     ].map((t) => (
