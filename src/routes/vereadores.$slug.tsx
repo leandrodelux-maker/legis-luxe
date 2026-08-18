@@ -376,8 +376,6 @@ const contato = useContactInfo();
                   {/* INFORMAÇÕES PESSOAIS */}
                   <TabsContent value="info" className="mt-0">
                     <div className="grid md:grid-cols-2 gap-6">
-                      <InfoRow icon={<Calendar className="w-6 h-6 text-gold" />} label="Nascimento"
-                        value={vereador.data_nascimento ? new Date(vereador.data_nascimento).toLocaleDateString("pt-BR") : null} />
                       <InfoRow icon={<MapPin className="w-6 h-6 text-gold" />} label="Naturalidade" value={vereador.naturalidade} />
                       <InfoRow icon={<GraduationCap className="w-6 h-6 text-gold" />} label="Escolaridade" value={vereador.escolaridade} />
                       <InfoRow icon={<Briefcase className="w-6 h-6 text-gold" />} label="Profissão" value={vereador.profissao} />
