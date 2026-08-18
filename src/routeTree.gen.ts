@@ -25,6 +25,7 @@ import { Route as TransparenciaRouteImport } from './routes/transparencia'
 import { Route as TransparenciaAtivaRouteImport } from './routes/transparencia-ativa'
 import { Route as TransparenciaDadosRouteImport } from './routes/transparencia-dados'
 import { Route as TransparenciaPortalRouteImport } from './routes/transparencia-portal'
+import { Route as ACamaraComissoesRouteImport } from './routes/a-camara.comissoes'
 import { Route as ACamaraHistoriaRouteImport } from './routes/a-camara.historia'
 import { Route as ACamaraMesaDiretoraRouteImport } from './routes/a-camara.mesa-diretora'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
@@ -150,6 +151,11 @@ const TransparenciaDadosRoute = TransparenciaDadosRouteImport.update({
 const TransparenciaPortalRoute = TransparenciaPortalRouteImport.update({
   id: '/transparencia-portal',
   path: '/transparencia-portal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ACamaraComissoesRoute = ACamaraComissoesRouteImport.update({
+  id: '/a-camara/comissoes',
+  path: '/a-camara/comissoes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ACamaraHistoriaRoute = ACamaraHistoriaRouteImport.update({
@@ -402,6 +408,7 @@ export interface FileRoutesByFullPath {
   '/transparencia-ativa': typeof TransparenciaAtivaRoute
   '/transparencia-dados': typeof TransparenciaDadosRoute
   '/transparencia-portal': typeof TransparenciaPortalRoute
+  '/a-camara/comissoes': typeof ACamaraComissoesRoute
   '/a-camara/historia': typeof ACamaraHistoriaRoute
   '/a-camara/mesa-diretora': typeof ACamaraMesaDiretoraRoute
   '/admin/auditoria': typeof AdminAuditoriaRoute
@@ -464,6 +471,7 @@ export interface FileRoutesByTo {
   '/transparencia-ativa': typeof TransparenciaAtivaRoute
   '/transparencia-dados': typeof TransparenciaDadosRoute
   '/transparencia-portal': typeof TransparenciaPortalRoute
+  '/a-camara/comissoes': typeof ACamaraComissoesRoute
   '/a-camara/historia': typeof ACamaraHistoriaRoute
   '/a-camara/mesa-diretora': typeof ACamaraMesaDiretoraRoute
   '/admin/auditoria': typeof AdminAuditoriaRoute
@@ -529,6 +537,7 @@ export interface FileRoutesById {
   '/transparencia-ativa': typeof TransparenciaAtivaRoute
   '/transparencia-dados': typeof TransparenciaDadosRoute
   '/transparencia-portal': typeof TransparenciaPortalRoute
+  '/a-camara/comissoes': typeof ACamaraComissoesRoute
   '/a-camara/historia': typeof ACamaraHistoriaRoute
   '/a-camara/mesa-diretora': typeof ACamaraMesaDiretoraRoute
   '/admin/auditoria': typeof AdminAuditoriaRoute
@@ -595,6 +604,7 @@ export interface FileRouteTypes {
     | '/transparencia-ativa'
     | '/transparencia-dados'
     | '/transparencia-portal'
+    | '/a-camara/comissoes'
     | '/a-camara/historia'
     | '/a-camara/mesa-diretora'
     | '/admin/auditoria'
@@ -657,6 +667,7 @@ export interface FileRouteTypes {
     | '/transparencia-ativa'
     | '/transparencia-dados'
     | '/transparencia-portal'
+    | '/a-camara/comissoes'
     | '/a-camara/historia'
     | '/a-camara/mesa-diretora'
     | '/admin/auditoria'
@@ -721,6 +732,7 @@ export interface FileRouteTypes {
     | '/transparencia-ativa'
     | '/transparencia-dados'
     | '/transparencia-portal'
+    | '/a-camara/comissoes'
     | '/a-camara/historia'
     | '/a-camara/mesa-diretora'
     | '/admin/auditoria'
@@ -786,6 +798,7 @@ export interface RootRouteChildren {
   TransparenciaAtivaRoute: typeof TransparenciaAtivaRoute
   TransparenciaDadosRoute: typeof TransparenciaDadosRoute
   TransparenciaPortalRoute: typeof TransparenciaPortalRoute
+  ACamaraComissoesRoute: typeof ACamaraComissoesRoute
   ACamaraHistoriaRoute: typeof ACamaraHistoriaRoute
   ACamaraMesaDiretoraRoute: typeof ACamaraMesaDiretoraRoute
   VereadoresSlugRoute: typeof VereadoresSlugRoute
@@ -905,6 +918,13 @@ declare module '@tanstack/react-router' {
       path: '/transparencia-portal'
       fullPath: '/transparencia-portal'
       preLoaderRoute: typeof TransparenciaPortalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/a-camara/comissoes': {
+      id: '/a-camara/comissoes'
+      path: '/a-camara/comissoes'
+      fullPath: '/a-camara/comissoes'
+      preLoaderRoute: typeof ACamaraComissoesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/a-camara/historia': {
@@ -1358,6 +1378,7 @@ const rootRouteChildren: RootRouteChildren = {
   TransparenciaAtivaRoute: TransparenciaAtivaRoute,
   TransparenciaDadosRoute: TransparenciaDadosRoute,
   TransparenciaPortalRoute: TransparenciaPortalRoute,
+  ACamaraComissoesRoute: ACamaraComissoesRoute,
   ACamaraHistoriaRoute: ACamaraHistoriaRoute,
   ACamaraMesaDiretoraRoute: ACamaraMesaDiretoraRoute,
   VereadoresSlugRoute: VereadoresSlugRoute,
