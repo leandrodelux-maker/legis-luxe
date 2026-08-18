@@ -46,7 +46,9 @@ const tiposOuvidoria = [
 ];
 
 function ContatoPage() {
+  const contact = useContactInfo();
   const [protocol, setProtocol] = useState("");
+
   const [submitted, setSubmitted] = useState(false);
   const [protocolNumber, setProtocolNumber] = useState("");
 
