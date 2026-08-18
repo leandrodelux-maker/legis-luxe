@@ -25,7 +25,7 @@ export function SiteFooter() {
 
   return (
     <footer className="mt-24 border-t border-border bg-primary-deep text-primary-foreground">
-      <div className="container-page py-14 grid gap-10 md:grid-cols-4">
+      <div className="container-page py-14 grid gap-10 md:grid-cols-5">
         <div className="md:col-span-1">
           <div className="flex items-center gap-3">
             {settings?.footer_logo_url ? (
@@ -84,7 +84,6 @@ export function SiteFooter() {
             </ul>
           </div>
         ))}
-
 
         <div>
           <h3 className="font-display text-sm font-semibold uppercase tracking-wider text-gold">
