@@ -38,7 +38,7 @@ export const Route = createFileRoute("/vereadores/$slug")({
 
 type Vereador = any;
 type Projeto = any;
-type PresencaRow = { id: string; presente: boolean; sessao: { id: string; titulo: string; data_sessao: string; tipo: string | null } | null };
+type PresencaRow = { id: string; presente: boolean; sessao: { id: string; titulo: string; data_sessao: string; tipo: string | null; ata_url: string | null } | null };
 type VotacaoRow = { id: string; voto: string; created_at: string; sessao: { id: string; titulo: string; data_sessao: string } | null };
 type Mandato = any;
 type GaleriaItem = any;
@@ -77,6 +77,10 @@ function VereadorDetailPage() {
   const [galeria, setGaleria] = useState<GaleriaItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [tipoFiltro, setTipoFiltro] = useState<string>("Todos");
+  const [presencaBusca, setPresencaBusca] = useState("");
+  const [presencaFiltro, setPresencaFiltro] = useState<"todas" | "presentes" | "ausentes">("todas");
+  const [presencaPagina, setPresencaPagina] = useState(1);
+  const PRESENCAS_POR_PAGINA = 10;
 
   useEffect(() => {
     let cancelled = false;
@@ -104,10 +108,9 @@ function VereadorDetailPage() {
             .order("data_apresentacao", { ascending: false })
             .limit(100),
           supabase.from("sessoes_presencas")
-            .select("id, presente, sessao:sessoes(id, titulo, data_sessao, tipo)")
+            .select("id, presente, sessao:sessoes(id, titulo, data_sessao, tipo, ata_url)")
             .eq("vereador_id", id)
-            .order("created_at", { ascending: false })
-            .limit(100),
+            .limit(500),
           supabase.from("sessoes_votacoes")
             .select("id, voto, created_at, sessao:sessoes(id, titulo, data_sessao)")
             .eq("vereador_id", id)
@@ -121,7 +124,13 @@ function VereadorDetailPage() {
 
         if (cancelled) return;
         setProjetos((pr.data as any[]) ?? []);
-        setPresencas((pres.data as any[]) ?? []);
+        setPresencas(
+          (((pres.data as any[]) ?? []) as PresencaRow[]).slice().sort((a, b) => {
+            const da = a.sessao?.data_sessao ? new Date(a.sessao.data_sessao).getTime() : 0;
+            const db = b.sessao?.data_sessao ? new Date(b.sessao.data_sessao).getTime() : 0;
+            return db - da;
+          }),
+        );
         setVotacoes((vot.data as any[]) ?? []);
         setMandatos((mand.data as any[]) ?? []);
         setGaleria((gal.data as any[]) ?? []);
@@ -333,7 +342,7 @@ function VereadorDetailPage() {
                       { v: "biografia", l: "Biografia" },
                       { v: "info", l: "Informações" },
                       { v: "projetos", l: `Projetos (${projetos.length})` },
-                      { v: "presencas", l: `Presenças (${computed.totalSessoes})` },
+                      { v: "presencas", l: `Sessões (${computed.totalSessoes})` },
                       { v: "votacoes", l: `Votações (${votacoes.length})` },
                       ...(galeria.length > 0 ? [{ v: "galeria", l: `Galeria` }] : []),
                     ].map((t) => (
@@ -442,30 +451,178 @@ function VereadorDetailPage() {
                     {presencas.length === 0 ? (
                       <EmptyState icon={<CheckCircle2 className="w-10 h-10 text-slate-300" />} text="Nenhum registro de presença encontrado." />
                     ) : (
-                      <ul className="divide-y divide-slate-100">
-                        {presencas.map((p) => (
-                          <li key={p.id} className="py-3 flex items-center justify-between gap-3">
-                            <div className="min-w-0">
-                              <p className="font-semibold text-slate-700 truncate">{p.sessao?.titulo || "Sessão"}</p>
-                              <p className="text-xs text-slate-400">
-                                {p.sessao?.tipo ? `${p.sessao.tipo} · ` : ""}
-                                {p.sessao?.data_sessao ? new Date(p.sessao.data_sessao).toLocaleDateString("pt-BR") : "—"}
-                              </p>
+                      (() => {
+                        const termo = presencaBusca.trim().toLowerCase();
+                        const filtradas = presencas.filter((p) => {
+                          if (presencaFiltro === "presentes" && !p.presente) return false;
+                          if (presencaFiltro === "ausentes" && p.presente) return false;
+                          if (!termo) return true;
+                          const data = p.sessao?.data_sessao
+                            ? new Date(p.sessao.data_sessao).toLocaleDateString("pt-BR")
+                            : "";
+                          return `${p.sessao?.titulo ?? ""} ${p.sessao?.tipo ?? ""} ${data}`
+                            .toLowerCase()
+                            .includes(termo);
+                        });
+                        const totalPaginas = Math.max(1, Math.ceil(filtradas.length / PRESENCAS_POR_PAGINA));
+                        const pagina = Math.min(presencaPagina, totalPaginas);
+                        const inicio = (pagina - 1) * PRESENCAS_POR_PAGINA;
+                        const visiveis = filtradas.slice(inicio, inicio + PRESENCAS_POR_PAGINA);
+
+                        return (
+                          <div className="space-y-5">
+                            <div className="grid grid-cols-3 gap-3">
+                              {[
+                                { l: "Sessões", v: computed.totalSessoes, c: "text-primary" },
+                                { l: "Presenças", v: computed.totalPresentes, c: "text-emerald-600" },
+                                { l: "Faltas", v: computed.totalAusencias, c: "text-rose-600" },
+                              ].map((s) => (
+                                <div key={s.l} className="rounded-xl border border-slate-100 bg-slate-50/70 p-4 text-center">
+                                  <p className={`font-display text-2xl font-bold ${s.c}`}>{s.v}</p>
+                                  <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">{s.l}</p>
+                                </div>
+                              ))}
                             </div>
-                            {p.presente ? (
-                              <Badge className="bg-emerald-100 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 gap-1">
-                                <CheckCircle2 className="w-3.5 h-3.5" /> Presente
-                              </Badge>
-                            ) : (
-                              <Badge className="bg-rose-100 text-rose-700 border border-rose-200 hover:bg-rose-100 gap-1">
-                                <XCircle className="w-3.5 h-3.5" /> Ausente
-                              </Badge>
+
+                            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                              <div className="flex gap-2">
+                                {([
+                                  { v: "todas", l: "Todas" },
+                                  { v: "presentes", l: "Presentes" },
+                                  { v: "ausentes", l: "Faltas" },
+                                ] as const).map((f) => (
+                                  <button
+                                    key={f.v}
+                                    onClick={() => { setPresencaFiltro(f.v); setPresencaPagina(1); }}
+                                    className={
+                                      "rounded-full border px-3 py-1.5 text-xs font-bold transition " +
+                                      (presencaFiltro === f.v
+                                        ? "border-primary bg-primary text-primary-foreground"
+                                        : "border-slate-200 bg-white text-slate-600 hover:border-primary/50")
+                                    }
+                                  >
+                                    {f.l}
+                                  </button>
+                                ))}
+                              </div>
+                              <input
+                                type="search"
+                                value={presencaBusca}
+                                onChange={(e) => { setPresencaBusca(e.target.value); setPresencaPagina(1); }}
+                                placeholder="Pesquisar sessão ou data..."
+                                aria-label="Pesquisar sessão"
+                                className="h-10 w-full rounded-md border border-slate-200 px-3 text-sm outline-none focus:ring-2 focus:ring-primary/40 sm:w-64"
+                              />
+                            </div>
+
+                            <div className="overflow-hidden rounded-xl border border-slate-100">
+                              <div className="hidden grid-cols-[110px_1fr_120px_90px] gap-3 bg-primary px-4 py-3 text-[11px] font-bold uppercase tracking-wider text-primary-foreground md:grid">
+                                <span>Data</span>
+                                <span>Pauta</span>
+                                <span className="text-center">Participou</span>
+                                <span className="text-center">Ata</span>
+                              </div>
+                              {visiveis.length === 0 ? (
+                                <p className="px-4 py-8 text-center text-sm text-slate-500">
+                                  Nenhuma sessão encontrada para este filtro.
+                                </p>
+                              ) : (
+                                <ul className="divide-y divide-slate-100">
+                                  {visiveis.map((p) => (
+                                    <li
+                                      key={p.id}
+                                      className="flex flex-wrap items-center gap-3 px-4 py-3 odd:bg-slate-50/60 md:grid md:grid-cols-[110px_1fr_120px_90px]"
+                                    >
+                                      <span className="text-sm text-slate-500">
+                                        {p.sessao?.data_sessao
+                                          ? new Date(p.sessao.data_sessao).toLocaleDateString("pt-BR")
+                                          : "—"}
+                                      </span>
+                                      <span className="min-w-0 flex-1 text-sm font-bold text-primary">
+                                        {p.sessao?.titulo || "Sessão"}
+                                        {p.sessao?.tipo && (
+                                          <span className="ml-2 text-[11px] font-medium uppercase text-slate-400">
+                                            {p.sessao.tipo}
+                                          </span>
+                                        )}
+                                      </span>
+                                      <span className="md:text-center">
+                                        {p.presente ? (
+                                          <Badge className="gap-1 border border-emerald-200 bg-emerald-100 text-emerald-700 hover:bg-emerald-100">
+                                            <CheckCircle2 className="h-3.5 w-3.5" /> SIM
+                                          </Badge>
+                                        ) : (
+                                          <Badge className="gap-1 border border-rose-200 bg-rose-100 text-rose-700 hover:bg-rose-100">
+                                            <XCircle className="h-3.5 w-3.5" /> NÃO
+                                          </Badge>
+                                        )}
+                                      </span>
+                                      <span className="md:text-center">
+                                        {p.sessao?.ata_url ? (
+                                          <a href={p.sessao.ata_url} target="_blank" rel="noopener noreferrer">
+                                            <Button size="sm" variant="outline" className="h-8 gap-1 text-xs">
+                                              <ExternalLink className="h-3.5 w-3.5" /> Ata
+                                            </Button>
+                                          </a>
+                                        ) : (
+                                          <span className="text-xs text-slate-400">—</span>
+                                        )}
+                                      </span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </div>
+
+                            {totalPaginas > 1 && (
+                              <div className="flex flex-wrap items-center justify-between gap-3">
+                                <p className="text-xs text-slate-500">
+                                  Mostrando {inicio + 1}–{Math.min(inicio + PRESENCAS_POR_PAGINA, filtradas.length)} de{" "}
+                                  {filtradas.length} sessões
+                                </p>
+                                <div className="flex flex-wrap items-center gap-1">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="h-8"
+                                    disabled={pagina === 1}
+                                    onClick={() => setPresencaPagina(pagina - 1)}
+                                  >
+                                    Anterior
+                                  </Button>
+                                  {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((n) => (
+                                    <button
+                                      key={n}
+                                      onClick={() => setPresencaPagina(n)}
+                                      aria-current={n === pagina ? "page" : undefined}
+                                      className={
+                                        "h-8 w-8 rounded-md border text-xs font-bold transition " +
+                                        (n === pagina
+                                          ? "border-primary bg-primary text-primary-foreground"
+                                          : "border-slate-200 bg-white text-slate-600 hover:border-primary/50")
+                                      }
+                                    >
+                                      {n}
+                                    </button>
+                                  ))}
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="h-8"
+                                    disabled={pagina === totalPaginas}
+                                    onClick={() => setPresencaPagina(pagina + 1)}
+                                  >
+                                    Próxima
+                                  </Button>
+                                </div>
+                              </div>
                             )}
-                          </li>
-                        ))}
-                      </ul>
+                          </div>
+                        );
+                      })()
                     )}
                   </TabsContent>
+
 
                   {/* VOTAÇÕES */}
                   <TabsContent value="votacoes" className="mt-0">
