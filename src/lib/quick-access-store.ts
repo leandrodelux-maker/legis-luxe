@@ -40,28 +40,40 @@ export type QuickAccessItem = {
   external: boolean;
 };
 
-const STORAGE_KEY = "cm:quick-access:v1";
+const STORAGE_KEY = "cm:quick-access:v2";
 
 const DEFAULT_ITEMS: QuickAccessItem[] = [
-  { id: "1", category: "cidadaos", label: "Licitações", icon: "FileText", url: "/transparencia-portal", external: false },
-  { id: "2", category: "cidadaos", label: "Contratos", icon: "ClipboardList", url: "/transparencia-portal", external: false },
-  { id: "3", category: "cidadaos", label: "Nota Fiscal Eletrônica", tag: "NFSE", icon: "Monitor", url: "https://nfse.exemplo.gov.br", external: true },
-  { id: "4", category: "cidadaos", label: "Despesas", icon: "BookOpen", url: "/transparencia-portal", external: false },
-  { id: "5", category: "cidadaos", label: "Folha de Pagamento", icon: "Users", url: "/transparencia-portal", external: false },
-  { id: "6", category: "cidadaos", label: "Diárias e Passagens", icon: "Building2", url: "/transparencia-portal", external: false },
-  { id: "7", category: "cidadaos", label: "Ouvidoria e Atendimento", icon: "Phone", url: "/contato", external: false },
-  { id: "8", category: "cidadaos", label: "Emissão de Guias IPTU", tag: "IPTU", icon: "FileText", url: "https://iptu.exemplo.gov.br", external: true },
-  { id: "9", category: "cidadaos", label: "Emissão de Guias ISS", tag: "GUIAS ISS", icon: "FileText", url: "https://iss.exemplo.gov.br", external: true },
-  { id: "10", category: "cidadaos", label: "Lei Aldir Blanc", tag: "PNAB", icon: "BookOpen", url: "/transparencia-portal", external: false },
-  { id: "11", category: "cidadaos", label: "Ficha Funcional", tag: "FUNCIONÁRIOS", icon: "Users", url: "/transparencia-portal", external: false },
-  { id: "12", category: "cidadaos", label: "Webmail", tag: "E-MAIL", icon: "Mail", url: "https://webmail.exemplo.gov.br", external: true },
-  { id: "13", category: "servidores", label: "Portal do Servidor", icon: "Users", url: "https://servidor.exemplo.gov.br", external: true },
-  { id: "14", category: "servidores", label: "Holerite Online", icon: "Receipt", url: "https://holerite.exemplo.gov.br", external: true },
-  { id: "15", category: "empresas", label: "Alvará Online", icon: "Building2", url: "https://alvara.exemplo.gov.br", external: true },
-  { id: "16", category: "empresas", label: "NFS-e Empresa", tag: "NFSE", icon: "Monitor", url: "https://nfse.exemplo.gov.br", external: true },
-  { id: "17", category: "legislacao", label: "Lei Orgânica", icon: "Scale", url: "/transparencia-portal", external: false },
-  { id: "18", category: "legislacao", label: "Regimento Interno", icon: "Gavel", url: "/transparencia-portal", external: false },
+  // Cidadãos
+  { id: "1", category: "cidadaos", label: "Ouvidoria", icon: "Phone", url: "/contato", external: false },
+  { id: "2", category: "cidadaos", label: "e-SIC", tag: "ACESSO À INFORMAÇÃO", icon: "ShieldCheck", url: "/e-sic", external: false },
+  { id: "3", category: "cidadaos", label: "Solicitações", icon: "ClipboardList", url: "/e-sic", external: false },
+  { id: "4", category: "cidadaos", label: "Perguntas e Respostas", icon: "BookOpen", url: "/perguntas-frequentes", external: false },
+  { id: "5", category: "cidadaos", label: "Notícias", icon: "FileText", url: "/noticias", external: false },
+  { id: "6", category: "cidadaos", label: "Sessões Plenárias", icon: "Calendar", url: "/sessoes", external: false },
+  { id: "7", category: "cidadaos", label: "Vereadores", icon: "Users", url: "/vereadores", external: false },
+  { id: "8", category: "cidadaos", label: "LGPD", tag: "PRIVACIDADE", icon: "ShieldCheck", url: "/lgpd", external: false },
+
+  // Servidores
+  { id: "9", category: "servidores", label: "Folha de Pagamento", icon: "Users", url: "/transparencia-portal", external: false },
+  { id: "10", category: "servidores", label: "Diárias", icon: "Wallet", url: "/transparencia-portal", external: false },
+  { id: "11", category: "servidores", label: "Estrutura e Cargos", icon: "Landmark", url: "/transparencia-portal", external: false },
+  { id: "12", category: "servidores", label: "Estatísticas", icon: "Monitor", url: "/transparencia-portal", external: false },
+
+  // Empresas
+  { id: "13", category: "empresas", label: "Licitações", icon: "Gavel", url: "/transparencia-portal", external: false },
+  { id: "14", category: "empresas", label: "Contratos", icon: "ClipboardList", url: "/transparencia-portal", external: false },
+  { id: "15", category: "empresas", label: "Dispensas e Inexigibilidades", icon: "FileText", url: "/transparencia-portal", external: false },
+  { id: "16", category: "empresas", label: "Receitas e Despesas", icon: "Receipt", url: "/transparencia-portal", external: false },
+
+  // Legislação
+  { id: "17", category: "legislacao", label: "Legislação Municipal", icon: "Scale", url: "/transparencia-portal", external: false },
+  { id: "18", category: "legislacao", label: "Lei Orgânica", icon: "BookOpen", url: "/transparencia-portal", external: false },
+  { id: "19", category: "legislacao", label: "Regimento Interno", icon: "Gavel", url: "/transparencia-portal", external: false },
+  { id: "20", category: "legislacao", label: "Projetos Legislativos", icon: "FileText", url: "/projetos", external: false },
+  { id: "21", category: "legislacao", label: "Gestão Fiscal (LRF)", icon: "Landmark", url: "/transparencia-portal", external: false },
+  { id: "22", category: "legislacao", label: "Portal da Transparência", icon: "Globe", url: "/transparencia-portal", external: false },
 ];
+
 
 function load(): QuickAccessItem[] {
   if (typeof window === "undefined") return DEFAULT_ITEMS;
