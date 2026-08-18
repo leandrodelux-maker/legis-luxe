@@ -215,7 +215,8 @@ export function SiteHeader() {
                   {item.label}
                 </Link>
               </li>
-            ))}
+              ),
+            )}
           </ul>
           <div className="flex items-center gap-1 text-white/90 shrink-0">
             <Link
