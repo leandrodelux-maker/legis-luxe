@@ -27,6 +27,8 @@ type Props = {
   objectPosition?: string;
   /** "cover" recorta para preencher; "contain" mostra a foto inteira sem cortar */
   fit?: "cover" | "contain";
+  /** Preenche o contêiner pai (ignora `size` nas dimensões) */
+  fill?: boolean;
 };
 
 /**
@@ -50,6 +52,7 @@ export function VereadorAvatar({
   showLabelOnError = false,
   objectPosition = "center 18%",
   fit = "cover",
+  fill = false,
 }: Props) {
   const { isAdmin } = useSupabaseAuth();
   const [state, setState] = useState<"loading" | "ok" | "placeholder" | "initials">(
@@ -93,7 +96,7 @@ export function VereadorAvatar({
         radius,
         className,
       )}
-      style={{ width: size, height: size }}
+      style={fill ? undefined : { width: size, height: size }}
       aria-label={nome}
       title={nome}
     >
@@ -102,8 +105,6 @@ export function VereadorAvatar({
           src={foto}
           alt={nome}
           loading="lazy"
-          width={size}
-          height={size}
           className={cn("w-full h-full", fit === "contain" ? "object-contain" : "object-cover")}
           style={{ objectPosition: fit === "contain" ? "center top" : objectPosition }}
           onLoad={() => setState("ok")}
