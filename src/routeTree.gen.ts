@@ -43,6 +43,7 @@ import { Route as AtosLegislativosCartaDeServicosRouteImport } from './routes/at
 import { Route as AtosLegislativosLeiOrganicaMunicipalRouteImport } from './routes/atos-legislativos.lei-organica-municipal'
 import { Route as AtosLegislativosRegimentoInternoRouteImport } from './routes/atos-legislativos.regimento-interno'
 import { Route as NoticiasIndexRouteImport } from './routes/noticias.index'
+import { Route as NoticiasSlugRouteImport } from './routes/noticias.$slug'
 import { Route as SessoesIndexRouteImport } from './routes/sessoes/index'
 import { Route as SessoesAoVivoRouteImport } from './routes/sessoes/ao-vivo'
 import { Route as VereadoresIndexRouteImport } from './routes/vereadores.index'
@@ -253,6 +254,11 @@ const AtosLegislativosRegimentoInternoRoute =
 const NoticiasIndexRoute = NoticiasIndexRouteImport.update({
   id: '/noticias/',
   path: '/noticias/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NoticiasSlugRoute = NoticiasSlugRouteImport.update({
+  id: '/noticias/$slug',
+  path: '/noticias/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SessoesIndexRoute = SessoesIndexRouteImport.update({
@@ -476,6 +482,7 @@ export interface FileRoutesByFullPath {
   '/atos-legislativos/carta-de-servicos': typeof AtosLegislativosCartaDeServicosRoute
   '/atos-legislativos/lei-organica-municipal': typeof AtosLegislativosLeiOrganicaMunicipalRoute
   '/atos-legislativos/regimento-interno': typeof AtosLegislativosRegimentoInternoRoute
+  '/noticias/$slug': typeof NoticiasSlugRoute
   '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
   '/vereadores/$slug': typeof VereadoresSlugRoute
   '/vereadores/ranking': typeof VereadoresRankingRoute
@@ -547,6 +554,7 @@ export interface FileRoutesByTo {
   '/atos-legislativos/carta-de-servicos': typeof AtosLegislativosCartaDeServicosRoute
   '/atos-legislativos/lei-organica-municipal': typeof AtosLegislativosLeiOrganicaMunicipalRoute
   '/atos-legislativos/regimento-interno': typeof AtosLegislativosRegimentoInternoRoute
+  '/noticias/$slug': typeof NoticiasSlugRoute
   '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
   '/vereadores/$slug': typeof VereadoresSlugRoute
   '/vereadores/ranking': typeof VereadoresRankingRoute
@@ -621,6 +629,7 @@ export interface FileRoutesById {
   '/atos-legislativos/carta-de-servicos': typeof AtosLegislativosCartaDeServicosRoute
   '/atos-legislativos/lei-organica-municipal': typeof AtosLegislativosLeiOrganicaMunicipalRoute
   '/atos-legislativos/regimento-interno': typeof AtosLegislativosRegimentoInternoRoute
+  '/noticias/$slug': typeof NoticiasSlugRoute
   '/sessoes/ao-vivo': typeof SessoesAoVivoRoute
   '/vereadores/$slug': typeof VereadoresSlugRoute
   '/vereadores/ranking': typeof VereadoresRankingRoute
@@ -696,6 +705,7 @@ export interface FileRouteTypes {
     | '/atos-legislativos/carta-de-servicos'
     | '/atos-legislativos/lei-organica-municipal'
     | '/atos-legislativos/regimento-interno'
+    | '/noticias/$slug'
     | '/sessoes/ao-vivo'
     | '/vereadores/$slug'
     | '/vereadores/ranking'
@@ -767,6 +777,7 @@ export interface FileRouteTypes {
     | '/atos-legislativos/carta-de-servicos'
     | '/atos-legislativos/lei-organica-municipal'
     | '/atos-legislativos/regimento-interno'
+    | '/noticias/$slug'
     | '/sessoes/ao-vivo'
     | '/vereadores/$slug'
     | '/vereadores/ranking'
@@ -840,6 +851,7 @@ export interface FileRouteTypes {
     | '/atos-legislativos/carta-de-servicos'
     | '/atos-legislativos/lei-organica-municipal'
     | '/atos-legislativos/regimento-interno'
+    | '/noticias/$slug'
     | '/sessoes/ao-vivo'
     | '/vereadores/$slug'
     | '/vereadores/ranking'
@@ -904,6 +916,7 @@ export interface RootRouteChildren {
   AtosLegislativosCartaDeServicosRoute: typeof AtosLegislativosCartaDeServicosRoute
   AtosLegislativosLeiOrganicaMunicipalRoute: typeof AtosLegislativosLeiOrganicaMunicipalRoute
   AtosLegislativosRegimentoInternoRoute: typeof AtosLegislativosRegimentoInternoRoute
+  NoticiasSlugRoute: typeof NoticiasSlugRoute
   VereadoresSlugRoute: typeof VereadoresSlugRoute
   VereadoresRankingRoute: typeof VereadoresRankingRoute
   NoticiasIndexRoute: typeof NoticiasIndexRoute
@@ -1148,6 +1161,13 @@ declare module '@tanstack/react-router' {
       path: '/noticias'
       fullPath: '/noticias/'
       preLoaderRoute: typeof NoticiasIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/noticias/$slug': {
+      id: '/noticias/$slug'
+      path: '/noticias/$slug'
+      fullPath: '/noticias/$slug'
+      preLoaderRoute: typeof NoticiasSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sessoes/': {
@@ -1553,6 +1573,7 @@ const rootRouteChildren: RootRouteChildren = {
   AtosLegislativosLeiOrganicaMunicipalRoute:
     AtosLegislativosLeiOrganicaMunicipalRoute,
   AtosLegislativosRegimentoInternoRoute: AtosLegislativosRegimentoInternoRoute,
+  NoticiasSlugRoute: NoticiasSlugRoute,
   VereadoresSlugRoute: VereadoresSlugRoute,
   VereadoresRankingRoute: VereadoresRankingRoute,
   NoticiasIndexRoute: NoticiasIndexRoute,
