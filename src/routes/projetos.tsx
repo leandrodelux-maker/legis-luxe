@@ -20,7 +20,7 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/projetos")({
   head: () => ({
     meta: [
-      { title: "Fluxo Legislativo — Câmara Municipal" },
+      { title: "Atos Legislativos — Câmara Municipal de Adelândia" },
       {
         name: "description",
         content: "Entenda como as leis são criadas e pesquise por matérias específicas.",
@@ -145,10 +145,10 @@ function ProjetosPage() {
         <div className="absolute top-0 right-0 w-1/3 h-full bg-gold/5 skew-x-12 translate-x-1/2" />
         <div className="container-page py-11 md:py-16 relative z-10">
           <div className="text-xs uppercase tracking-[0.2em] text-gold flex items-center gap-3">
-            <span className="gold-divider" /> Tramitação
+            <span className="gold-divider" /> Atos Legislativos
           </div>
           <h1 className="mt-4 font-display text-4xl md:text-6xl font-bold leading-tight">
-            Acompanhe o <span className="text-gold">Fluxo Legislativo</span>
+            Acompanhe os <span className="text-gold">Atos Legislativos</span>
           </h1>
           <p className="mt-6 max-w-2xl text-primary-foreground/85 text-lg">
             Entenda como as leis são criadas e pesquise por matérias específicas.
