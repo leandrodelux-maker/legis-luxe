@@ -21,6 +21,10 @@ export type SiteSection = {
  */
 export const ROUTES = {
   home: "/",
+  historia: "/a-camara/historia",
+  comissoes: "/a-camara/comissoes",
+  mesaDiretora: "/a-camara/mesa-diretora",
+  roteiroSessoes: "/a-camara/roteiro-das-sessoes",
   vereadores: "/vereadores",
   vereadoresRanking: "/vereadores/ranking",
   sessoes: "/sessoes",
@@ -44,7 +48,25 @@ export const INFO_ACCESS_LINKS: SiteLink[] = [
 ];
 
 
+/** Links do menu "A Câmara" (cabeçalho). */
+export const CAMARA_LINKS: SiteLink[] = [
+  { to: ROUTES.historia, label: "História" },
+  { to: ROUTES.mesaDiretora, label: "Mesa Diretora" },
+  { to: ROUTES.comissoes, label: "Comissões" },
+  { to: ROUTES.roteiroSessoes, label: "Roteiro das Sessões" },
+  { to: ROUTES.faq, label: "Perguntas Frequentes" },
+];
+
 export const SITE_SECTIONS: SiteSection[] = [
+  {
+    title: "A Câmara",
+    links: [
+      { to: ROUTES.historia, label: "História", description: "Origem e trajetória do município de Adelândia." },
+      { to: ROUTES.mesaDiretora, label: "Mesa Diretora", description: "Composição da direção da Casa Legislativa." },
+      { to: ROUTES.comissoes, label: "Comissões", description: "Comissões permanentes e seus membros." },
+      { to: ROUTES.roteiroSessoes, label: "Roteiro das Sessões", description: "Passo a passo de uma sessão plenária." },
+    ],
+  },
   {
     title: "Institucional",
     links: [
@@ -82,6 +104,15 @@ export const SITE_SECTIONS: SiteSection[] = [
 
 /** Colunas de links do rodapé, derivadas das rotas canônicas. */
 export const FOOTER_COLUMNS: SiteSection[] = [
+  {
+    title: "A Câmara",
+    links: [
+      { to: ROUTES.historia, label: "História" },
+      { to: ROUTES.mesaDiretora, label: "Mesa Diretora" },
+      { to: ROUTES.comissoes, label: "Comissões" },
+      { to: ROUTES.roteiroSessoes, label: "Roteiro das Sessões" },
+    ],
+  },
   {
     title: "Institucional",
     links: [

@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import radarLogo from "@/assets/radar-transparencia.png.asset.json";
-import { ROUTES, INFO_ACCESS_LINKS } from "@/lib/site-links";
+import { ROUTES, INFO_ACCESS_LINKS, CAMARA_LINKS } from "@/lib/site-links";
 
 type SiteSettings = {
   contact_phone: string | null;
@@ -31,6 +31,7 @@ type SiteSettings = {
 
 const mainNav = [
   { to: ROUTES.home, label: "INÍCIO" },
+  { to: ROUTES.historia, label: "A CÂMARA", children: CAMARA_LINKS },
   { to: ROUTES.vereadores, label: "VEREADORES" },
   { to: ROUTES.sessoes, label: "SESSÕES" },
   { to: ROUTES.projetos, label: "FLUXO LEGISLATIVO" },
@@ -174,7 +175,32 @@ export function SiteHeader() {
       <nav id="menu-principal" aria-label="Principal" className="hidden lg:block bg-primary-deep border-t border-white/10 sticky top-0 z-40" tabIndex={-1}>
         <div className="container-page flex items-center justify-between gap-2">
           <ul className="flex items-stretch">
-            {mainNav.map((item) => (
+            {mainNav.map((item) =>
+              "children" in item && item.children ? (
+                <li key={item.to} className="relative group">
+                  <Link
+                    to={item.to}
+                    className="relative inline-flex items-center gap-1.5 px-4 py-4 text-[13px] font-semibold tracking-wide text-white/90 hover:text-white hover:bg-white/5 transition-colors uppercase whitespace-nowrap"
+                    activeProps={{
+                      className: "text-white after:absolute after:left-4 after:right-4 after:bottom-0 after:h-[3px] after:bg-white",
+                    }}
+                  >
+                    {item.label} <ChevronDown className="h-3.5 w-3.5 opacity-70" />
+                  </Link>
+                  <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all absolute left-0 top-full min-w-[260px] bg-white text-slate-700 shadow-xl rounded-b-md border border-slate-100 py-2 z-50">
+                    {item.children.map((c) => (
+                      <Link
+                        key={c.to}
+                        to={c.to}
+                        className="block px-4 py-2.5 text-sm font-medium hover:bg-slate-50 hover:text-primary"
+                        activeProps={{ className: "bg-slate-50 text-primary" }}
+                      >
+                        {c.label}
+                      </Link>
+                    ))}
+                  </div>
+                </li>
+              ) : (
               <li key={item.to}>
                 <Link
                   to={item.to}
@@ -189,7 +215,8 @@ export function SiteHeader() {
                   {item.label}
                 </Link>
               </li>
-            ))}
+              ),
+            )}
           </ul>
           <div className="flex items-center gap-1 text-white/90 shrink-0">
             <Link
@@ -234,6 +261,22 @@ export function SiteHeader() {
                 >
                   {item.label}
                 </Link>
+                {"children" in item && item.children && (
+                  <ul className="mb-1 ml-3 border-l border-white/15 pl-3">
+                    {item.children.map((c) => (
+                      <li key={c.to}>
+                        <Link
+                          to={c.to}
+                          onClick={() => setOpen(false)}
+                          className="block rounded-md px-3 py-2 text-[13px] font-medium text-white/70 hover:bg-white/10 hover:text-white"
+                          activeProps={{ className: "text-white bg-white/10" }}
+                        >
+                          {c.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
             ))}
             <li className="pt-3 mt-2 border-t border-white/10 flex gap-2">
