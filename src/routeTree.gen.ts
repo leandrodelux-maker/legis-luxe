@@ -18,7 +18,6 @@ import { Route as LgpdRouteImport } from './routes/lgpd'
 import { Route as MapaDoSiteRouteImport } from './routes/mapa-do-site'
 import { Route as PerguntasFrequentesRouteImport } from './routes/perguntas-frequentes'
 import { Route as ProjetosRouteImport } from './routes/projetos'
-import { Route as SessoesRouteImport } from './routes/sessoes'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TransparenciaRouteImport } from './routes/transparencia'
 import { Route as TransparenciaAtivaRouteImport } from './routes/transparencia-ativa'
@@ -125,11 +124,6 @@ const PerguntasFrequentesRoute = PerguntasFrequentesRouteImport.update({
 const ProjetosRoute = ProjetosRouteImport.update({
   id: '/projetos',
   path: '/projetos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SessoesRoute = SessoesRouteImport.update({
-  id: '/sessoes',
-  path: '/sessoes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -262,14 +256,14 @@ const NoticiasSlugRoute = NoticiasSlugRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const SessoesIndexRoute = SessoesIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => SessoesRoute,
+  id: '/sessoes/',
+  path: '/sessoes/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const SessoesAoVivoRoute = SessoesAoVivoRouteImport.update({
-  id: '/ao-vivo',
-  path: '/ao-vivo',
-  getParentRoute: () => SessoesRoute,
+  id: '/sessoes/ao-vivo',
+  path: '/sessoes/ao-vivo',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const VereadoresIndexRoute = VereadoresIndexRouteImport.update({
   id: '/vereadores/',
@@ -459,7 +453,6 @@ export interface FileRoutesByFullPath {
   '/mapa-do-site': typeof MapaDoSiteRoute
   '/perguntas-frequentes': typeof PerguntasFrequentesRoute
   '/projetos': typeof ProjetosRoute
-  '/sessoes': typeof SessoesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/transparencia': typeof TransparenciaRoute
   '/transparencia-ativa': typeof TransparenciaAtivaRoute
@@ -606,7 +599,6 @@ export interface FileRoutesById {
   '/mapa-do-site': typeof MapaDoSiteRoute
   '/perguntas-frequentes': typeof PerguntasFrequentesRoute
   '/projetos': typeof ProjetosRoute
-  '/sessoes': typeof SessoesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/transparencia': typeof TransparenciaRoute
   '/transparencia-ativa': typeof TransparenciaAtivaRoute
@@ -682,7 +674,6 @@ export interface FileRouteTypes {
     | '/mapa-do-site'
     | '/perguntas-frequentes'
     | '/projetos'
-    | '/sessoes'
     | '/sitemap.xml'
     | '/transparencia'
     | '/transparencia-ativa'
@@ -828,7 +819,6 @@ export interface FileRouteTypes {
     | '/mapa-do-site'
     | '/perguntas-frequentes'
     | '/projetos'
-    | '/sessoes'
     | '/sitemap.xml'
     | '/transparencia'
     | '/transparencia-ativa'
@@ -903,7 +893,6 @@ export interface RootRouteChildren {
   MapaDoSiteRoute: typeof MapaDoSiteRoute
   PerguntasFrequentesRoute: typeof PerguntasFrequentesRoute
   ProjetosRoute: typeof ProjetosRoute
-  SessoesRoute: typeof SessoesRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TransparenciaRoute: typeof TransparenciaRoute
   TransparenciaAtivaRoute: typeof TransparenciaAtivaRoute
@@ -917,9 +906,11 @@ export interface RootRouteChildren {
   AtosLegislativosLeiOrganicaMunicipalRoute: typeof AtosLegislativosLeiOrganicaMunicipalRoute
   AtosLegislativosRegimentoInternoRoute: typeof AtosLegislativosRegimentoInternoRoute
   NoticiasSlugRoute: typeof NoticiasSlugRoute
+  SessoesAoVivoRoute: typeof SessoesAoVivoRoute
   VereadoresSlugRoute: typeof VereadoresSlugRoute
   VereadoresRankingRoute: typeof VereadoresRankingRoute
   NoticiasIndexRoute: typeof NoticiasIndexRoute
+  SessoesIndexRoute: typeof SessoesIndexRoute
   VereadoresIndexRoute: typeof VereadoresIndexRoute
 }
 
@@ -986,13 +977,6 @@ declare module '@tanstack/react-router' {
       path: '/projetos'
       fullPath: '/projetos'
       preLoaderRoute: typeof ProjetosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sessoes': {
-      id: '/sessoes'
-      path: '/sessoes'
-      fullPath: '/sessoes'
-      preLoaderRoute: typeof SessoesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -1172,17 +1156,17 @@ declare module '@tanstack/react-router' {
     }
     '/sessoes/': {
       id: '/sessoes/'
-      path: '/'
+      path: '/sessoes'
       fullPath: '/sessoes/'
       preLoaderRoute: typeof SessoesIndexRouteImport
-      parentRoute: typeof SessoesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/sessoes/ao-vivo': {
       id: '/sessoes/ao-vivo'
-      path: '/ao-vivo'
+      path: '/sessoes/ao-vivo'
       fullPath: '/sessoes/ao-vivo'
       preLoaderRoute: typeof SessoesAoVivoRouteImport
-      parentRoute: typeof SessoesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/vereadores/': {
       id: '/vereadores/'
@@ -1536,19 +1520,6 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
-interface SessoesRouteChildren {
-  SessoesAoVivoRoute: typeof SessoesAoVivoRoute
-  SessoesIndexRoute: typeof SessoesIndexRoute
-}
-
-const SessoesRouteChildren: SessoesRouteChildren = {
-  SessoesAoVivoRoute: SessoesAoVivoRoute,
-  SessoesIndexRoute: SessoesIndexRoute,
-}
-
-const SessoesRouteWithChildren =
-  SessoesRoute._addFileChildren(SessoesRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
@@ -1559,7 +1530,6 @@ const rootRouteChildren: RootRouteChildren = {
   MapaDoSiteRoute: MapaDoSiteRoute,
   PerguntasFrequentesRoute: PerguntasFrequentesRoute,
   ProjetosRoute: ProjetosRoute,
-  SessoesRoute: SessoesRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TransparenciaRoute: TransparenciaRoute,
   TransparenciaAtivaRoute: TransparenciaAtivaRoute,
@@ -1574,9 +1544,11 @@ const rootRouteChildren: RootRouteChildren = {
     AtosLegislativosLeiOrganicaMunicipalRoute,
   AtosLegislativosRegimentoInternoRoute: AtosLegislativosRegimentoInternoRoute,
   NoticiasSlugRoute: NoticiasSlugRoute,
+  SessoesAoVivoRoute: SessoesAoVivoRoute,
   VereadoresSlugRoute: VereadoresSlugRoute,
   VereadoresRankingRoute: VereadoresRankingRoute,
   NoticiasIndexRoute: NoticiasIndexRoute,
+  SessoesIndexRoute: SessoesIndexRoute,
   VereadoresIndexRoute: VereadoresIndexRoute,
 }
 export const routeTree = rootRouteImport
