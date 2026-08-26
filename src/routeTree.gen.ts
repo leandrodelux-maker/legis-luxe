@@ -261,9 +261,9 @@ const SessoesIndexRoute = SessoesIndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const SessoesAoVivoRoute = SessoesAoVivoRouteImport.update({
-  id: '/ao-vivo',
-  path: '/ao-vivo',
-  getParentRoute: () => SessoesRoute,
+  id: '/sessoes/ao-vivo',
+  path: '/sessoes/ao-vivo',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const VereadoresIndexRoute = VereadoresIndexRouteImport.update({
   id: '/vereadores/',
@@ -906,6 +906,7 @@ export interface RootRouteChildren {
   AtosLegislativosLeiOrganicaMunicipalRoute: typeof AtosLegislativosLeiOrganicaMunicipalRoute
   AtosLegislativosRegimentoInternoRoute: typeof AtosLegislativosRegimentoInternoRoute
   NoticiasSlugRoute: typeof NoticiasSlugRoute
+  SessoesAoVivoRoute: typeof SessoesAoVivoRoute
   VereadoresSlugRoute: typeof VereadoresSlugRoute
   VereadoresRankingRoute: typeof VereadoresRankingRoute
   NoticiasIndexRoute: typeof NoticiasIndexRoute
@@ -1162,10 +1163,10 @@ declare module '@tanstack/react-router' {
     }
     '/sessoes/ao-vivo': {
       id: '/sessoes/ao-vivo'
-      path: '/ao-vivo'
+      path: '/sessoes/ao-vivo'
       fullPath: '/sessoes/ao-vivo'
       preLoaderRoute: typeof SessoesAoVivoRouteImport
-      parentRoute: typeof SessoesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/vereadores/': {
       id: '/vereadores/'
@@ -1543,6 +1544,7 @@ const rootRouteChildren: RootRouteChildren = {
     AtosLegislativosLeiOrganicaMunicipalRoute,
   AtosLegislativosRegimentoInternoRoute: AtosLegislativosRegimentoInternoRoute,
   NoticiasSlugRoute: NoticiasSlugRoute,
+  SessoesAoVivoRoute: SessoesAoVivoRoute,
   VereadoresSlugRoute: VereadoresSlugRoute,
   VereadoresRankingRoute: VereadoresRankingRoute,
   NoticiasIndexRoute: NoticiasIndexRoute,
