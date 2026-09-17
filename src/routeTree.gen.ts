@@ -38,6 +38,7 @@ import { Route as AdminMesaDiretoraRouteImport } from './routes/admin/mesa-diret
 import { Route as AdminNoticiasRouteImport } from './routes/admin/noticias'
 import { Route as AdminTransparenciaAtivaRouteImport } from './routes/admin/transparencia-ativa'
 import { Route as AdminTransparenciaLinksRouteImport } from './routes/admin/transparencia-links'
+import { Route as AdminUsuariosRouteImport } from './routes/admin/usuarios'
 import { Route as AtosLegislativosCartaDeServicosRouteImport } from './routes/atos-legislativos.carta-de-servicos'
 import { Route as AtosLegislativosLeiOrganicaMunicipalRouteImport } from './routes/atos-legislativos.lei-organica-municipal'
 import { Route as AtosLegislativosRegimentoInternoRouteImport } from './routes/atos-legislativos.regimento-interno'
@@ -225,6 +226,11 @@ const AdminTransparenciaAtivaRoute = AdminTransparenciaAtivaRouteImport.update({
 const AdminTransparenciaLinksRoute = AdminTransparenciaLinksRouteImport.update({
   id: '/transparencia-links',
   path: '/transparencia-links',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsuariosRoute = AdminUsuariosRouteImport.update({
+  id: '/usuarios',
+  path: '/usuarios',
   getParentRoute: () => AdminRoute,
 } as any)
 const AtosLegislativosCartaDeServicosRoute =
@@ -472,6 +478,7 @@ export interface FileRoutesByFullPath {
   '/admin/noticias': typeof AdminNoticiasRoute
   '/admin/transparencia-ativa': typeof AdminTransparenciaAtivaRoute
   '/admin/transparencia-links': typeof AdminTransparenciaLinksRoute
+  '/admin/usuarios': typeof AdminUsuariosRoute
   '/atos-legislativos/carta-de-servicos': typeof AtosLegislativosCartaDeServicosRoute
   '/atos-legislativos/lei-organica-municipal': typeof AtosLegislativosLeiOrganicaMunicipalRoute
   '/atos-legislativos/regimento-interno': typeof AtosLegislativosRegimentoInternoRoute
@@ -544,6 +551,7 @@ export interface FileRoutesByTo {
   '/admin/noticias': typeof AdminNoticiasRoute
   '/admin/transparencia-ativa': typeof AdminTransparenciaAtivaRoute
   '/admin/transparencia-links': typeof AdminTransparenciaLinksRoute
+  '/admin/usuarios': typeof AdminUsuariosRoute
   '/atos-legislativos/carta-de-servicos': typeof AtosLegislativosCartaDeServicosRoute
   '/atos-legislativos/lei-organica-municipal': typeof AtosLegislativosLeiOrganicaMunicipalRoute
   '/atos-legislativos/regimento-interno': typeof AtosLegislativosRegimentoInternoRoute
@@ -618,6 +626,7 @@ export interface FileRoutesById {
   '/admin/noticias': typeof AdminNoticiasRoute
   '/admin/transparencia-ativa': typeof AdminTransparenciaAtivaRoute
   '/admin/transparencia-links': typeof AdminTransparenciaLinksRoute
+  '/admin/usuarios': typeof AdminUsuariosRoute
   '/atos-legislativos/carta-de-servicos': typeof AtosLegislativosCartaDeServicosRoute
   '/atos-legislativos/lei-organica-municipal': typeof AtosLegislativosLeiOrganicaMunicipalRoute
   '/atos-legislativos/regimento-interno': typeof AtosLegislativosRegimentoInternoRoute
@@ -693,6 +702,7 @@ export interface FileRouteTypes {
     | '/admin/noticias'
     | '/admin/transparencia-ativa'
     | '/admin/transparencia-links'
+    | '/admin/usuarios'
     | '/atos-legislativos/carta-de-servicos'
     | '/atos-legislativos/lei-organica-municipal'
     | '/atos-legislativos/regimento-interno'
@@ -765,6 +775,7 @@ export interface FileRouteTypes {
     | '/admin/noticias'
     | '/admin/transparencia-ativa'
     | '/admin/transparencia-links'
+    | '/admin/usuarios'
     | '/atos-legislativos/carta-de-servicos'
     | '/atos-legislativos/lei-organica-municipal'
     | '/atos-legislativos/regimento-interno'
@@ -838,6 +849,7 @@ export interface FileRouteTypes {
     | '/admin/noticias'
     | '/admin/transparencia-ativa'
     | '/admin/transparencia-links'
+    | '/admin/usuarios'
     | '/atos-legislativos/carta-de-servicos'
     | '/atos-legislativos/lei-organica-municipal'
     | '/atos-legislativos/regimento-interno'
@@ -1117,6 +1129,13 @@ declare module '@tanstack/react-router' {
       path: '/transparencia-links'
       fullPath: '/admin/transparencia-links'
       preLoaderRoute: typeof AdminTransparenciaLinksRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/usuarios': {
+      id: '/admin/usuarios'
+      path: '/usuarios'
+      fullPath: '/admin/usuarios'
+      preLoaderRoute: typeof AdminUsuariosRouteImport
       parentRoute: typeof AdminRoute
     }
     '/atos-legislativos/carta-de-servicos': {
@@ -1439,6 +1458,7 @@ interface AdminRouteChildren {
   AdminNoticiasRoute: typeof AdminNoticiasRoute
   AdminTransparenciaAtivaRoute: typeof AdminTransparenciaAtivaRoute
   AdminTransparenciaLinksRoute: typeof AdminTransparenciaLinksRoute
+  AdminUsuariosRoute: typeof AdminUsuariosRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminCmsBannersRoute: typeof AdminCmsBannersRoute
   AdminCmsCategoriasRoute: typeof AdminCmsCategoriasRoute
@@ -1484,6 +1504,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminNoticiasRoute: AdminNoticiasRoute,
   AdminTransparenciaAtivaRoute: AdminTransparenciaAtivaRoute,
   AdminTransparenciaLinksRoute: AdminTransparenciaLinksRoute,
+  AdminUsuariosRoute: AdminUsuariosRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminCmsBannersRoute: AdminCmsBannersRoute,
   AdminCmsCategoriasRoute: AdminCmsCategoriasRoute,
