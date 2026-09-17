@@ -444,30 +444,63 @@ function SessoesPage() {
                   Eventos em {date?.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
                 </h3>
                 <div className="space-y-4">
-                  {[
-                    { day: "16", title: "Sessão Ordinária", hour: "14h", type: "Legislativo" },
-                    { day: "18", title: "Audiência Pública: Orçamento 2027", hour: "19h", type: "Participativo" },
-                    { day: "23", title: "Sessão Extraordinária", hour: "10h", type: "Urgência" },
-                  ].map((event, idx) => (
-                    <div key={idx} className="flex gap-6 p-5 bg-card border border-border rounded-xl hover:border-primary/30 transition-all group">
-                      <div className="flex flex-col items-center justify-center w-16 h-16 rounded-lg bg-primary text-primary-foreground shrink-0">
-                        <span className="text-2xl font-bold leading-none">{event.day}</span>
-                        <span className="text-[10px] uppercase font-bold">JUN</span>
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-[10px] font-bold uppercase tracking-widest text-gold">{event.type}</span>
+                  {(() => {
+                    const selectedDate = date ?? new Date();
+                    const selectedYear = selectedDate.getFullYear();
+                    const selectedMonth = selectedDate.getMonth();
+                    const eventosMes = [...historicoSessoes, ...proximasSessoes]
+                      .filter((s) => {
+                        const d = new Date(s.data_sessao);
+                        return d.getFullYear() === selectedYear && d.getMonth() === selectedMonth;
+                      })
+                      .sort((a, b) => new Date(a.data_sessao).getTime() - new Date(b.data_sessao).getTime());
+
+                    if (loading) {
+                      return (
+                        <div className="flex justify-center py-10">
+                          <Loader2 className="w-8 h-8 animate-spin text-gold" />
                         </div>
-                        <h4 className="text-lg font-bold group-hover:text-primary transition-colors">{event.title}</h4>
-                        <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
-                          <Clock className="h-3.5 w-3.5" /> {event.hour} no Plenário Principal
-                        </p>
-                      </div>
-                      <Button variant="ghost" size="icon" className="self-center">
-                        <ChevronRight />
-                      </Button>
-                    </div>
-                  ))}
+                      );
+                    }
+
+                    if (eventosMes.length === 0) {
+                      return (
+                        <div className="text-center py-10 bg-secondary/20 rounded-2xl border border-dashed border-border text-muted-foreground font-medium">
+                          Nenhuma sessão registrada para {selectedDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}.
+                        </div>
+                      );
+                    }
+
+                    return eventosMes.map((s, idx) => {
+                      const dateObj = new Date(s.data_sessao);
+                      const day = dateObj.toLocaleDateString("pt-BR", { day: "2-digit" });
+                      const monthShort = dateObj.toLocaleDateString("pt-BR", { month: "short" }).replace(".", "").toUpperCase();
+                      const hourStr = dateObj.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }).replace(":", "h");
+
+                      return (
+                        <div key={s.id ?? idx} className="flex gap-6 p-5 bg-card border border-border rounded-xl hover:border-primary/30 transition-all group">
+                          <div className="flex flex-col items-center justify-center w-16 h-16 rounded-lg bg-primary text-primary-foreground shrink-0">
+                            <span className="text-2xl font-bold leading-none">{day}</span>
+                            <span className="text-[10px] uppercase font-bold">{monthShort}</span>
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-[10px] font-bold uppercase tracking-widest text-gold">{s.tipo || "Sessão"}</span>
+                            </div>
+                            <h4 className="text-lg font-bold group-hover:text-primary transition-colors">{s.titulo || "Sessão"}</h4>
+                            <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
+                              <Clock className="h-3.5 w-3.5" /> {hourStr} · {s.local || "Plenário Principal"}
+                            </p>
+                          </div>
+                          <Button variant="ghost" size="icon" className="self-center" asChild>
+                            <Link to="/sessoes">
+                              <ChevronRight />
+                            </Link>
+                          </Button>
+                        </div>
+                      );
+                    });
+                  })()}
                 </div>
               </div>
             </div>
