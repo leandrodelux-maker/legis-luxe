@@ -755,6 +755,9 @@ export type Database = {
       }
       profiles: {
         Row: {
+          aprovado: boolean
+          aprovado_em: string | null
+          aprovado_por: string | null
           avatar_url: string | null
           created_at: string
           full_name: string | null
@@ -762,6 +765,9 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          aprovado?: boolean
+          aprovado_em?: string | null
+          aprovado_por?: string | null
           avatar_url?: string | null
           created_at?: string
           full_name?: string | null
@@ -769,6 +775,9 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          aprovado?: boolean
+          aprovado_em?: string | null
+          aprovado_por?: string | null
           avatar_url?: string | null
           created_at?: string
           full_name?: string | null
