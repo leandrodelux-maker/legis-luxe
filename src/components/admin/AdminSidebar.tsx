@@ -119,6 +119,7 @@ const groups: Group[] = [
   {
     label: "Sistema",
     items: [
+      { label: "Usuários e Permissões", path: "/admin/usuarios", icon: Users },
       { label: "Auditoria", path: "/admin/auditoria", icon: ScrollText },
     ],
   },

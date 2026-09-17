@@ -38,7 +38,7 @@ export function useSupabaseAuth() {
     return () => sub.subscription.unsubscribe();
   }, []);
 
-  return { session, user, isAdmin, loading };
+  return { session, user, isAdmin, approved, loading };
 }
 
 export async function signOut() {
