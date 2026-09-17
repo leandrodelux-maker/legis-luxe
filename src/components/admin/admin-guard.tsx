@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { signOut } from "@/hooks/use-supabase-auth";
 
 export function AdminGuard({ children }: { children: React.ReactNode }) {
-  const { user, isAdmin, loading } = useSupabaseAuth();
+  const { user, isAdmin, approved, loading } = useSupabaseAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,15 +21,15 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (!isAdmin) {
+  if (!isAdmin || !approved) {
     return (
       <div className="min-h-screen grid place-items-center p-6">
         <div className="max-w-md text-center space-y-4">
           <ShieldAlert className="w-16 h-16 mx-auto text-amber-500" />
           <h1 className="text-2xl font-bold">Acesso restrito</h1>
           <p className="text-slate-600">
-            Sua conta foi criada, mas ainda não tem permissão de administrador.
-            Solicite a um administrador que conceda a role <code>admin</code> ou <code>editor</code> à sua conta.
+            Sua conta foi criada, mas ainda aguarda a liberação de um administrador.
+            Assim que ela for habilitada em Usuários e Permissões, o painel ficará disponível.
           </p>
           <p className="text-xs text-slate-500">Seu ID: <code>{user.id}</code></p>
           <Button onClick={() => signOut().then(() => navigate({ to: "/auth" }))}>Sair</Button>

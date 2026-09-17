@@ -6,6 +6,7 @@ export function useSupabaseAuth() {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [approved, setApproved] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -15,14 +16,16 @@ export function useSupabaseAuth() {
       if (s?.user) {
         // defer to avoid deadlock
         setTimeout(async () => {
-          const { data } = await supabase
-            .from("user_roles")
-            .select("role")
-            .eq("user_id", s.user.id);
+          const [{ data }, { data: profile }] = await Promise.all([
+            supabase.from("user_roles").select("role").eq("user_id", s.user.id),
+            supabase.from("profiles").select("aprovado").eq("id", s.user.id).maybeSingle(),
+          ]);
           setIsAdmin((data ?? []).some((r) => r.role === "admin" || r.role === "editor"));
+          setApproved(Boolean((profile as { aprovado?: boolean } | null)?.aprovado));
         }, 0);
       } else {
         setIsAdmin(false);
+        setApproved(false);
       }
     });
 
@@ -35,7 +38,7 @@ export function useSupabaseAuth() {
     return () => sub.subscription.unsubscribe();
   }, []);
 
-  return { session, user, isAdmin, loading };
+  return { session, user, isAdmin, approved, loading };
 }
 
 export async function signOut() {
