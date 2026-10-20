@@ -28,7 +28,30 @@ export function SiteFooter() {
   }, []);
 
   return (
-    <footer className="mt-24 border-t border-border bg-primary-deep text-primary-foreground">
+    <footer className="mt-24 bg-primary-deep text-primary-foreground">
+      <div className="bg-band">
+        <div className="container-page py-6 grid gap-4 md:grid-cols-3">
+          {[
+            { icon: Phone, label: "Telefone", value: contact.telefone, href: contact.telefoneHref },
+            { icon: Mail, label: "E-mail", value: contact.email, href: `mailto:${contact.email}` },
+            { icon: Clock, label: "Atendimento", value: contact.horario },
+          ].map((c) => (
+            <a
+              key={c.label}
+              href={c.href}
+              className="flex items-center gap-4 rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-sm hover:bg-white/15 transition-colors min-w-0"
+            >
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gold text-gold-foreground">
+                <c.icon className="h-5 w-5" />
+              </span>
+              <span className="min-w-0">
+                <span className="block text-xs text-white/75">{c.label}</span>
+                <span className="block font-display font-semibold break-words">{c.value}</span>
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
       <div className="container-page py-14 grid gap-10 md:grid-cols-5">
         <div className="md:col-span-1">
           <div className="flex items-center gap-3">
@@ -64,7 +87,7 @@ export function SiteFooter() {
                 key={i}
                 href="#"
                 aria-label="Rede social"
-                className="grid h-9 w-9 place-items-center rounded-md bg-white/5 hover:bg-gold hover:text-gold-foreground transition-colors"
+                className="grid h-9 w-9 place-items-center rounded-full bg-white/10 hover:bg-gold hover:text-gold-foreground transition-colors"
               >
                 <Icon className="h-4 w-4" />
               </a>
@@ -80,8 +103,8 @@ export function SiteFooter() {
             <ul className="mt-4 space-y-2 text-sm text-primary-foreground/80">
               {col.links.map((l) => (
                 <li key={l.to}>
-                  <Link to={l.to} className="hover:text-gold transition-colors">
-                    {l.label}
+                  <Link to={l.to} className="group inline-flex items-start gap-1.5 hover:text-gold transition-colors">
+                    <span className="text-gold/80">›</span>{l.label}
                   </Link>
                 </li>
               ))}
@@ -115,7 +138,7 @@ export function SiteFooter() {
 
       </div>
 
-      <div className="border-t border-white/10">
+      <div className="border-t border-white/10 bg-primary-deep/60">
         <div className="container-page py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-primary-foreground/70">
           <p>© {new Date().getFullYear()} Câmara Municipal · Todos os direitos reservados</p>
           <div className="flex items-center gap-5">

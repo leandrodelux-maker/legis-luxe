@@ -7,6 +7,7 @@ import {
   useLocation,
   HeadContent,
   Scripts,
+  type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
@@ -41,7 +42,7 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
@@ -89,7 +90,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Portal oficial da Câmara Municipal. Acompanhe sessões, vereadores, projetos de lei e o Portal da Transparência.",
       },
       { name: "author", content: "Câmara Municipal" },
-      { name: "theme-color", content: "#1e3a8a" },
+      { name: "theme-color", content: "#1d4552" },
       { property: "og:site_name", content: "Câmara Municipal" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
