@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, LayoutGrid } from "lucide-react";
+import { ArrowRight, LayoutGrid } from "lucide-react";
 import {
   useQuickAccess,
   CATEGORY_LABELS,
@@ -14,14 +14,14 @@ const CATEGORIES: QuickAccessCategory[] = ["cidadaos", "servidores", "empresas",
 
 function Card({ item }: { item: QuickAccessItem }) {
   const inner = (
-    <div className="group relative h-full rounded-2xl border border-border bg-card p-6 transition-all hover:border-primary/40 hover:shadow-elegant">
-      <ArrowUpRight className="absolute right-4 top-4 h-4 w-4 text-muted-foreground transition-colors group-hover:text-primary" />
-      <div className="grid h-12 w-12 place-items-center rounded-xl bg-primary/5 text-primary ring-1 ring-primary/10">
+    <div className="group relative h-full min-h-[170px] rounded-2xl border border-border bg-card p-5 shadow-card transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-elegant">
+      <ArrowRight className="absolute right-5 top-[88px] h-4 w-4 text-primary-deep transition-transform group-hover:translate-x-1" />
+      <div className="grid h-12 w-12 place-items-center rounded-xl bg-accent text-primary">
         <QuickAccessIconRender name={item.icon} className="h-5 w-5" />
       </div>
-      <h3 className="mt-6 font-display text-base font-semibold text-foreground">{item.label}</h3>
+      <h3 className="mt-6 pr-6 font-display text-base font-semibold leading-snug text-foreground">{item.label}</h3>
       {item.tag && (
-        <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.15em] text-primary">
+        <p className="mt-2 text-xs font-medium uppercase text-muted-foreground">
           {item.tag}
         </p>
       )}
@@ -44,7 +44,7 @@ export function QuickAccess() {
   const filtered = items.filter((i) => i.category === active);
 
   return (
-    <section className="bg-secondary/30 border-y border-border/60">
+    <section className="bg-background">
       <div className="container-page py-16 md:py-20">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
           <div>
@@ -61,15 +61,15 @@ export function QuickAccess() {
         </div>
 
         {/* Tabs */}
-        <div className="mt-8 grid grid-cols-2 md:grid-cols-4 rounded-xl bg-card border border-border overflow-hidden">
+        <div className="mt-8 grid grid-cols-2 md:inline-grid md:grid-cols-4 gap-2 rounded-2xl bg-card border border-border p-2 shadow-card">
           {CATEGORIES.map((c) => (
             <button
               key={c}
               onClick={() => setActive(c)}
-              className={`px-4 py-4 text-sm font-semibold transition-colors ${
+              className={`rounded-xl px-6 py-3 text-sm font-semibold transition-colors ${
                 active === c
                   ? "bg-primary-deep text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                  : "bg-accent/60 text-foreground hover:bg-accent"
               }`}
             >
               {CATEGORY_LABELS[c]}
@@ -78,7 +78,7 @@ export function QuickAccess() {
         </div>
 
         {/* Grid */}
-        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-8 grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
           {filtered.length === 0 ? (
             <p className="col-span-full text-sm text-muted-foreground py-12 text-center">
               Nenhum serviço cadastrado nesta categoria.
