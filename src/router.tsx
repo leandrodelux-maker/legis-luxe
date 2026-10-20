@@ -1,5 +1,5 @@
 import { QueryCache, QueryClient, MutationCache } from "@tanstack/react-query";
-import { createRouter, Link, useRouter } from "@tanstack/react-router";
+import { createRouter, Link, useRouter, type ErrorComponentProps } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { routeTree } from "./routeTree.gen";
 import { reportLovableError } from "./lib/lovable-error-reporting";
@@ -14,7 +14,7 @@ function getErrorMessage(error: unknown): string {
   }
 }
 
-function DefaultErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function DefaultErrorComponent({ error, reset }: ErrorComponentProps) {
   // eslint-disable-next-line no-console
   console.error(error);
   const router = useRouter();
