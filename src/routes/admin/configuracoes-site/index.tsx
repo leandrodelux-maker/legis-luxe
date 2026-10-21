@@ -238,7 +238,7 @@ function SiteSettingsAdmin() {
               {settings.header_logo_url ? (
                 <div className="relative group w-full h-full flex items-center justify-center p-4">
                   <img 
-                    src={`${settings.header_logo_url}?t=${Date.now()}`} 
+                    src={withCacheBust(settings.header_logo_url)} 
                     alt="Logo Header" 
                     className="max-h-full max-w-full object-contain"
                   />
@@ -311,7 +311,7 @@ function SiteSettingsAdmin() {
               {settings.footer_logo_url ? (
                 <div className="relative group w-full h-full flex items-center justify-center p-4">
                   <img 
-                    src={`${settings.footer_logo_url}?t=${Date.now()}`} 
+                    src={withCacheBust(settings.footer_logo_url)} 
                     alt="Logo Footer" 
                     className="max-h-full max-w-full object-contain"
                   />
