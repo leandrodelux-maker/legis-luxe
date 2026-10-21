@@ -307,7 +307,7 @@ function SiteSettingsAdmin() {
           <div className="space-y-4 p-4 border rounded-xl bg-slate-50/50">
             <Label className="text-base font-bold">Logotipo do Rodapé</Label>
             
-            <div className="h-32 flex items-center justify-center border-2 border-dashed rounded-lg bg-white overflow-hidden">
+            <div className="h-32 flex items-center justify-center border-2 border-dashed rounded-lg bg-primary-deep overflow-hidden">
               {settings.footer_logo_url ? (
                 <div className="relative group w-full h-full flex items-center justify-center p-4">
                   <img 

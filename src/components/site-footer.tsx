@@ -59,8 +59,8 @@ export function SiteFooter() {
           ))}
         </div>
       </div>
-      <div className="container-page py-14 grid gap-10 md:grid-cols-5">
-        <div className="md:col-span-1">
+      <div className="container-page py-14 grid gap-10 md:grid-cols-6">
+        <div className="md:col-span-2">
           <div className="flex items-center gap-3">
             {settings?.footer_logo_url ? (
               <img 
@@ -68,8 +68,12 @@ export function SiteFooter() {
                 alt="Logo Câmara Municipal"
                 loading="lazy"
                 decoding="async"
-                style={{ height: `${settings.footer_logo_height}px` }}
-                className="w-auto object-contain"
+                style={{
+                  maxHeight: `${settings.footer_logo_height}px`,
+                  maxWidth: "100%",
+                  filter: "brightness(1.08) saturate(1.15) drop-shadow(0 0 1px rgba(255,255,255,0.3))",
+                }}
+                className="w-auto h-auto object-contain"
               />
             ) : (
               <>
