@@ -208,7 +208,7 @@ function VereadoresPage() {
                         size={viewMode === "list" ? 192 : 320}
                         rounded="lg"
                         showLabelOnError
-                        fit="contain"
+                        fit="cover"
                         className="!rounded-none w-full h-full bg-white"
                       />
                       {v.partido && (

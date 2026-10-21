@@ -198,7 +198,7 @@ const contato = useContactInfo();
               partido={vereador.partido}
               size={240}
               rounded="2xl"
-              fit="contain"
+              fit="cover"
               className="border-4 border-white/20 shadow-2xl bg-white"
             />
 
