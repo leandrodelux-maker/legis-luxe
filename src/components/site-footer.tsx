@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { FOOTER_COLUMNS, FOOTER_LEGAL_LINKS } from "@/lib/site-links";
 import { useContactInfo } from "@/hooks/use-contact-info";
+import virtusgovLogo from "@/assets/virtusgov-logo.png.asset.json";
 
 
 
@@ -154,13 +155,30 @@ export function SiteFooter() {
       <div className="border-t border-white/10 bg-primary-deep/60">
         <div className="container-page py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-primary-foreground/70">
           <p>© {new Date().getFullYear()} Câmara Municipal · Todos os direitos reservados</p>
-          <div className="flex items-center gap-5">
+          <div className="flex flex-wrap items-center justify-center gap-5">
             {FOOTER_LEGAL_LINKS.map((l) => (
               <Link key={l.to} to={l.to} className="hover:text-gold">
                 {l.label}
               </Link>
             ))}
+            <a
+              href="https://virtusgov.com.br/"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="VirtusGov — Tecnologia em Gestão Pública"
+              aria-label="VirtusGov — Tecnologia em Gestão Pública (abre em nova aba)"
+              className="inline-flex items-center rounded-full bg-white px-3.5 py-1.5 shadow-halo transition-shadow duration-300 hover:shadow-halo-lg"
+            >
+              <img
+                src={virtusgovLogo.url}
+                alt="VirtusGov — Tecnologia em Gestão Pública"
+                loading="lazy"
+                decoding="async"
+                className="h-[22px] w-auto"
+              />
+            </a>
           </div>
+
 
         </div>
       </div>
