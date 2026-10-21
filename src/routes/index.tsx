@@ -504,7 +504,8 @@ function HomePage() {
               description: "Registre denúncias, sugestões, reclamações e elogios sobre os serviços públicos.",
               cta: "Abrir protocolo",
               to: "/contato",
-              accent: "from-blue-500 to-indigo-600",
+              accent: "bg-band",
+              fg: "text-white",
             },
             {
               icon: HelpCircle,
@@ -512,7 +513,8 @@ function HomePage() {
               description: "Sistema Eletrônico do Serviço de Informação ao Cidadão — Lei nº 12.527/2011.",
               cta: "Solicitar informação",
               to: "/contato",
-              accent: "from-emerald-500 to-teal-600",
+              accent: "bg-hero",
+              fg: "text-white",
             },
             {
               icon: BookOpen,
@@ -520,7 +522,8 @@ function HomePage() {
               description: "Conheça todos os serviços oferecidos pela Câmara, prazos e formas de atendimento.",
               cta: "Ver carta",
               to: "/transparencia-portal",
-              accent: "from-amber-500 to-orange-600",
+              accent: "bg-gold",
+              fg: "text-gold-foreground",
             },
           ].map((item, i) => (
             <article
@@ -528,8 +531,8 @@ function HomePage() {
               className="group relative overflow-hidden rounded-3xl border border-border bg-card p-8 hover:shadow-2xl hover:-translate-y-2 transition-all animate-[fade-up_0.6s_ease-out_both]"
               style={{ animationDelay: `${i * 90}ms` }}
             >
-              <div className={`absolute -top-16 -right-16 h-40 w-40 rounded-full bg-gradient-to-br ${item.accent} opacity-10 group-hover:opacity-20 group-hover:scale-125 transition-all duration-700`} />
-              <div className={`relative h-14 w-14 rounded-2xl bg-gradient-to-br ${item.accent} text-white flex items-center justify-center shadow-lg mb-5`}>
+              <div className={`absolute -top-16 -right-16 h-40 w-40 rounded-full ${item.accent} opacity-10 group-hover:opacity-20 group-hover:scale-125 transition-all duration-700`} />
+              <div className={`relative h-14 w-14 rounded-2xl ${item.accent} ${item.fg} flex items-center justify-center shadow-lg mb-5`}>
                 <item.icon className="h-7 w-7" />
               </div>
               <h3 className="font-display text-2xl font-bold">{item.title}</h3>
@@ -537,7 +540,7 @@ function HomePage() {
               <Button asChild className="mt-6 group/btn">
                 <Link to={item.to}>
                   {item.cta}
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
+                  <ArrowRight className="ml-2 h-4 w-4 text-gold group-hover/btn:translate-x-1 transition-transform" />
                 </Link>
               </Button>
             </article>
