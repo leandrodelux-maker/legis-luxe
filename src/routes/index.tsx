@@ -210,7 +210,7 @@ function HomePage() {
           <div className="absolute -bottom-40 -left-40 h-[420px] w-[420px] rounded-full bg-primary/40 blur-3xl" />
         </div>
 
-        <div className="container-page py-12 md:py-16 lg:py-20 text-white">
+        <div className="container-page py-8 md:py-10 lg:py-14 text-white">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 backdrop-blur-sm px-3 py-1 text-xs font-medium text-white animate-[fade-up_0.6s_ease-out]">
             <Sparkles className="h-3 w-3" /> {eyebrow}
           </div>
@@ -567,7 +567,7 @@ function VereadorCard({ v, delay }: { v: Vereador; delay: number }) {
           partido={v.partido}
           size={400}
           rounded="lg"
-          fit="contain"
+          fit="cover"
           className="!h-full !w-full !rounded-none bg-white transition-transform duration-700 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-primary-deep via-primary-deep/30 to-transparent opacity-90" />

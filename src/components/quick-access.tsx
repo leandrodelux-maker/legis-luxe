@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, LayoutGrid } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import {
   useQuickAccess,
   CATEGORY_LABELS,
@@ -8,7 +8,6 @@ import {
   type QuickAccessItem,
 } from "@/lib/quick-access-store";
 import { QuickAccessIconRender } from "@/components/quick-access-icon";
-import { Button } from "@/components/ui/button";
 
 const CATEGORIES: QuickAccessCategory[] = ["cidadaos", "servidores", "empresas", "legislacao"];
 
@@ -45,9 +44,9 @@ export function QuickAccess() {
 
   return (
     <section className="bg-background">
-      <div className="container-page py-16 md:py-20">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-          <div>
+      <div className="container-page pt-8 pb-14 md:pt-10 md:pb-16">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+          <div className="shrink-0">
             <h2 className="font-display text-3xl md:text-4xl font-bold tracking-tight text-foreground">
               Acesso Rápido
             </h2>
@@ -55,26 +54,23 @@ export function QuickAccess() {
               Encontre rapidamente os serviços e informações que você precisa.
             </p>
           </div>
-          <Button variant="outline" className="self-start md:self-auto">
-            <LayoutGrid className="mr-2 h-4 w-4" /> Todos os serviços
-          </Button>
-        </div>
 
-        {/* Tabs */}
-        <div className="mt-8 grid grid-cols-2 md:inline-grid md:grid-cols-4 gap-2 rounded-2xl bg-card border border-border p-2 shadow-card">
-          {CATEGORIES.map((c) => (
-            <button
-              key={c}
-              onClick={() => setActive(c)}
-              className={`rounded-xl px-6 py-3 text-sm font-semibold transition-colors ${
-                active === c
-                  ? "bg-primary-deep text-primary-foreground"
-                  : "bg-accent/60 text-foreground hover:bg-accent"
-              }`}
-            >
-              {CATEGORY_LABELS[c]}
-            </button>
-          ))}
+          {/* Tabs — alinhadas à direita */}
+          <div className="grid grid-cols-2 sm:inline-grid sm:grid-cols-4 gap-2 rounded-2xl bg-card border border-border p-2 shadow-card lg:ml-auto">
+            {CATEGORIES.map((c) => (
+              <button
+                key={c}
+                onClick={() => setActive(c)}
+                className={`rounded-xl px-6 py-3 text-sm font-semibold transition-colors whitespace-nowrap ${
+                  active === c
+                    ? "bg-primary-deep text-primary-foreground"
+                    : "bg-accent/60 text-foreground hover:bg-accent"
+                }`}
+              >
+                {CATEGORY_LABELS[c]}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Grid */}
