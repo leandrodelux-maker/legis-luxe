@@ -119,7 +119,7 @@ function MesaDiretoraPage() {
                       partido={presidente.vereadores.partido}
                       size={180}
                       rounded="2xl"
-                      fit="contain"
+                      fit="cover"
                       className="mx-auto bg-white"
                     />
                   </div>
@@ -166,7 +166,7 @@ function MesaDiretoraPage() {
                         size={220}
                         fill
                         rounded="lg"
-                        fit="contain"
+                        fit="cover"
                         className="h-full w-full rounded-none border-0 bg-white"
                       />
                     </div>
