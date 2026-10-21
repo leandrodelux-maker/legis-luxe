@@ -159,7 +159,7 @@ export function SiteHeader() {
 
         {/* PILL NAV */}
         <nav id="menu-principal" aria-label="Principal" className="hidden lg:block pb-5" tabIndex={-1}>
-          <div className="container-page flex items-center justify-between gap-4">
+          <div className="container-page flex items-center gap-4">
             <ul className="flex items-center gap-0.5 rounded-full border border-white/20 bg-white/5 p-1.5 backdrop-blur-sm">
               {mainNav.map((item) =>
                 "children" in item && item.children ? (
@@ -215,13 +215,6 @@ export function SiteHeader() {
                 </div>
               </li>
             </ul>
-
-            <Link
-              to={ROUTES.transparencia}
-              className="inline-flex items-center gap-2 h-12 px-7 rounded-full bg-gold text-gold-foreground font-bold text-sm uppercase tracking-wide shadow-gold hover:brightness-105 transition-all whitespace-nowrap"
-            >
-              <Shield className="h-4 w-4" /> Transparência
-            </Link>
           </div>
         </nav>
       </header>
