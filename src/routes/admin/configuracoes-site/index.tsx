@@ -12,6 +12,11 @@ export const Route = createFileRoute("/admin/configuracoes-site/")({
   component: SiteSettingsAdmin,
 });
 
+/** As URLs dos logos já podem trazer query string (token de assinatura), então o separador precisa ser escolhido. */
+function withCacheBust(url: string) {
+  return `${url}${url.includes("?") ? "&" : "?"}t=${Date.now()}`;
+}
+
 type Settings = {
   id: string;
   hero_media_url: string | null;
