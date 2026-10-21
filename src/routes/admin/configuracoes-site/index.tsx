@@ -12,6 +12,11 @@ export const Route = createFileRoute("/admin/configuracoes-site/")({
   component: SiteSettingsAdmin,
 });
 
+/** As URLs dos logos já podem trazer query string (token de assinatura), então o separador precisa ser escolhido. */
+function withCacheBust(url: string) {
+  return `${url}${url.includes("?") ? "&" : "?"}t=${Date.now()}`;
+}
+
 type Settings = {
   id: string;
   hero_media_url: string | null;
@@ -233,7 +238,7 @@ function SiteSettingsAdmin() {
               {settings.header_logo_url ? (
                 <div className="relative group w-full h-full flex items-center justify-center p-4">
                   <img 
-                    src={`${settings.header_logo_url}?t=${Date.now()}`} 
+                    src={withCacheBust(settings.header_logo_url)} 
                     alt="Logo Header" 
                     className="max-h-full max-w-full object-contain"
                   />
@@ -306,7 +311,7 @@ function SiteSettingsAdmin() {
               {settings.footer_logo_url ? (
                 <div className="relative group w-full h-full flex items-center justify-center p-4">
                   <img 
-                    src={`${settings.footer_logo_url}?t=${Date.now()}`} 
+                    src={withCacheBust(settings.footer_logo_url)} 
                     alt="Logo Footer" 
                     className="max-h-full max-w-full object-contain"
                   />
