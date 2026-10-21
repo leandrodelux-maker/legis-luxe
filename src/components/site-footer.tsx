@@ -13,6 +13,11 @@ type SiteSettings = {
   footer_logo_height: number;
 };
 
+/** Pontos de quebra naturais (após @ e .) para o e-mail nunca partir no meio de uma palavra. */
+function withEmailBreaks(value: string) {
+  return value.replace(/([@.])/g, "$1\u200B");
+}
+
 export function SiteFooter() {
   const [settings, setSettings] = useState<SiteSettings | null>(null);
   const contact = useContactInfo();
@@ -46,7 +51,9 @@ export function SiteFooter() {
               </span>
               <span className="min-w-0">
                 <span className="block text-xs text-white/75">{c.label}</span>
-                <span className="block font-display font-semibold break-words">{c.value}</span>
+                <span className="block font-display text-[15px] leading-snug font-semibold break-words md:text-sm">
+                  {withEmailBreaks(c.value)}
+                </span>
               </span>
             </a>
           ))}
@@ -127,7 +134,9 @@ export function SiteFooter() {
             </li>
             <li className="flex items-center gap-2.5">
               <Mail className="h-4 w-4 text-gold shrink-0" />
-              <a href={`mailto:${contact.email}`} className="hover:text-gold break-all">{contact.email}</a>
+              <a href={`mailto:${contact.email}`} className="min-w-0 break-words hover:text-gold">
+                {withEmailBreaks(contact.email)}
+              </a>
             </li>
             <li className="flex items-start gap-2.5">
               <Clock className="h-4 w-4 mt-0.5 text-gold shrink-0" />
