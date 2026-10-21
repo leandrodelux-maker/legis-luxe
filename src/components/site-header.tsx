@@ -74,7 +74,7 @@ export function SiteHeader() {
         Pular para o conteúdo
       </a>
 
-      <header className="bg-hero text-white">
+      <header className="relative z-40 bg-hero text-white">
         {/* TOP STRIP */}
         <div className="bg-primary-deep/70 text-xs">
           <div className="container-page flex h-9 items-center justify-between gap-4">
@@ -118,25 +118,33 @@ export function SiteHeader() {
             )}
           </Link>
 
-          <div className="hidden lg:flex items-center gap-3 ml-auto">
-            <div className="relative w-[280px]">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/70" />
-              <input
-                placeholder="Buscar no portal..."
-                aria-label="Buscar no portal"
-                className="w-full h-11 rounded-full bg-white/10 border border-white/25 pl-11 pr-4 text-sm text-white placeholder:text-white/70 focus:outline-none focus:bg-white/15 focus:border-white/50 transition-colors"
-              />
+          <div className="hidden lg:flex flex-col items-end gap-3 ml-auto">
+            <div className="flex items-center gap-3">
+              <div className="relative w-[280px]">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/70" />
+                <input
+                  placeholder="Buscar no portal..."
+                  aria-label="Buscar no portal"
+                  className="w-full h-11 rounded-full bg-white/10 border border-white/25 pl-11 pr-4 text-sm text-white placeholder:text-white/70 focus:outline-none focus:bg-white/15 focus:border-white/50 transition-colors"
+                />
+              </div>
+              <a
+                href="https://radardatransparencia.com.br/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 h-11 px-4 rounded-full bg-white text-primary-deep font-semibold text-sm shadow-sm hover:shadow-md transition-shadow whitespace-nowrap"
+                aria-label="Radar da Transparência Pública"
+              >
+                <img src={radarLogo.url} alt="" className="h-7 w-auto" />
+                <span className="hidden xl:inline">Radar da Transparência</span>
+              </a>
             </div>
-            <a
-              href="https://radardatransparencia.com.br/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 h-11 px-4 rounded-full bg-white text-primary-deep font-semibold text-sm shadow-sm hover:shadow-md transition-shadow whitespace-nowrap"
-              aria-label="Radar da Transparência Pública"
+            <Link
+              to={ROUTES.transparencia}
+              className="inline-flex items-center gap-2 h-11 px-7 rounded-full bg-gold text-gold-foreground font-bold text-sm uppercase tracking-wide shadow-gold hover:brightness-105 transition-all whitespace-nowrap"
             >
-              <img src={radarLogo.url} alt="" className="h-7 w-auto" />
-              <span className="hidden xl:inline">Radar da Transparência</span>
-            </a>
+              <Shield className="h-4 w-4" /> Transparência
+            </Link>
           </div>
 
           <button
