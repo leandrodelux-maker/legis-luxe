@@ -1,149 +1,130 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ShieldCheck, Lock, UserCheck, FileText, Mail, Scale, Database, Eye } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, Database, Eye, Lock, Mail, ShieldCheck, UserCheck } from "lucide-react";
+import { CabecalhoPagina } from "@/components/cabecalho-pagina";
+import { EscolhaCanal, campo } from "@/components/atendimento-publico";
+import { useContactInfo } from "@/hooks/use-contact-info";
+import { ROUTES } from "@/lib/site-links";
 
 export const Route = createFileRoute("/lgpd")({
   head: () => ({
     meta: [
-      { title: "LGPD — Proteção de Dados Pessoais" },
+      { title: "LGPD — Câmara Municipal de Adelândia" },
       {
         name: "description",
-        content:
-          "Política de proteção de dados pessoais da Câmara Municipal em conformidade com a Lei nº 13.709/2018 (LGPD).",
+        content: "Como a Câmara Municipal de Adelândia trata dados pessoais, quais são os seus direitos pela Lei nº 13.709/2018 e como exercê-los.",
       },
-      { property: "og:title", content: "LGPD — Proteção de Dados Pessoais" },
-      { property: "og:description", content: "Direitos do titular, encarregado (DPO) e canais de atendimento." },
+      { property: "og:title", content: "LGPD — Câmara Municipal de Adelândia" },
+      { property: "og:description", content: "Direitos do titular, encarregado e canais de atendimento." },
     ],
   }),
   component: LgpdPage,
 });
 
 const PRINCIPIOS = [
-  { icon: Eye, title: "Transparência", text: "Informações claras sobre o tratamento de dados pessoais." },
-  { icon: Lock, title: "Segurança", text: "Medidas técnicas e administrativas para proteger os dados." },
-  { icon: UserCheck, title: "Finalidade", text: "Uso dos dados apenas para propósitos legítimos e informados." },
-  { icon: Database, title: "Minimização", text: "Coleta limitada ao necessário para a prestação do serviço." },
+  { icone: Eye, titulo: "Transparência", texto: "Informações claras sobre o tratamento de dados pessoais." },
+  { icone: Lock, titulo: "Segurança", texto: "Medidas técnicas e administrativas para proteger os dados." },
+  { icone: UserCheck, titulo: "Finalidade", texto: "Uso dos dados apenas para propósitos legítimos e informados." },
+  { icone: Database, titulo: "Necessidade", texto: "Coleta limitada ao necessário para prestar o serviço." },
 ];
 
 const DIREITOS = [
-  "Confirmação da existência de tratamento",
-  "Acesso aos dados pessoais",
-  "Correção de dados incompletos, inexatos ou desatualizados",
-  "Anonimização, bloqueio ou eliminação de dados desnecessários",
-  "Portabilidade dos dados a outro fornecedor",
-  "Eliminação dos dados tratados com consentimento",
-  "Informação sobre entidades públicas e privadas com as quais houve compartilhamento",
-  "Informação sobre a possibilidade de não fornecer consentimento e suas consequências",
-  "Revogação do consentimento",
+  "Confirmar se a Câmara trata meus dados",
+  "Acessar meus dados pessoais",
+  "Corrigir dados incompletos, inexatos ou desatualizados",
+  "Anonimizar, bloquear ou eliminar dados desnecessários",
+  "Levar meus dados a outro fornecedor (portabilidade)",
+  "Eliminar dados tratados com meu consentimento",
+  "Saber com quem meus dados foram compartilhados",
+  "Saber o que acontece se eu não der consentimento",
+  "Revogar meu consentimento",
+];
+
+const DADOS_NO_SITE = [
+  { canal: "e-SIC", dados: "Nome, e-mail, pedido e, se informados, CPF ou CNPJ e telefone", uso: "Registrar e responder ao pedido de informação", to: ROUTES.esic },
+  { canal: "Ouvidoria", dados: "Assunto, relato e, se informados, nome, e-mail e telefone", uso: "Registrar e responder à manifestação", to: ROUTES.contato },
 ];
 
 function LgpdPage() {
+  const contato = useContactInfo();
+  const [direito, setDireito] = useState(DIREITOS[1]);
+  const corpo = `Olá.\n\nCom base no art. 18 da Lei nº 13.709/2018, solicito: ${direito}.\n\nNome completo:\nDocumento de identificação:\nDetalhes do pedido:\n`;
+  const pedido = `mailto:${contato.email}?subject=${encodeURIComponent("Pedido LGPD - direitos do titular")}&body=${encodeURIComponent(corpo)}`;
+
   return (
-    <main className="min-h-screen bg-background">
-      {/* HERO */}
-      <section className="relative overflow-hidden border-b border-border bg-gradient-to-br from-primary-deep via-primary to-primary-deep text-primary-foreground">
-        <div className="container-page py-10">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/40 bg-white/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-gold">
-            <Scale className="h-3 w-3" /> Lei nº 13.709/2018
-          </span>
-          <h1 className="mt-3 font-display text-3xl font-extrabold md:text-4xl">
-            LGPD — Lei Geral de Proteção de Dados
-          </h1>
-          <p className="mt-2 max-w-3xl text-sm text-primary-foreground/85 md:text-base">
-            A Câmara Municipal trata dados pessoais em conformidade com a LGPD, garantindo transparência,
-            segurança e respeito aos direitos dos titulares.
-          </p>
-        </div>
-      </section>
+    <>
+      <CabecalhoPagina
+        titulo="LGPD"
+        trilha={[{ rotulo: "Acesso à Informação" }]}
+        icone={ShieldCheck}
+        descricao="Como a Câmara cuida dos seus dados pessoais e como você exerce os seus direitos pela Lei Geral de Proteção de Dados (Lei nº 13.709/2018)."
+        numeros={[{ rotulo: "Direitos do titular", valor: DIREITOS.length }, { rotulo: "Formulários do site com dados", valor: DADOS_NO_SITE.length }]}
+      />
 
-      {/* PRINCÍPIOS */}
-      <section className="container-page py-10 md:py-14">
-        <div className="mb-6 flex items-center gap-3">
-          <span className="h-8 w-1.5 rounded-full bg-primary" />
-          <h2 className="font-display text-2xl font-bold">Princípios que seguimos</h2>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {PRINCIPIOS.map((p) => (
-            <div key={p.title} className="rounded-xl border border-border bg-card p-5">
-              <div className="grid h-11 w-11 place-items-center rounded-lg bg-primary/10 text-primary">
-                <p.icon className="h-5 w-5" />
-              </div>
-              <h3 className="mt-3 font-display text-base font-semibold">{p.title}</h3>
-              <p className="mt-1 text-sm text-muted-foreground leading-6">{p.text}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* DIREITOS DO TITULAR */}
-      <section className="border-y border-border bg-secondary/40">
-        <div className="container-page py-10 md:py-14 grid gap-8 md:grid-cols-[1fr_1.2fr]">
+      <div className="container-page py-8 md:py-10 space-y-10">
+        <section aria-labelledby="titulo-exercer" className="grid gap-5 lg:grid-cols-2 lg:items-center rounded-2xl text-white p-5 md:p-7" style={{ background: "linear-gradient(120deg, var(--primary-deep), var(--primary))" }}>
           <div>
-            <div className="mb-4 flex items-center gap-3">
-              <span className="h-8 w-1.5 rounded-full bg-primary" />
-              <h2 className="font-display text-2xl font-bold">Direitos do Titular</h2>
-            </div>
-            <p className="text-sm text-muted-foreground leading-7">
-              Como titular de dados pessoais, você pode exercer, a qualquer momento e mediante requisição,
-              os direitos previstos no <strong>art. 18</strong> da LGPD:
-            </p>
+            <h2 id="titulo-exercer" className="font-display font-bold text-2xl">Exerça seu direito em um minuto</h2>
+            <p className="text-white/90 mt-1">Escolha o que você quer e prepararemos o e-mail para a Câmara. É só completar seus dados e enviar.</p>
           </div>
-          <ul className="grid gap-2 rounded-xl border border-border bg-card p-6 text-sm">
-            {DIREITOS.map((d) => (
-              <li key={d} className="flex items-start gap-2">
-                <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                <span>{d}</span>
+          <div className="rounded-2xl bg-white text-slate-900 p-4">
+            <label htmlFor="direito" className="text-sm font-semibold">Eu quero…</label>
+            <select id="direito" value={direito} onChange={(e) => setDireito(e.target.value)} className="mt-1 h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-medium text-slate-900">
+              {DIREITOS.map((d) => <option key={d}>{d}</option>)}
+            </select>
+            <a href={pedido} className="inline-flex w-full items-center justify-center gap-1.5 h-11 rounded-xl bg-primary text-primary-foreground text-sm font-semibold mt-3 hover:opacity-90 transition"><Mail className="w-4 h-4" aria-hidden /> Preparar o e-mail</a>
+          </div>
+        </section>
+
+        <section aria-labelledby="titulo-dados">
+          <h2 id="titulo-dados" className="font-display font-bold text-2xl text-foreground">Quais dados os formulários do site recebem</h2>
+          <p className="text-sm text-muted-foreground mt-0.5">Só o que é preenchido nos atendimentos abaixo.</p>
+          <ul className="grid gap-4 md:grid-cols-2 mt-4">
+            {DADOS_NO_SITE.map((d) => (
+              <li key={d.canal} className="flex flex-col bg-card border border-border rounded-2xl p-5">
+                <h3 className="font-display font-bold text-foreground">{d.canal}</h3>
+                <dl className="text-sm mt-2 space-y-2 flex-1">
+                  <div><dt className="font-semibold text-foreground">Dados</dt><dd className="text-muted-foreground">{d.dados}</dd></div>
+                  <div><dt className="font-semibold text-foreground">Para quê</dt><dd className="text-muted-foreground">{d.uso}</dd></div>
+                </dl>
+                <Link to={d.to} className="inline-flex items-center gap-1 text-sm font-semibold text-primary mt-3 hover:underline underline-offset-2">Abrir {d.canal} <ArrowRight className="w-4 h-4" aria-hidden /></Link>
               </li>
             ))}
           </ul>
-        </div>
-      </section>
+        </section>
 
-      {/* ENCARREGADO / DPO */}
-      <section className="container-page py-10 md:py-14 grid gap-5 md:grid-cols-3">
-        <div className="md:col-span-2 rounded-xl border border-border bg-card p-6">
-          <div className="flex items-center gap-3">
-            <div className="grid h-11 w-11 place-items-center rounded-lg bg-primary/10 text-primary">
-              <UserCheck className="h-5 w-5" />
-            </div>
-            <h3 className="font-display text-xl font-bold">Encarregado de Dados (DPO)</h3>
-          </div>
-          <p className="mt-3 text-sm text-muted-foreground leading-7">
-            O Encarregado pelo Tratamento de Dados Pessoais é o canal de comunicação entre a Câmara
-            Municipal, os titulares e a Autoridade Nacional de Proteção de Dados (ANPD).
-          </p>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 text-sm">
-            <div className="rounded-lg border border-border bg-secondary/40 p-3">
-              <div className="text-xs uppercase tracking-wider text-muted-foreground">Nome</div>
-              <div className="mt-0.5 font-semibold">A definir por portaria</div>
-            </div>
-            <div className="rounded-lg border border-border bg-secondary/40 p-3">
-              <div className="text-xs uppercase tracking-wider text-muted-foreground">E-mail</div>
-              <a href="mailto:contato@camaradeadelandia.go.gov.br" className="mt-0.5 block font-semibold text-primary hover:underline">
-                contato@camaradeadelandia.go.gov.br
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-xl border border-border bg-card p-6">
-          <div className="grid h-11 w-11 place-items-center rounded-lg bg-primary/10 text-primary">
-            <FileText className="h-5 w-5" />
-          </div>
-          <h3 className="mt-3 font-display text-lg font-semibold">Canais</h3>
-          <ul className="mt-3 space-y-2 text-sm">
-            <li>
-              <Link to="/e-sic" className="text-primary hover:underline">e-SIC</Link> — pedido formal de informação
-            </li>
-            <li>
-              <Link to="/contato" className="text-primary hover:underline">Ouvidoria</Link> — dúvidas e reclamações
-            </li>
-            <li className="inline-flex items-center gap-1.5">
-              <Mail className="h-3.5 w-3.5 text-primary" />
-              <a href="mailto:contato@camaradeadelandia.go.gov.br" className="text-primary hover:underline">contato@camaradeadelandia.go.gov.br</a>
-            </li>
+        <section aria-labelledby="titulo-principios">
+          <h2 id="titulo-principios" className="font-display font-bold text-2xl text-foreground">Princípios que orientam o tratamento</h2>
+          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mt-4">
+            {PRINCIPIOS.map((p) => (
+              <li key={p.titulo} className="bg-card border border-border rounded-2xl p-5">
+                <span className="w-10 h-10 rounded-xl grid place-items-center bg-primary text-primary-foreground"><p.icone className="w-5 h-5" aria-hidden /></span>
+                <h3 className="font-display font-bold text-foreground mt-3">{p.titulo}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed mt-1">{p.texto}</p>
+              </li>
+            ))}
           </ul>
+        </section>
+
+        <div className="grid gap-5 lg:grid-cols-[1.2fr_1fr]">
+          <section aria-labelledby="titulo-direitos" className="bg-card border border-border rounded-2xl p-5 md:p-6">
+            <h2 id="titulo-direitos" className="font-display font-bold text-xl text-foreground">Seus direitos (art. 18)</h2>
+            <ul className="grid gap-2 mt-3 text-sm">
+              {DIREITOS.map((d) => <li key={d} className="flex items-start gap-2 text-foreground"><ShieldCheck className="w-4 h-4 text-primary shrink-0 mt-0.5" aria-hidden /> {d}</li>)}
+            </ul>
+          </section>
+          <section aria-labelledby="titulo-encarregado" className="bg-card border border-border rounded-2xl p-5 md:p-6">
+            <h2 id="titulo-encarregado" className="flex items-center gap-2 font-display font-bold text-xl text-foreground"><UserCheck className="w-5 h-5 text-primary" aria-hidden /> Encarregado de Dados</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed mt-2">É o canal de comunicação entre a Câmara, os titulares e a Autoridade Nacional de Proteção de Dados (ANPD).</p>
+            <dl className="text-sm mt-3 divide-y divide-border">
+              <div className="flex justify-between gap-4 py-2"><dt className="text-muted-foreground">Nome</dt><dd className="font-semibold text-foreground text-right">A definir por portaria</dd></div>
+              <div className="flex justify-between gap-4 py-2"><dt className="text-muted-foreground">E-mail</dt><dd className="font-semibold text-right min-w-0"><a href={`mailto:${contato.email}`} className="text-foreground underline underline-offset-2 break-all">{contato.email}</a></dd></div>
+            </dl>
+          </section>
         </div>
-      </section>
-    </main>
+
+        <EscolhaCanal atual={ROUTES.lgpd} />
+      </div>
+    </>
   );
 }

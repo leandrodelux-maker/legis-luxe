@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Building2, Calendar, Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { ArrowRight, Calendar, Newspaper, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { CabecalhoPagina } from "@/components/cabecalho-pagina";
+import { ROUTES } from "@/lib/site-links";
 
 export const Route = createFileRoute("/noticias/")({
   head: () => ({
@@ -29,152 +30,146 @@ type DbNoticia = {
   slug: string;
   resumo: string | null;
   categoria: string | null;
+  destaque: boolean;
   publicado_em: string | null;
   created_at: string;
   imagem_url: string | null;
 };
 
+const POR_PAGINA = 9;
+const normalizar = (s: string) => s.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
+const seletor = "h-11 rounded-xl border border-border bg-card px-3 text-sm font-medium text-foreground min-w-0";
+const dataDe = (n: DbNoticia) => n.publicado_em ?? n.created_at;
+const anoDe = (n: DbNoticia) => String(new Date(dataDe(n)).getFullYear());
+const dataLonga = (n: DbNoticia) => new Date(dataDe(n)).toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric" });
+
+function Capa({ n, className }: { n: DbNoticia; className: string }) {
+  return n.imagem_url ? (
+    <img src={n.imagem_url} alt="" loading="lazy" decoding="async" className={`${className} object-cover`} />
+  ) : (
+    <span className={`${className} grid place-items-center bg-muted`}><Newspaper className="w-9 h-9 text-muted-foreground" aria-hidden /></span>
+  );
+}
+
+function Linha({ n }: { n: DbNoticia }) {
+  return (
+    <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+      <span className="inline-flex items-center gap-1"><Calendar className="w-3.5 h-3.5" aria-hidden /> {dataLonga(n)}</span>
+      {n.categoria && <span className="rounded-full bg-primary/10 px-2 py-0.5 font-bold text-primary">{n.categoria}</span>}
+    </p>
+  );
+}
+
 function NoticiasPage() {
   const [noticias, setNoticias] = useState<DbNoticia[]>([]);
   const [categorias, setCategorias] = useState<string[]>([]);
-  const [ativa, setAtiva] = useState("Todas");
   const [busca, setBusca] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [categoria, setCategoria] = useState("");
+  const [ano, setAno] = useState("");
+  const [limite, setLimite] = useState(POR_PAGINA);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState(false);
 
   useEffect(() => {
     Promise.all([
       supabase
         .from("noticias")
-        .select("id, titulo, slug, resumo, categoria, publicado_em, created_at, imagem_url")
+        .select("id, titulo, slug, resumo, categoria, destaque, publicado_em, created_at, imagem_url")
         .eq("publicado", true)
         .order("publicado_em", { ascending: false, nullsFirst: false }),
       supabase.from("noticias_categorias").select("nome").order("ordem"),
-    ]).then(([{ data }, { data: cats }]) => {
+    ]).then(([{ data, error }, { data: cats }]) => {
+      if (error) setErro(true);
       setNoticias((data as DbNoticia[]) ?? []);
-      setCategorias(["Todas", ...((cats ?? []).map((c: any) => c.nome as string))]);
-      setLoading(false);
+      setCategorias((cats ?? []).map((c: any) => c.nome as string));
+      setCarregando(false);
     });
   }, []);
 
-  const filtradas = useMemo(() => {
-    const q = busca.trim().toLowerCase();
-    return noticias.filter((n) => {
-      if (ativa !== "Todas" && n.categoria !== ativa) return false;
-      if (!q) return true;
-      return [n.titulo, n.resumo, n.categoria]
-        .filter(Boolean)
-        .some((v) => String(v).toLowerCase().includes(q));
-    });
-  }, [noticias, ativa, busca]);
+  useEffect(() => setLimite(POR_PAGINA), [busca, categoria, ano]);
+
+  const anos = useMemo(() => [...new Set(noticias.map(anoDe))].sort().reverse(), [noticias]);
+  const nomesCategoria = useMemo(() => [...new Set([...categorias, ...(noticias.map((n) => n.categoria).filter(Boolean) as string[])])], [categorias, noticias]);
+  const q = normalizar(busca.trim());
+  const filtradas = noticias.filter((n) => (!categoria || n.categoria === categoria) && (!ano || anoDe(n) === ano) && (!q || normalizar(`${n.titulo} ${n.resumo ?? ""} ${n.categoria ?? ""}`).includes(q)));
+  const temFiltro = Boolean(busca || categoria || ano);
+  const principal = temFiltro ? undefined : noticias.find((n) => n.destaque) ?? noticias[0];
+  const lista = filtradas.filter((n) => n !== principal);
 
   return (
     <>
-      <section className="bg-gradient-to-br from-primary-deep to-primary text-primary-foreground">
-        <div className="container-page py-8 md:py-10">
-          <div className="text-xs uppercase tracking-[0.2em] text-gold flex items-center gap-3">
-            <span className="gold-divider" /> Comunicação Institucional
-          </div>
-          <h1 className="mt-4 font-display text-4xl md:text-5xl font-semibold">Notícias</h1>
-          <p className="mt-4 max-w-2xl text-primary-foreground/85">
-            Acompanhe a cobertura editorial das sessões, audiências públicas e atividades dos
-            parlamentares.
-          </p>
+      <CabecalhoPagina
+        titulo="Notícias"
+        icone={Newspaper}
+        descricao="As sessões, audiências públicas e atividades do Legislativo municipal contadas pela Câmara."
+        numeros={carregando || noticias.length === 0 ? undefined : [{ rotulo: "Publicações", valor: noticias.length }, { rotulo: "Última publicação", valor: <span className="text-lg">{new Date(dataDe(noticias[0])).toLocaleDateString("pt-BR")}</span> }]}
+      />
 
-          <div className="mt-8 max-w-xl">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Buscar notícias..."
-                value={busca}
-                onChange={(e) => setBusca(e.target.value)}
-                className="pl-9 h-11 bg-white/95 text-foreground border-white/20"
-                aria-label="Buscar notícias"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="container-page py-12">
-        {categorias.length > 1 && (
-          <div className="flex flex-wrap gap-2">
-            {categorias.map((c) => (
-              <button
-                key={c}
-                onClick={() => setAtiva(c)}
-                className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-all ${
-                  ativa === c
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "border-border bg-background text-foreground/70 hover:border-primary hover:text-primary"
-                }`}
-              >
-                {c}
-              </button>
-            ))}
-          </div>
-        )}
-
-        {loading ? (
-          <div className="mt-10 text-center text-muted-foreground py-12">Carregando notícias...</div>
-        ) : filtradas.length === 0 ? (
-          <div className="mt-10 text-center text-muted-foreground py-12">
-            Nenhuma notícia encontrada.
+      <div className="container-page py-8 md:py-10 space-y-6">
+        {carregando ? (
+          <div className="grid gap-4 md:grid-cols-3" aria-hidden>{Array.from({ length: 6 }).map((_, i) => <div key={i} className="h-64 rounded-2xl bg-muted animate-pulse" />)}</div>
+        ) : erro ? (
+          <div role="alert" className="bg-card border border-destructive/40 rounded-2xl p-10 text-center font-semibold text-foreground">Não foi possível carregar as notícias agora. Tente de novo em instantes.</div>
+        ) : noticias.length === 0 ? (
+          <div className="bg-card border border-dashed border-border rounded-2xl p-8 md:p-10 text-center">
+            <Newspaper className="w-9 h-9 text-primary mx-auto" aria-hidden />
+            <h2 className="font-display font-bold text-xl text-foreground mt-3">Nenhuma notícia publicada ainda</h2>
+            <p className="text-muted-foreground mt-1.5 max-w-xl mx-auto">As publicações da Câmara aparecerão aqui. Enquanto isso, acompanhe o trabalho do plenário pelas sessões.</p>
+            <Link to={ROUTES.sessoes} className="inline-flex items-center gap-1.5 h-11 px-4 rounded-xl bg-primary text-primary-foreground text-sm font-semibold mt-5 hover:opacity-90 transition">Ver as sessões <ArrowRight className="w-4 h-4" aria-hidden /></Link>
           </div>
         ) : (
-          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {filtradas.map((n, i) => {
-              const date = n.publicado_em ?? n.created_at;
-              return (
-                <article
-                  key={n.id}
-                  className="card-premium card-premium-hover group overflow-hidden animate-[fade-up_0.5s_ease-out_both]"
-                  style={{ animationDelay: `${i * 60}ms` }}
-                >
-                  <Link to="/noticias/$slug" params={{ slug: n.slug }} className="block">
-                    <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-primary-deep via-primary to-primary/70">
-                      {n.imagem_url ? (
-                        <img
-                          src={n.imagem_url}
-                          alt={n.titulo}
-                          loading="lazy"
-                          decoding="async"
-                          className="absolute inset-0 h-full w-full object-cover"
-                        />
-                      ) : (
-                        <Building2 className="absolute right-4 bottom-4 h-16 w-16 text-white/15" />
-                      )}
-                      {n.categoria && (
-                        <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-gold px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-gold-foreground">
-                          {n.categoria}
-                        </div>
-                      )}
+          <>
+            <section aria-label="Filtros" className="flex flex-wrap items-center gap-2 bg-card border border-border rounded-2xl p-3">
+              <input type="search" aria-label="Buscar notícia" placeholder="Buscar notícia" value={busca} onChange={(e) => setBusca(e.target.value)} className={`${seletor} flex-[2] min-w-[220px]`} />
+              {nomesCategoria.length > 0 && (
+                <select aria-label="Filtrar por categoria" value={categoria} onChange={(e) => setCategoria(e.target.value)} className={`${seletor} flex-1 min-w-[170px]`}>
+                  <option value="">Todas as categorias</option>
+                  {nomesCategoria.map((c) => <option key={c} value={c}>{c}</option>)}
+                </select>
+              )}
+              <select aria-label="Filtrar por ano" value={ano} onChange={(e) => setAno(e.target.value)} className={seletor}>
+                <option value="">Todos os anos</option>
+                {anos.map((a) => <option key={a} value={a}>{a}</option>)}
+              </select>
+              {temFiltro && <button type="button" onClick={() => { setBusca(""); setCategoria(""); setAno(""); }} className="inline-flex items-center gap-1 h-11 px-3 rounded-xl text-sm font-semibold text-foreground hover:bg-muted"><X className="w-4 h-4" aria-hidden /> Limpar</button>}
+            </section>
+
+            <p className="text-sm text-muted-foreground" aria-live="polite">{filtradas.length} de {noticias.length} notícias</p>
+
+            {principal && (
+              <article className="group relative grid md:grid-cols-2 bg-card border border-border rounded-2xl overflow-hidden hover:shadow-md transition">
+                <Capa n={principal} className="w-full h-full min-h-56 aspect-video md:aspect-auto" />
+                <div className="p-5 md:p-7 self-center">
+                  <Linha n={principal} />
+                  <h2 className="font-display font-bold text-2xl text-foreground leading-snug mt-2"><Link to="/noticias/$slug" params={{ slug: principal.slug }} className="after:absolute after:inset-0 group-hover:underline underline-offset-2 focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-primary">{principal.titulo}</Link></h2>
+                  {principal.resumo && <p className="text-muted-foreground leading-relaxed mt-2 line-clamp-3">{principal.resumo}</p>}
+                  <span className="inline-flex items-center gap-1 text-sm font-semibold text-primary mt-3">Ler a notícia <ArrowRight className="w-4 h-4 transition group-hover:translate-x-0.5" aria-hidden /></span>
+                </div>
+              </article>
+            )}
+
+            {filtradas.length === 0 ? (
+              <div className="bg-card border border-dashed border-border rounded-2xl p-12 text-center font-semibold text-foreground">Nenhuma notícia encontrada com esses filtros.</div>
+            ) : (
+              <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {lista.slice(0, limite).map((n) => (
+                  <li key={n.id} className="group relative flex flex-col bg-card border border-border rounded-2xl overflow-hidden hover:shadow-md transition">
+                    <Capa n={n} className="w-full aspect-video" />
+                    <div className="p-4">
+                      <Linha n={n} />
+                      <h3 className="font-display font-bold text-foreground leading-snug mt-2"><Link to="/noticias/$slug" params={{ slug: n.slug }} className="after:absolute after:inset-0 group-hover:underline underline-offset-2 focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-primary">{n.titulo}</Link></h3>
+                      {n.resumo && <p className="text-sm text-muted-foreground leading-relaxed mt-1 line-clamp-2">{n.resumo}</p>}
                     </div>
-                    <div className="p-6">
-                      <time className="flex items-center gap-1.5 text-xs uppercase tracking-wider text-muted-foreground">
-                        <Calendar className="h-3 w-3" />{" "}
-                        {new Date(date).toLocaleDateString("pt-BR", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        })}
-                      </time>
-                      <h2 className="mt-2 font-display text-lg font-semibold leading-snug group-hover:text-primary transition-colors">
-                        {n.titulo}
-                      </h2>
-                      {n.resumo && (
-                        <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{n.resumo}</p>
-                      )}
-                      <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary group-hover:gap-2 transition-all">
-                        Ler mais <ArrowRight className="h-3.5 w-3.5" />
-                      </span>
-                    </div>
-                  </Link>
-                </article>
-              );
-            })}
-          </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {lista.length > limite && (
+              <div className="text-center"><button type="button" onClick={() => setLimite((l) => l + POR_PAGINA)} className="h-11 px-5 rounded-xl border border-border bg-card text-sm font-semibold text-foreground hover:bg-muted transition">Mostrar mais</button></div>
+            )}
+          </>
         )}
-      </section>
+      </div>
     </>
   );
 }

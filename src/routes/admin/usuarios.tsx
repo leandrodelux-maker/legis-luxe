@@ -51,6 +51,11 @@ import {
   type AdminUserRow,
 } from "@/lib/admin-users.functions";
 
+import { BotaoCabecalho, PaginaModulo } from "@/components/admin/painel/PaginaModulo";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
 export const Route = createFileRoute("/admin/usuarios")({
   component: AdminUsuarios,
 });
@@ -70,6 +75,7 @@ function AdminUsuarios() {
   const remove = useServerFn(deleteAdminUser);
 
   const [open, setOpen] = useState(false);
+  const [excluindo, setExcluindo] = useState<AdminUserRow | null>(null);
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -126,22 +132,11 @@ function AdminUsuarios() {
   const pendentes = (users ?? []).filter((u) => !u.aprovado);
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-3xl font-display font-bold flex items-center gap-3">
-            <Users className="w-7 h-7 text-primary" /> Usuários e Permissões
-          </h2>
-          <p className="text-muted-foreground">
-            Crie contas, habilite o acesso e defina o nível de permissão de cada pessoa.
-          </p>
-        </div>
-
+    <PaginaModulo
+      acoes={
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button>
-              <UserPlus className="w-4 h-4 mr-2" /> Novo usuário
-            </Button>
+            <BotaoCabecalho><UserPlus className="w-4 h-4" aria-hidden /> Novo usuário</BotaoCabecalho>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
@@ -213,8 +208,8 @@ function AdminUsuarios() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      </div>
-
+      }
+    >
       {pendentes.length > 0 && (
         <Card className="border-amber-300 bg-amber-50/60">
           <CardHeader>
@@ -302,9 +297,8 @@ function AdminUsuarios() {
                           size="icon"
                           variant="ghost"
                           className="text-destructive"
-                          onClick={() => {
-                            if (confirm(`Excluir a conta ${u.email}?`)) deleteMutation.mutate(u.id);
-                          }}
+                          aria-label={`Excluir a conta de ${u.email}`}
+                          onClick={() => setExcluindo(u)}
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -317,6 +311,18 @@ function AdminUsuarios() {
           )}
         </CardContent>
       </Card>
-    </div>
+      <AlertDialog open={Boolean(excluindo)} onOpenChange={(a) => !a && setExcluindo(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir a conta {excluindo?.email}?</AlertDialogTitle>
+            <AlertDialogDescription>A pessoa perde o acesso ao painel. Esta ação não pode ser desfeita.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Manter</AlertDialogCancel>
+            <AlertDialogAction className="bg-destructive text-white hover:bg-destructive/90" onClick={() => { if (excluindo) deleteMutation.mutate(excluindo.id); setExcluindo(null); }}>Excluir</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </PaginaModulo>
   );
 }

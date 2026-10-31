@@ -5,9 +5,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { FOOTER_COLUMNS, FOOTER_LEGAL_LINKS } from "@/lib/site-links";
 import { useContactInfo } from "@/hooks/use-contact-info";
-import virtusgovLogo from "@/assets/virtusgov-logo.png.asset.json";
-
-
+import virtusgovLogo from "@/assets/virtusgov-logo.png";
+import logoAdelandia from "@/assets/logo-adelandia.png";
 
 type SiteSettings = {
   footer_logo_url: string | null;
@@ -23,7 +22,6 @@ export function SiteFooter() {
   const [settings, setSettings] = useState<SiteSettings | null>(null);
   const contact = useContactInfo();
 
-
   useEffect(() => {
     supabase
       .from("site_settings")
@@ -32,6 +30,11 @@ export function SiteFooter() {
       .maybeSingle()
       .then(({ data }) => setSettings(data as SiteSettings | null));
   }, []);
+
+  const footerLogoSrc =
+    settings?.footer_logo_url && !settings.footer_logo_url.includes("1792551513432")
+      ? settings.footer_logo_url
+      : logoAdelandia;
 
   return (
     <footer className="mt-24 bg-primary-deep text-primary-foreground">
@@ -63,32 +66,18 @@ export function SiteFooter() {
       <div className="container-page py-14 grid gap-10 md:grid-cols-6">
         <div className="md:col-span-2">
           <div className="flex items-center gap-3">
-            {settings?.footer_logo_url ? (
-              <img 
-                src={settings.footer_logo_url} 
-                alt="Logo Câmara Municipal"
-                loading="lazy"
-                decoding="async"
-                style={{
-                  maxHeight: `${settings.footer_logo_height}px`,
-                  maxWidth: "100%",
-                  filter: "brightness(1.08) saturate(1.15) drop-shadow(0 0 1px rgba(255,255,255,0.3))",
-                }}
-                className="w-auto h-auto object-contain"
-              />
-            ) : (
-              <>
-                <div className="grid h-11 w-11 place-items-center rounded-md bg-white/10 ring-1 ring-gold/40">
-                  <Landmark className="h-5 w-5" />
-                </div>
-                <div>
-                  <div className="font-display text-lg font-semibold">Câmara Municipal</div>
-                  <div className="text-[10px] uppercase tracking-[0.18em] text-primary-foreground/70">
-                    Poder Legislativo
-                  </div>
-                </div>
-              </>
-            )}
+            <img 
+              src={footerLogoSrc} 
+              alt="Logo Câmara Municipal de Adelândia"
+              loading="lazy"
+              decoding="async"
+              style={{
+                maxHeight: `${settings?.footer_logo_height || 80}px`,
+                maxWidth: "100%",
+                filter: "drop-shadow(0 0 1.5px rgba(255,255,255,0.85)) drop-shadow(0 0 8px rgba(255,255,255,0.3))",
+              }}
+              className="w-auto h-auto object-contain"
+            />
           </div>
           <p className="mt-4 text-sm text-primary-foreground/75 leading-relaxed">
             O portal oficial do legislativo municipal. Transparência, participação e cidadania.
@@ -170,7 +159,7 @@ export function SiteFooter() {
               className="inline-flex items-center rounded-full bg-white px-3.5 py-1.5 shadow-halo transition-shadow duration-300 hover:shadow-halo-lg"
             >
               <img
-                src={virtusgovLogo.url}
+                src={virtusgovLogo}
                 alt="VirtusGov — Tecnologia em Gestão Pública"
                 loading="lazy"
                 decoding="async"

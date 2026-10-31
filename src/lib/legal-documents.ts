@@ -5,6 +5,11 @@
 const WPFD_BASE =
   "https://camaradeadelandia.go.gov.br/wp-admin/admin-ajax.php?juwpfisadmin=false&action=wpfd&task=file.download";
 
+/** Arquivos do WordPress antigo não abrem no visualizador embutido. */
+export function arquivoNoSiteAntigo(url: string) {
+  return url.includes("/wp-admin/admin-ajax.php");
+}
+
 /** URL de download direto do arquivo. */
 export function WPFD_DOWNLOAD(categoryId: number, fileId: number) {
   return `${WPFD_BASE}&wpfd_category_id=${categoryId}&wpfd_file_id=${fileId}&token=`;

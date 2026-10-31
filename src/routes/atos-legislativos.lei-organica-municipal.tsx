@@ -1,12 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Scale, Landmark, BookOpen } from "lucide-react";
-import {
-  DocumentLibrary,
-  DocumentPageHero,
-  type LegalDocument,
-} from "@/components/document-library";
+import { BookOpen, Landmark, Scale } from "lucide-react";
 import { WPFD_DOWNLOAD, WPFD_PREVIEW, buildGoogleViewer } from "@/lib/legal-documents";
-import { useOfficialDocuments } from "@/lib/official-documents";
+import type { LegalDocument } from "@/components/document-library";
+import { PaginaDocumentoOficial, type TemaDocumento } from "@/components/pagina-documento-oficial";
+import { ROUTES } from "@/lib/site-links";
 
 export const Route = createFileRoute("/atos-legislativos/lei-organica-municipal")({
   head: () => ({
@@ -39,59 +36,23 @@ const FALLBACK_DOCS: LegalDocument[] = [
   },
 ];
 
-const TOPICS = [
-  {
-    icon: Landmark,
-    title: "Organização do município",
-    text: "Define território, símbolos, competências e a estrutura dos Poderes Legislativo e Executivo.",
-  },
-  {
-    icon: Scale,
-    title: "Processo legislativo",
-    text: "Estabelece as espécies normativas, quóruns, prazos de votação, vetos e promulgação.",
-  },
-  {
-    icon: BookOpen,
-    title: "Direitos e serviços",
-    text: "Trata da administração pública, servidores, tributos, orçamento e políticas municipais.",
-  },
+const TEMAS: TemaDocumento[] = [
+  { icone: Landmark, titulo: "Organização do município", texto: "Território, símbolos, competências e a estrutura dos Poderes Legislativo e Executivo.", to: ROUTES.historia, rotulo: "Conhecer o município" },
+  { icone: Scale, titulo: "Processo legislativo", texto: "Espécies normativas, quóruns, prazos de votação, vetos e promulgação.", to: ROUTES.projetos, rotulo: "Ver as matérias" },
+  { icone: BookOpen, titulo: "Direitos e serviços", texto: "Administração pública, servidores, tributos, orçamento e políticas municipais.", to: ROUTES.cartaServicos, rotulo: "Ver os serviços da Câmara" },
 ];
 
 function LeiOrganicaPage() {
-  const { documents } = useOfficialDocuments("lei-organica-municipal", FALLBACK_DOCS);
-
   return (
-    <>
-      <DocumentPageHero
-        eyebrow="Atos Legislativos"
-        title="Lei Orgânica Municipal"
-        description="A Lei Orgânica é a 'Constituição do município': organiza os Poderes, fixa competências e assegura os direitos do cidadão adelandense."
-      />
-
-      <section className="container-page py-12 md:py-16">
-        <div className="grid gap-5 md:grid-cols-3">
-          {TOPICS.map(({ icon: Icon, title, text }) => (
-            <div
-              key={title}
-              className="rounded-2xl border border-border bg-card p-6 shadow-sm transition-shadow hover:shadow-md"
-            >
-              <div className="grid h-11 w-11 place-items-center rounded-lg bg-primary/10 text-primary">
-                <Icon className="h-5 w-5" />
-              </div>
-              <h2 className="mt-4 font-display text-lg font-bold">{title}</h2>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{text}</p>
-            </div>
-          ))}
-        </div>
-
-        <h2 className="mt-14 font-display text-2xl font-bold md:text-3xl">Documento oficial</h2>
-        <p className="mt-2 text-muted-foreground">
-          Visualize o texto integral no portal ou baixe o arquivo em PDF.
-        </p>
-        <div className="mt-6">
-          <DocumentLibrary documents={documents} />
-        </div>
-      </section>
-    </>
+    <PaginaDocumentoOficial
+      rota={ROUTES.leiOrganica}
+      categoria="lei-organica-municipal"
+      reserva={FALLBACK_DOCS}
+      titulo="Lei Orgânica Municipal"
+      icone={Scale}
+      descricao="A lei maior do município: organiza os Poderes, define as competências locais e orienta todas as demais leis de Adelândia."
+      tituloTemas="O que a Lei Orgânica define"
+      temas={TEMAS}
+    />
   );
 }

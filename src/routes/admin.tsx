@@ -4,6 +4,7 @@ import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminTopbar } from "@/components/admin/AdminTopbar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 export const Route = createFileRoute("/admin")({
   component: () => (
@@ -22,11 +23,12 @@ function AdminLayout() {
         <AdminSidebar />
         <div className="flex-1 flex flex-col min-w-0">
           <AdminTopbar />
-          <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 bg-gradient-to-br from-background via-background to-muted/40">
+          <main className="flex-1 overflow-y-auto bg-background">
             <Outlet />
           </main>
         </div>
       </div>
+      <Toaster richColors position="top-right" closeButton />
     </SidebarProvider>
   );
 }

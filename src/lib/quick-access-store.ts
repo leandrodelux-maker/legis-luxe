@@ -54,24 +54,24 @@ const DEFAULT_ITEMS: QuickAccessItem[] = [
   { id: "8", category: "cidadaos", label: "LGPD", tag: "PRIVACIDADE", icon: "ShieldCheck", url: "/lgpd", external: false },
 
   // Servidores
-  { id: "9", category: "servidores", label: "Folha de Pagamento", icon: "Users", url: "/transparencia-portal", external: false },
-  { id: "10", category: "servidores", label: "Diárias", icon: "Wallet", url: "/transparencia-portal", external: false },
-  { id: "11", category: "servidores", label: "Estrutura e Cargos", icon: "Landmark", url: "/transparencia-portal", external: false },
-  { id: "12", category: "servidores", label: "Estatísticas", icon: "Monitor", url: "/transparencia-portal", external: false },
+  { id: "9", category: "servidores", label: "Folha de Pagamento", icon: "Users", url: "/transparencia", external: false },
+  { id: "10", category: "servidores", label: "Diárias", icon: "Wallet", url: "/transparencia", external: false },
+  { id: "11", category: "servidores", label: "Estrutura e Cargos", icon: "Landmark", url: "/transparencia", external: false },
+  { id: "12", category: "servidores", label: "Estatísticas", icon: "Monitor", url: "/transparencia", external: false },
 
   // Empresas
-  { id: "13", category: "empresas", label: "Licitações", icon: "Gavel", url: "/transparencia-portal", external: false },
-  { id: "14", category: "empresas", label: "Contratos", icon: "ClipboardList", url: "/transparencia-portal", external: false },
-  { id: "15", category: "empresas", label: "Dispensas e Inexigibilidades", icon: "FileText", url: "/transparencia-portal", external: false },
-  { id: "16", category: "empresas", label: "Receitas e Despesas", icon: "Receipt", url: "/transparencia-portal", external: false },
+  { id: "13", category: "empresas", label: "Licitações", icon: "Gavel", url: "/transparencia", external: false },
+  { id: "14", category: "empresas", label: "Contratos", icon: "ClipboardList", url: "/transparencia", external: false },
+  { id: "15", category: "empresas", label: "Dispensas e Inexigibilidades", icon: "FileText", url: "/transparencia", external: false },
+  { id: "16", category: "empresas", label: "Receitas e Despesas", icon: "Receipt", url: "/transparencia", external: false },
 
   // Legislação
-  { id: "17", category: "legislacao", label: "Legislação Municipal", icon: "Scale", url: "/transparencia-portal", external: false },
-  { id: "18", category: "legislacao", label: "Lei Orgânica", icon: "BookOpen", url: "/transparencia-portal", external: false },
-  { id: "19", category: "legislacao", label: "Regimento Interno", icon: "Gavel", url: "/transparencia-portal", external: false },
+  { id: "17", category: "legislacao", label: "Legislação Municipal", icon: "Scale", url: "/transparencia", external: false },
+  { id: "18", category: "legislacao", label: "Lei Orgânica", icon: "BookOpen", url: "/transparencia", external: false },
+  { id: "19", category: "legislacao", label: "Regimento Interno", icon: "Gavel", url: "/transparencia", external: false },
   { id: "20", category: "legislacao", label: "Projetos Legislativos", icon: "FileText", url: "/projetos", external: false },
-  { id: "21", category: "legislacao", label: "Gestão Fiscal (LRF)", icon: "Landmark", url: "/transparencia-portal", external: false },
-  { id: "22", category: "legislacao", label: "Portal da Transparência", icon: "Globe", url: "/transparencia-portal", external: false },
+  { id: "21", category: "legislacao", label: "Gestão Fiscal (LRF)", icon: "Landmark", url: "/transparencia", external: false },
+  { id: "22", category: "legislacao", label: "Portal da Transparência", icon: "Globe", url: "/transparencia", external: false },
 ];
 
 

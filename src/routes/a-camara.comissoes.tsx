@@ -1,27 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Gavel, Scale, Coins, GraduationCap, ArrowRight, Users } from "lucide-react";
+import { ArrowRight, BookOpen, FileText, Gavel, Users, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { VereadorAvatar } from "@/components/vereador-avatar";
-import { SectionHeading } from "@/components/section-heading";
+import { CabecalhoPagina } from "@/components/cabecalho-pagina";
 import { ROUTES } from "@/lib/site-links";
 import { getCommitteeIcon } from "@/lib/committee-icons";
-import type { LucideIcon } from "lucide-react";
 
 export const Route = createFileRoute("/a-camara/comissoes")({
   head: () => ({
     meta: [
       { title: "Comissões Permanentes — Câmara Municipal de Adelândia" },
-      {
-        name: "description",
-        content:
-          "Composição das comissões permanentes da Câmara Municipal: Constituição e Justiça; Finanças e Orçamento; Educação, Saúde e Meio Ambiente.",
-      },
+      { name: "description", content: "Composição e competência das comissões permanentes da Câmara Municipal." },
       { property: "og:title", content: "Comissões Permanentes — Câmara Municipal de Adelândia" },
-      {
-        property: "og:description",
-        content: "Presidentes, vice-presidentes e relatores das comissões permanentes do Legislativo.",
-      },
+      { property: "og:description", content: "Presidentes, vice-presidentes e relatores das comissões permanentes do Legislativo." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -29,246 +21,141 @@ export const Route = createFileRoute("/a-camara/comissoes")({
   component: ComissoesPage,
 });
 
-type Vereador = {
-  id: string;
-  slug: string | null;
-  nome: string;
-  partido: string | null;
-  foto_url: string | null;
-};
+type Vereador = { id: string; slug: string | null; nome: string; partido: string | null; foto_url: string | null };
+type Membro = { comissao_id: string; vereador_id: string | null; nome: string; funcao: string };
+type Comissao = { id: string; nome: string; sigla: string; icone: string | null; competencia: string | null; membros: Membro[] };
 
-type Comissao = {
-  nome: string;
-  sigla: string;
-  icon: LucideIcon;
-  competencia: string;
-  membros: { nome: string; funcao: string }[];
-};
-
-const FALLBACK_COMISSOES: Comissao[] = [
-  {
-    nome: "Comissão de Constituição, Justiça e Redação",
-    sigla: "CCJR",
-    icon: Scale,
-    competencia:
-      "Analisa a constitucionalidade, a legalidade, a juridicidade e a técnica legislativa das proposições, além da redação final dos textos aprovados.",
-    membros: [
-      { nome: "Ana Glaucia Cardoso da Silva Mendonça", funcao: "Presidente" },
-      { nome: "Ana Maria Marques de Assis", funcao: "Vice-Presidente" },
-      { nome: "Matheus Teodoro Pinheiro", funcao: "Relator" },
-    ],
-  },
-  {
-    nome: "Comissão de Finanças, Orçamento, Economia, Obras, Serviços Públicos e Urbanismo",
-    sigla: "CFO",
-    icon: Coins,
-    competencia:
-      "Examina matérias de natureza financeira e orçamentária, prestação de contas, obras públicas, serviços urbanos e desenvolvimento econômico do município.",
-    membros: [
-      { nome: "Rodrigo Teixeira Amaral", funcao: "Presidente" },
-      { nome: "José Divino Pereira", funcao: "Vice-Presidente" },
-      { nome: "Maria José Pereira de Morais Avelar", funcao: "Relator" },
-    ],
-  },
-  {
-    nome: "Comissão de Educação, Cultura, Saúde, Assistência Social, Lazer, Esporte e Meio Ambiente",
-    sigla: "CECS",
-    icon: GraduationCap,
-    competencia:
-      "Aprecia proposições relativas a educação, cultura, saúde pública, assistência social, esporte, lazer e proteção ao meio ambiente.",
-    membros: [
-      { nome: "João Carlos Barra", funcao: "Presidente" },
-      { nome: "Ângela Diniz de Oliveira", funcao: "Vice-Presidente" },
-      { nome: "José Divino Pereira", funcao: "Relator" },
-    ],
-  },
-];
-
-function normalize(s: string) {
-  return s
-    .normalize("NFD")
-    .replace(/\p{Diacritic}/gu, "")
-    .toLowerCase()
-    .replace(/\s+/g, " ")
-    .trim();
-}
+const normalizar = (s: string) => s.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase().replace(/\s+/g, " ").trim();
+const seletor = "h-11 rounded-xl border border-border bg-card px-3 text-sm font-medium text-foreground min-w-0";
 
 function ComissoesPage() {
   const [vereadores, setVereadores] = useState<Vereador[]>([]);
-  const [comissoes, setComissoes] = useState<Comissao[]>(FALLBACK_COMISSOES);
+  const [comissoes, setComissoes] = useState<Comissao[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState(false);
+  const [filtroComissao, setFiltroComissao] = useState("");
+  const [filtroMembro, setFiltroMembro] = useState("");
 
-  useEffect(() => {
-    supabase
-      .from("vereadores")
-      .select("id, slug, nome, partido, foto_url")
-      .then(({ data }) => setVereadores((data as Vereador[]) ?? []));
-  }, []);
-
-  // Comissões gerenciadas pelo painel administrativo
   useEffect(() => {
     (async () => {
-      const [{ data: rows }, { data: membros }] = await Promise.all([
-        (supabase as any)
-          .from("comissoes")
-          .select("id, nome, sigla, icone, competencia, ordem, ativo")
-          .eq("ativo", true)
-          .order("ordem", { ascending: true }),
-        (supabase as any)
-          .from("comissoes_membros")
-          .select("comissao_id, nome, funcao, ordem")
-          .order("ordem", { ascending: true }),
+      const [v, c, m] = await Promise.all([
+        (supabase as any).from("vereadores").select("id, slug, nome, partido, foto_url"),
+        (supabase as any).from("comissoes").select("id, nome, sigla, icone, competencia, ordem").eq("ativo", true).order("ordem", { ascending: true }),
+        (supabase as any).from("comissoes_membros").select("comissao_id, vereador_id, nome, funcao, ordem").order("ordem", { ascending: true }),
       ]);
-      if (!rows?.length) return;
-      setComissoes(
-        (rows as any[]).map((c) => ({
-          nome: c.nome,
-          sigla: c.sigla,
-          icon: getCommitteeIcon(c.icone),
-          competencia: c.competencia ?? "",
-          membros: ((membros as any[]) ?? [])
-            .filter((m) => m.comissao_id === c.id)
-            .map((m) => ({ nome: m.nome, funcao: m.funcao })),
-        })),
-      );
+      if (c.error) setErro(true);
+      setVereadores((v.data as Vereador[]) ?? []);
+      setComissoes(((c.data as Omit<Comissao, "membros">[]) ?? []).map((x) => ({ ...x, membros: ((m.data as Membro[]) ?? []).filter((y) => y.comissao_id === x.id) })));
+      setCarregando(false);
     })();
   }, []);
 
-  const byName = useMemo(() => {
-    const map = new Map<string, Vereador>();
-    vereadores.forEach((v) => map.set(normalize(v.nome), v));
-    return map;
+  const vereadorDe = useMemo(() => {
+    const porId = new Map(vereadores.map((v) => [v.id, v]));
+    const porNome = new Map(vereadores.map((v) => [normalizar(v.nome), v]));
+    return (m: Membro) => (m.vereador_id ? porId.get(m.vereador_id) : undefined) ?? porNome.get(normalizar(m.nome));
   }, [vereadores]);
 
+  const participantes = useMemo(() => {
+    const conta = new Map<string, number>();
+    for (const c of comissoes) for (const m of c.membros) conta.set(m.nome, (conta.get(m.nome) ?? 0) + 1);
+    return [...conta.entries()].sort((a, b) => a[0].localeCompare(b[0], "pt-BR"));
+  }, [comissoes]);
+
+  const visiveis = comissoes.filter((c) => (!filtroComissao || c.id === filtroComissao) && (!filtroMembro || c.membros.some((m) => m.nome === filtroMembro)));
+  const temFiltro = Boolean(filtroComissao || filtroMembro);
+
   return (
-    <main className="min-h-screen bg-background">
-      {/* HERO */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary-deep via-primary to-primary-deep text-primary-foreground">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-20 [background-image:radial-gradient(circle_at_18%_20%,white,transparent_45%),radial-gradient(circle_at_82%_0%,white,transparent_40%)]"
-        />
-        <div className="container-page relative py-8 md:py-10">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/40 bg-white/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-gold">
-            <Gavel className="h-3 w-3" /> A Câmara
-          </span>
-          <h1 className="mt-3 font-display text-3xl font-extrabold md:text-4xl">Comissões</h1>
-          <p className="mt-2 max-w-3xl text-sm text-primary-foreground/85 md:text-base">
-            As comissões permanentes analisam e emitem parecer sobre as proposições antes da votação
-            em plenário, garantindo o exame técnico e o debate qualificado das matérias.
-          </p>
-          <div className="mt-5 flex flex-wrap gap-2">
-            {comissoes.map((c) => (
-              <a
-                key={c.sigla}
-                href={`#${c.sigla.toLowerCase()}`}
-                className="rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide transition-colors hover:bg-white/20"
-              >
-                {c.sigla}
-              </a>
+    <>
+      <CabecalhoPagina
+        titulo="Comissões"
+        trilha={[{ rotulo: "A Câmara" }]}
+        icone={Gavel}
+        descricao="As comissões permanentes analisam e emitem parecer sobre as proposições antes da votação em plenário, garantindo o exame técnico das matérias."
+        numeros={carregando ? undefined : [{ rotulo: "Comissões", valor: comissoes.length }, { rotulo: "Vereadores participantes", valor: participantes.length }]}
+      />
+
+      <div className="container-page py-8 md:py-10 space-y-6">
+        <section aria-label="Filtros" className="flex flex-wrap items-center gap-2 bg-card border border-border rounded-2xl p-3">
+          <select aria-label="Filtrar por comissão" value={filtroComissao} onChange={(e) => setFiltroComissao(e.target.value)} className={`${seletor} flex-1 min-w-[220px]`}>
+            <option value="">Todas as comissões</option>
+            {comissoes.map((c) => <option key={c.id} value={c.id}>{c.sigla} — {c.nome}</option>)}
+          </select>
+          <select aria-label="Filtrar por vereador" value={filtroMembro} onChange={(e) => setFiltroMembro(e.target.value)} className={`${seletor} flex-1 min-w-[220px]`}>
+            <option value="">Todos os vereadores</option>
+            {participantes.map(([nome, n]) => <option key={nome} value={nome}>{nome} ({n} {n === 1 ? "comissão" : "comissões"})</option>)}
+          </select>
+          {temFiltro && <button type="button" onClick={() => { setFiltroComissao(""); setFiltroMembro(""); }} className="inline-flex items-center gap-1 h-11 px-3 rounded-xl text-sm font-semibold text-foreground hover:bg-muted"><X className="w-4 h-4" aria-hidden /> Limpar</button>}
+        </section>
+
+        {carregando ? (
+          <div className="space-y-4" aria-hidden>{Array.from({ length: 3 }).map((_, i) => <div key={i} className="h-64 rounded-2xl bg-muted animate-pulse" />)}</div>
+        ) : erro ? (
+          <div role="alert" className="bg-card border border-destructive/40 rounded-2xl p-10 text-center font-semibold text-foreground">Não foi possível carregar as comissões agora. Tente de novo em instantes.</div>
+        ) : visiveis.length === 0 ? (
+          <div className="bg-card border border-dashed border-border rounded-2xl p-12 text-center font-semibold text-foreground">Nenhuma comissão encontrada.</div>
+        ) : (
+          visiveis.map((c) => {
+            const Icone = getCommitteeIcon(c.icone);
+            return (
+              <article key={c.id} id={c.sigla.toLowerCase()} className="scroll-mt-28 bg-card border border-border rounded-2xl overflow-hidden">
+                <header className="flex gap-4 p-5 md:p-6 border-b border-border">
+                  <span className="w-12 h-12 rounded-xl grid place-items-center bg-primary text-primary-foreground shrink-0"><Icone className="w-6 h-6" aria-hidden /></span>
+                  <div className="min-w-0">
+                    <p className="text-xs font-bold uppercase tracking-wide text-primary">{c.sigla}</p>
+                    <h2 className="font-display text-xl font-bold text-foreground leading-snug mt-0.5">{c.nome}</h2>
+                    {c.competencia && <p className="text-sm text-muted-foreground leading-relaxed mt-1.5 max-w-3xl">{c.competencia}</p>}
+                  </div>
+                </header>
+                {c.membros.length === 0 ? (
+                  <p className="p-5 text-sm text-muted-foreground">Composição ainda não informada.</p>
+                ) : (
+                  <ul className="grid gap-3 md:grid-cols-3 p-5 md:p-6">
+                    {c.membros.map((m) => {
+                      const v = vereadorDe(m);
+                      const destaque = filtroMembro === m.nome;
+                      const conteudo = (
+                        <>
+                          <VereadorAvatar nome={m.nome} foto={v?.foto_url} partido={v?.partido} fill rounded="xl" fit="cover" className="w-16 h-20 shrink-0" />
+                          <span className="min-w-0">
+                            <span className="block text-xs font-bold uppercase tracking-wide" style={{ color: "#8A5A00" }}>{m.funcao}</span>
+                            <span className="block font-display font-bold text-sm text-foreground leading-snug mt-0.5">{m.nome}</span>
+                            {v?.partido && <span className="block text-xs text-muted-foreground mt-0.5">{v.partido}</span>}
+                          </span>
+                        </>
+                      );
+                      const classe = `flex items-center gap-3 rounded-xl border p-3 h-full transition ${destaque ? "border-primary bg-primary/5" : "border-border"}`;
+                      return (
+                        <li key={`${m.nome}-${m.funcao}`}>
+                          {v ? <Link to="/vereadores/$slug" params={{ slug: v.slug || v.id }} className={`${classe} hover:bg-muted/50 focus-visible:outline-2 focus-visible:outline-offset-2`}>{conteudo}</Link> : <div className={classe}>{conteudo}</div>}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </article>
+            );
+          })
+        )}
+
+        <section aria-labelledby="titulo-como" className="bg-card border border-border rounded-2xl p-5 md:p-6">
+          <h2 id="titulo-como" className="font-display font-bold text-lg text-foreground">Como as comissões atuam</h2>
+          <p className="text-sm text-muted-foreground mt-1 max-w-3xl leading-relaxed">Toda proposição apresentada é distribuída às comissões competentes, que emitem parecer técnico antes da votação em plenário.</p>
+          <div className="grid gap-3 sm:grid-cols-3 mt-4">
+            {[
+              { to: ROUTES.projetos, rotulo: "Projetos de lei", icone: FileText },
+              { to: ROUTES.roteiroSessoes, rotulo: "Roteiro das sessões", icone: BookOpen },
+              { to: "/vereadores", rotulo: "Todos os vereadores", icone: Users },
+            ].map((l) => (
+              <Link key={l.rotulo} to={l.to} className="group flex items-center gap-3 rounded-xl border border-border p-3.5 hover:bg-muted/50 transition focus-visible:outline-2 focus-visible:outline-offset-2">
+                <l.icone className="w-5 h-5 text-primary" aria-hidden />
+                <span className="flex-1 text-sm font-semibold text-foreground">{l.rotulo}</span>
+                <ArrowRight className="w-4 h-4 text-muted-foreground transition group-hover:translate-x-0.5" aria-hidden />
+              </Link>
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className="container-page space-y-10 py-10 md:py-14">
-        {comissoes.map((c) => (
-          <article
-            key={c.sigla}
-            id={c.sigla.toLowerCase()}
-            className="scroll-mt-28 overflow-hidden rounded-3xl border border-border bg-card shadow-sm"
-          >
-            <header className="border-b border-border bg-secondary/40 p-6">
-              <div className="flex items-start gap-3">
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground">
-                  <c.icon className="h-5 w-5" />
-                </span>
-                <div>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
-                    Comissão permanente · {c.sigla}
-                  </p>
-                  <h2 className="mt-1 font-display text-xl font-bold leading-snug text-foreground md:text-2xl">
-                    {c.nome}
-                  </h2>
-                  <p className="mt-2 max-w-3xl text-sm leading-7 text-muted-foreground">
-                    {c.competencia}
-                  </p>
-                </div>
-              </div>
-            </header>
-
-            <div className="p-6">
-              <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                <Users className="h-3.5 w-3.5" /> Composição da comissão
-              </p>
-              <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {c.membros.map((m) => {
-                  const v = byName.get(normalize(m.nome));
-                  return (
-                    <div
-                      key={`${c.sigla}-${m.nome}-${m.funcao}`}
-                      className="flex items-center gap-4 rounded-2xl border border-border bg-background p-4 transition-colors hover:border-primary/40"
-                    >
-                      <VereadorAvatar
-                        nome={m.nome}
-                        foto={v?.foto_url}
-                        partido={v?.partido}
-                        size={72}
-                        rounded="xl"
-                        fit="contain"
-                        className="bg-white"
-                      />
-                      <div className="min-w-0">
-                        <p className="text-[11px] font-bold uppercase tracking-widest text-primary">
-                          {m.funcao}
-                        </p>
-                        <h3 className="mt-0.5 font-display text-sm font-bold leading-snug text-foreground">
-                          {m.nome}
-                        </h3>
-                        {v?.partido && (
-                          <p className="text-xs text-muted-foreground">{v.partido}</p>
-                        )}
-                        {v && (
-                          <Link
-                            to="/vereadores/$slug"
-                            params={{ slug: v.slug || v.id }}
-                            className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
-                          >
-                            Ver perfil <ArrowRight className="h-3 w-3" />
-                          </Link>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </article>
-        ))}
-      </section>
-
-      <section className="border-y border-border bg-secondary/40">
-        <div className="container-page py-10 md:py-14">
-          <SectionHeading
-            eyebrow="Saiba mais"
-            title="Como as comissões atuam"
-            description="Toda proposição apresentada é distribuída às comissões competentes, que emitem parecer técnico antes da deliberação em plenário."
-          />
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link
-              to={ROUTES.roteiroSessoes}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-primary hover:text-primary"
-            >
-              Roteiro das sessões <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              to={ROUTES.projetos}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-primary hover:text-primary"
-            >
-              Projetos de lei <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-    </main>
+        </section>
+      </div>
+    </>
   );
 }

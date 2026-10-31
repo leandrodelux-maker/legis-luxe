@@ -1,189 +1,143 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { HelpCircle, Search } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, Eye, FileSearch, Gavel, HelpCircle, Landmark, Lock, Megaphone, X, type LucideIcon } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { CabecalhoPagina } from "@/components/cabecalho-pagina";
+import { ROUTES } from "@/lib/site-links";
+
+type Faq = { q: string; a: string; cat: string; to?: string; acao?: string };
+
+const FAQS: Faq[] = [
+  { cat: "Institucional", q: "O que faz a Câmara Municipal?", a: "A Câmara Municipal é o Poder Legislativo do município. Cabe a ela elaborar leis, fiscalizar os atos do Poder Executivo, votar o orçamento e representar a população.", to: ROUTES.historia, acao: "Conhecer o município" },
+  { cat: "Institucional", q: "Quantos vereadores compõem a Câmara?", a: "O limite de vereadores é definido pela Constituição Federal com base na população do município. A página de Vereadores mostra a composição atual.", to: ROUTES.vereadores, acao: "Ver os vereadores" },
+  { cat: "Sessões", q: "Como acompanhar as sessões da Câmara?", a: "As sessões são abertas ao público. Na página de Sessões você consulta o calendário e, quando publicados, as atas, as presenças e os votos.", to: ROUTES.sessoes, acao: "Ver as sessões" },
+  { cat: "Sessões", q: "Posso participar de uma sessão presencialmente?", a: "Sim. As sessões plenárias são públicas. Consulte a agenda e compareça ao plenário no dia e horário divulgados.", to: ROUTES.roteiroSessoes, acao: "Entender o roteiro da sessão" },
+  { cat: "Transparência", q: "Onde encontro os dados de receitas, despesas e contratos?", a: "No Portal da Transparência, com informações sobre orçamento, licitações, contratos, folha de pagamento e prestação de contas.", to: ROUTES.transparencia, acao: "Abrir o portal" },
+  { cat: "Transparência", q: "Com que frequência os dados são atualizados?", a: "Os dados financeiros são atualizados conforme a legislação vigente (LC nº 131/2009 e Lei nº 12.527/2011), normalmente em periodicidade diária ou mensal, dependendo da informação." },
+  { cat: "e-SIC", q: "Como faço um pedido de acesso à informação?", a: "Pelo e-SIC, preenchendo o formulário com seus dados e a descrição do pedido. Um número de protocolo é gerado para acompanhamento.", to: ROUTES.esic, acao: "Abrir o e-SIC" },
+  { cat: "e-SIC", q: "Qual o prazo para receber a resposta?", a: "O prazo legal é de até 20 dias corridos, prorrogáveis por mais 10 mediante justificativa, conforme a Lei nº 12.527/2011." },
+  { cat: "LGPD", q: "Como a Câmara trata meus dados pessoais?", a: "Os dados são tratados conforme a Lei nº 13.709/2018 (LGPD), com finalidade específica, transparência e medidas de segurança.", to: ROUTES.lgpd, acao: "Ver a página da LGPD" },
+  { cat: "LGPD", q: "Quem é o Encarregado de Dados (DPO)?", a: "O Encarregado de Dados é designado por portaria. As solicitações sobre proteção de dados podem ser enviadas pela página da LGPD.", to: ROUTES.lgpd, acao: "Exercer meus direitos" },
+  { cat: "Ouvidoria", q: "Qual a diferença entre Ouvidoria e e-SIC?", a: "A Ouvidoria recebe reclamações, sugestões, elogios e denúncias sobre os serviços da Câmara. O e-SIC é destinado especificamente a pedidos de acesso à informação previstos na LAI.", to: ROUTES.contato, acao: "Falar com a Ouvidoria" },
+];
+
+const CATEGORIAS: { nome: string; icone: LucideIcon }[] = [
+  { nome: "Institucional", icone: Landmark },
+  { nome: "Sessões", icone: Gavel },
+  { nome: "Transparência", icone: Eye },
+  { nome: "e-SIC", icone: FileSearch },
+  { nome: "LGPD", icone: Lock },
+  { nome: "Ouvidoria", icone: Megaphone },
+];
+
+const DADOS_ESTRUTURADOS = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQS.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+});
 
 export const Route = createFileRoute("/perguntas-frequentes")({
   head: () => ({
     meta: [
-      { title: "Perguntas Frequentes — Câmara Municipal" },
+      { title: "Perguntas Frequentes — Câmara Municipal de Adelândia" },
       {
         name: "description",
         content:
           "Respostas para as dúvidas mais comuns sobre a Câmara Municipal, transparência, e-SIC, LGPD e serviços ao cidadão.",
       },
-      { property: "og:title", content: "Perguntas Frequentes — Câmara Municipal" },
-      { property: "og:description", content: "FAQ oficial do portal do legislativo municipal." },
+      { property: "og:title", content: "Perguntas Frequentes — Câmara Municipal de Adelândia" },
+      { property: "og:description", content: "Perguntas frequentes sobre o Legislativo municipal." },
     ],
+    scripts: [{ type: "application/ld+json", children: DADOS_ESTRUTURADOS }],
   }),
   component: FaqPage,
 });
 
-type Faq = { q: string; a: string; cat: string };
-
-const FAQS: Faq[] = [
-  {
-    cat: "Institucional",
-    q: "O que faz a Câmara Municipal?",
-    a: "A Câmara Municipal é o Poder Legislativo do município. Cabe a ela elaborar leis, fiscalizar os atos do Poder Executivo, votar o orçamento e representar a população.",
-  },
-  {
-    cat: "Institucional",
-    q: "Quantos vereadores compõem a Câmara?",
-    a: "O número de vereadores é definido pela Constituição Federal com base na população do município. Consulte a página de Vereadores para a composição atual.",
-  },
-  {
-    cat: "Sessões",
-    q: "Como acompanhar as sessões da Câmara?",
-    a: "As sessões são abertas ao público e transmitidas ao vivo pelo portal. Acesse a página de Sessões para consultar a pauta e o calendário.",
-  },
-  {
-    cat: "Sessões",
-    q: "Posso participar de uma sessão presencialmente?",
-    a: "Sim. As sessões plenárias são públicas. Consulte a agenda e compareça ao plenário no dia e horário divulgados.",
-  },
-  {
-    cat: "Transparência",
-    q: "Onde encontro os dados de receitas, despesas e contratos?",
-    a: "Todos os dados obrigatórios estão disponíveis no Portal da Transparência, com informações sobre orçamento, licitações, contratos, folha de pagamento e prestação de contas.",
-  },
-  {
-    cat: "Transparência",
-    q: "Com que frequência os dados são atualizados?",
-    a: "Os dados financeiros são atualizados conforme a legislação vigente (LC nº 131/2009 e Lei nº 12.527/2011), normalmente em periodicidade diária ou mensal, dependendo da informação.",
-  },
-  {
-    cat: "e-SIC / LAI",
-    q: "Como faço um pedido de acesso à informação?",
-    a: "Pelo e-SIC, disponível no portal, preenchendo o formulário com seus dados e a descrição do pedido. Um número de protocolo será gerado para acompanhamento.",
-  },
-  {
-    cat: "e-SIC / LAI",
-    q: "Qual o prazo para receber a resposta?",
-    a: "O prazo legal é de até 20 dias corridos, prorrogáveis por mais 10 mediante justificativa, conforme a Lei nº 12.527/2011.",
-  },
-  {
-    cat: "LGPD",
-    q: "Como a Câmara trata meus dados pessoais?",
-    a: "Todos os dados são tratados conforme a Lei nº 13.709/2018 (LGPD), com finalidade específica, transparência e medidas de segurança. Consulte a página de LGPD para detalhes.",
-  },
-  {
-    cat: "LGPD",
-    q: "Quem é o Encarregado de Dados (DPO)?",
-    a: "O Encarregado de Dados é indicado por portaria e disponível pelo e-mail contato@camaradeadelandia.go.gov.br para atender solicitações relacionadas à proteção de dados.",
-  },
-  {
-    cat: "Ouvidoria",
-    q: "Qual a diferença entre Ouvidoria e e-SIC?",
-    a: "A Ouvidoria recebe reclamações, sugestões, elogios e denúncias sobre os serviços da Câmara. O e-SIC é destinado especificamente a pedidos de acesso à informação previstos na LAI.",
-  },
-];
-
-const CATS = ["Todas", ...Array.from(new Set(FAQS.map((f) => f.cat)))];
+const normalizar = (s: string) => s.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
+const seletor = "h-11 rounded-xl border border-border bg-card px-3 text-sm font-medium text-foreground min-w-0";
 
 function FaqPage() {
-  const [q, setQ] = useState("");
-  const [cat, setCat] = useState("Todas");
+  const [busca, setBusca] = useState("");
+  const [categoria, setCategoria] = useState("");
 
-  const filtered = useMemo(() => {
-    const s = q.trim().toLowerCase();
-    return FAQS.filter(
-      (f) =>
-        (cat === "Todas" || f.cat === cat) &&
-        (!s || f.q.toLowerCase().includes(s) || f.a.toLowerCase().includes(s)),
-    );
-  }, [q, cat]);
+  const q = normalizar(busca.trim());
+  const visiveis = FAQS.filter((f) => (!categoria || f.cat === categoria) && (!q || normalizar(`${f.q} ${f.a}`).includes(q)));
+  const grupos = CATEGORIAS.map((c) => ({ ...c, itens: visiveis.filter((f) => f.cat === c.nome) })).filter((c) => c.itens.length > 0);
 
   return (
-    <main className="min-h-screen bg-background">
-      {/* HERO */}
-      <section className="relative overflow-hidden border-b border-border bg-gradient-to-br from-primary-deep via-primary to-primary-deep text-primary-foreground">
-        <div className="container-page py-10">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/40 bg-white/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-gold">
-            <HelpCircle className="h-3 w-3" /> FAQ
-          </span>
-          <h1 className="mt-3 font-display text-3xl font-extrabold md:text-4xl">
-            Perguntas Frequentes
-          </h1>
-          <p className="mt-2 max-w-3xl text-sm text-primary-foreground/85 md:text-base">
-            Respostas rápidas para as principais dúvidas sobre a Câmara Municipal, seus serviços e a
-            transparência das informações públicas.
-          </p>
-        </div>
-      </section>
+    <>
+      <CabecalhoPagina
+        titulo="Perguntas Frequentes"
+        icone={HelpCircle}
+        descricao="Respostas rápidas sobre a Câmara, seus serviços e o acesso às informações públicas."
+        numeros={[{ rotulo: "Perguntas", valor: FAQS.length }, { rotulo: "Temas", valor: CATEGORIAS.length }]}
+      />
 
-      {/* SEARCH + CATS */}
-      <section className="border-b border-border bg-secondary/40">
-        <div className="container-page py-6 flex flex-col gap-4">
-          <div className="relative w-full">
-            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <input
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder="Buscar nas perguntas..."
-              className="h-11 w-full rounded-full border border-border bg-white pl-11 pr-5 text-sm shadow-sm focus:border-primary focus:outline-none"
-            />
-          </div>
-          <div className="flex flex-wrap justify-center gap-2">
-            {CATS.map((c) => (
-              <button
-                key={c}
-                onClick={() => setCat(c)}
-                className={`rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${
-                  cat === c
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border bg-white text-foreground hover:border-primary hover:text-primary"
-                }`}
-              >
-                {c}
-              </button>
+      <div className="container-page py-8 md:py-10 space-y-6">
+        <section aria-label="Escolha um tema">
+          <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            {CATEGORIAS.map((c) => (
+              <li key={c.nome}>
+                <button type="button" aria-pressed={categoria === c.nome} onClick={() => setCategoria(categoria === c.nome ? "" : c.nome)} className={`w-full h-full text-left rounded-2xl border p-3.5 transition hover:shadow-md ${categoria === c.nome ? "border-primary bg-primary/5" : "border-border bg-card"}`}>
+                  <c.icone className="w-5 h-5 text-primary" aria-hidden />
+                  <span className="block font-display font-bold text-sm text-foreground mt-2">{c.nome}</span>
+                  <span className="block text-xs text-muted-foreground">{FAQS.filter((f) => f.cat === c.nome).length} perguntas</span>
+                </button>
+              </li>
             ))}
-          </div>
-        </div>
-      </section>
+          </ul>
+        </section>
 
-      {/* LISTA */}
-      <section className="container-page py-10 md:py-14">
-        {filtered.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-border bg-card p-10 text-center text-muted-foreground">
-            Nenhuma pergunta encontrada.
-          </div>
+        <section aria-label="Filtros" className="flex flex-wrap items-center gap-2 bg-card border border-border rounded-2xl p-3">
+          <input type="search" aria-label="Buscar nas perguntas" placeholder="Buscar nas perguntas" value={busca} onChange={(e) => setBusca(e.target.value)} className={`${seletor} flex-[2] min-w-[220px]`} />
+          <select aria-label="Filtrar por tema" value={categoria} onChange={(e) => setCategoria(e.target.value)} className={`${seletor} flex-1 min-w-[170px]`}>
+            <option value="">Todos os temas</option>
+            {CATEGORIAS.map((c) => <option key={c.nome} value={c.nome}>{c.nome}</option>)}
+          </select>
+          {(busca || categoria) && <button type="button" onClick={() => { setBusca(""); setCategoria(""); }} className="inline-flex items-center gap-1 h-11 px-3 rounded-xl text-sm font-semibold text-foreground hover:bg-muted"><X className="w-4 h-4" aria-hidden /> Limpar</button>}
+        </section>
+
+        <p className="text-sm text-muted-foreground" aria-live="polite">{visiveis.length} de {FAQS.length} perguntas</p>
+
+        {grupos.length === 0 ? (
+          <div className="bg-card border border-dashed border-border rounded-2xl p-12 text-center font-semibold text-foreground">Nenhuma pergunta encontrada com esses filtros.</div>
         ) : (
-          <Accordion type="single" collapsible className="space-y-3">
-            {filtered.map((f, i) => (
-              <AccordionItem
-                key={i}
-                value={`item-${i}`}
-                className="rounded-xl border border-border bg-card px-4"
-              >
-                <AccordionTrigger className="text-left text-base font-semibold">
-                  <div className="flex items-start gap-3">
-                    <span className="mt-0.5 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary">
-                      {f.cat}
-                    </span>
-                    <span>{f.q}</span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="text-sm text-muted-foreground leading-7">
-                  {f.a}
-                </AccordionContent>
-              </AccordionItem>
+          <div className="space-y-6">
+            {grupos.map((g) => (
+              <section key={g.nome} aria-labelledby={`tema-${g.nome}`}>
+                <h2 id={`tema-${g.nome}`} className="flex items-center gap-2 font-display font-bold text-lg text-foreground"><g.icone className="w-5 h-5 text-primary" aria-hidden /> {g.nome}</h2>
+                <Accordion type="multiple" className="space-y-2 mt-2">
+                  {g.itens.map((f) => (
+                    <AccordionItem key={f.q} value={f.q} className="rounded-xl border border-border bg-card px-4">
+                      <AccordionTrigger className="text-left text-base font-semibold">{f.q}</AccordionTrigger>
+                      <AccordionContent className="text-sm text-muted-foreground leading-relaxed">
+                        {f.a}
+                        {f.to && <Link to={f.to} className="flex w-fit items-center gap-1 font-semibold text-primary mt-2 hover:underline underline-offset-2">{f.acao} <ArrowRight className="w-4 h-4" aria-hidden /></Link>}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </section>
             ))}
-          </Accordion>
+          </div>
         )}
 
-        <div className="mt-10 text-center text-sm text-muted-foreground">
-          Não encontrou o que procurava?{" "}
-          <Link to="/e-sic" className="text-primary hover:underline">Faça um pedido pelo e-SIC</Link>{" "}
-          ou{" "}
-          <Link to="/contato" className="text-primary hover:underline">fale com a Ouvidoria</Link>.
-        </div>
-      </section>
-    </main>
+        <section aria-labelledby="titulo-ajuda" className="flex flex-col md:flex-row md:items-center justify-between gap-4 rounded-2xl text-white p-5 md:p-6" style={{ background: "linear-gradient(120deg, var(--primary-deep), var(--primary))" }}>
+          <div>
+            <h2 id="titulo-ajuda" className="font-display font-bold text-xl">Não encontrou o que procurava?</h2>
+            <p className="text-white/90 text-sm mt-0.5">Peça uma informação pública ou fale diretamente com a Câmara.</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Link to={ROUTES.esic} className="inline-flex items-center gap-1.5 h-11 px-4 rounded-xl bg-white text-slate-900 text-sm font-semibold hover:bg-white/90 transition"><FileSearch className="w-4 h-4" aria-hidden /> Abrir o e-SIC</Link>
+            <Link to={ROUTES.contato} className="inline-flex items-center gap-1.5 h-11 px-4 rounded-xl border border-white/50 text-sm font-semibold hover:bg-white/10 transition"><Megaphone className="w-4 h-4" aria-hidden /> Falar com a Ouvidoria</Link>
+          </div>
+        </section>
+      </div>
+    </>
   );
 }

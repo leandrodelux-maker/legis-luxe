@@ -171,7 +171,7 @@ export function VereadorPhotoUploader({
             )}
           </div>
           <div className="space-y-2">
-            <div className="text-xs text-slate-500">Zoom</div>
+            <div className="text-xs text-muted-foreground">Zoom</div>
             <Slider
               value={[zoom]}
               min={1}

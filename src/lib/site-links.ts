@@ -26,15 +26,13 @@ export const ROUTES = {
   mesaDiretora: "/a-camara/mesa-diretora",
   roteiroSessoes: "/a-camara/roteiro-das-sessoes",
   vereadores: "/vereadores",
-  vereadoresRanking: "/vereadores/ranking",
   sessoes: "/sessoes",
-  sessoesAoVivo: "/sessoes/ao-vivo",
   noticias: "/noticias",
   projetos: "/projetos",
   cartaServicos: "/atos-legislativos/carta-de-servicos",
   leiOrganica: "/atos-legislativos/lei-organica-municipal",
   regimentoInterno: "/atos-legislativos/regimento-interno",
-  transparencia: "/transparencia-portal",
+  transparencia: "/transparencia",
   contato: "/contato",
   esic: "/e-sic",
   faq: "/perguntas-frequentes",
@@ -73,7 +71,7 @@ export const SITE_SECTIONS: SiteSection[] = [
   {
     title: "Atos Legislativos",
     links: [
-      { to: ROUTES.projetos, label: "Projetos de Leis", description: "Fluxo e tramitação das matérias legislativas." },
+      { to: ROUTES.projetos, label: "Projetos e matérias", description: "Pesquisa e tramitação das matérias legislativas." },
       { to: ROUTES.cartaServicos, label: "Carta de Serviços", description: "Serviços prestados pela Câmara ao cidadão." },
       { to: ROUTES.leiOrganica, label: "Lei Orgânica Municipal", description: "Norma máxima de organização do município." },
       { to: ROUTES.regimentoInterno, label: "Regimento Interno", description: "Regras de funcionamento da Casa Legislativa." },
@@ -94,11 +92,8 @@ export const SITE_SECTIONS: SiteSection[] = [
     links: [
       { to: ROUTES.home, label: "Página Inicial", description: "Portal oficial da Câmara Municipal." },
       { to: ROUTES.vereadores, label: "Vereadores", description: "Conheça os parlamentares em exercício." },
-      { to: ROUTES.vereadoresRanking, label: "Ranking de Vereadores", description: "Presença, projetos e participação." },
-      { to: ROUTES.sessoes, label: "Sessões e Pautas", description: "Ordem do dia, atas e transmissões." },
-      { to: ROUTES.sessoesAoVivo, label: "Sessões ao Vivo", description: "Transmissão em tempo real das sessões." },
+      { to: ROUTES.sessoes, label: "Sessões e Pautas", description: "Calendário, atas, presenças e votos." },
       { to: ROUTES.noticias, label: "Notícias", description: "Últimas notícias e comunicados oficiais." },
-      { to: ROUTES.projetos, label: "Projetos de Lei", description: "Proposições em tramitação e aprovadas." },
     ],
   },
   {
@@ -116,7 +111,7 @@ export const SITE_SECTIONS: SiteSection[] = [
     ],
   },
   {
-    title: "Privacidade e Acessibilidade",
+    title: "Privacidade e Navegação",
     links: [
       { to: ROUTES.lgpd, label: "LGPD", description: "Lei Geral de Proteção de Dados Pessoais." },
       { to: ROUTES.mapaDoSite, label: "Mapa do Site", description: "Todas as páginas e serviços deste portal." },

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Download, Eye, FileText, X, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { arquivoNoSiteAntigo } from "@/lib/legal-documents";
 import {
   Dialog,
   DialogContent,
@@ -75,14 +76,16 @@ export function DocumentLibrary({
               </div>
 
               <div className="flex w-full flex-wrap items-center gap-2 md:w-56 md:justify-end">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-10"
-                  onClick={() => setActive(doc)}
-                >
-                  <Eye className="mr-2 h-4 w-4" /> Visualizar
-                </Button>
+                {!arquivoNoSiteAntigo(doc.downloadUrl) && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-10"
+                    onClick={() => setActive(doc)}
+                  >
+                    <Eye className="mr-2 h-4 w-4" /> Visualizar
+                  </Button>
+                )}
                 <Button size="sm" className="h-10" asChild>
                   <a href={doc.downloadUrl} target="_blank" rel="noopener noreferrer">
                     <Download className="mr-2 h-4 w-4" /> Baixar
@@ -94,83 +97,42 @@ export function DocumentLibrary({
         </ul>
       </div>
 
-      <Dialog open={!!active} onOpenChange={(o) => !o && setActive(null)}>
-        <DialogContent className="max-w-5xl gap-0 p-0 [&>button]:hidden">
-          <DialogHeader className="flex-row items-center justify-between gap-4 border-b border-border px-6 py-4">
-            <DialogTitle className="font-display text-lg">
-              {active?.title}
-            </DialogTitle>
-            <div className="flex items-center gap-2">
-              {active && (
-                <Button variant="outline" size="sm" className="h-9" asChild>
-                  <a href={active.downloadUrl} target="_blank" rel="noopener noreferrer">
-                    <Download className="mr-2 h-4 w-4" /> Baixar
-                  </a>
-                </Button>
-              )}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-9 w-9"
-                aria-label="Fechar visualizador"
-                onClick={() => setActive(null)}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          </DialogHeader>
-
-          {active && (
-            <>
-              <iframe
-                key={active.title}
-                title={`Visualização: ${active.title}`}
-                src={active.viewerUrl ?? buildViewerUrl(active.downloadUrl)}
-                className="h-[70vh] w-full bg-muted"
-                loading="lazy"
-              />
-              <div className="flex items-center justify-between gap-4 border-t border-border px-6 py-3 text-xs text-muted-foreground">
-                <span>Documento oficial em formato PDF.</span>
-                <a
-                  href={active.downloadUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 font-semibold text-primary hover:underline"
-                >
-                  Abrir em nova aba <ExternalLink className="h-3.5 w-3.5" />
-                </a>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
+      {active && <VisualizadorDocumento documento={active} onClose={() => setActive(null)} />}
     </>
   );
 }
 
-export function DocumentPageHero({
-  eyebrow,
-  title,
-  description,
-}: {
-  eyebrow: string;
-  title: string;
-  description: string;
-}) {
+/** Abre o PDF dentro do site, sempre com a saída para a nova aba. */
+export function VisualizadorDocumento({ documento, onClose }: { documento: LegalDocument; onClose: () => void }) {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-primary-deep to-primary text-primary-foreground">
-      <div className="absolute right-0 top-0 h-full w-1/3 translate-x-1/2 skew-x-12 bg-gold/5" />
-      <div className="container-page relative z-10 py-8 md:py-11">
-        <div className="flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-gold">
-          <span className="gold-divider" /> {eyebrow}
+    <Dialog open onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-w-5xl gap-0 p-0 [&>button]:hidden">
+        <DialogHeader className="flex-row items-center justify-between gap-4 border-b border-border px-6 py-4">
+          <DialogTitle className="font-display text-lg text-left">{documento.title}</DialogTitle>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" className="h-9" asChild>
+              <a href={documento.downloadUrl} target="_blank" rel="noopener noreferrer">
+                <Download className="mr-2 h-4 w-4" /> Baixar
+              </a>
+            </Button>
+            <Button variant="ghost" size="icon" className="h-9 w-9" aria-label="Fechar visualizador" onClick={onClose}>
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        </DialogHeader>
+        <iframe
+          title={`Visualização: ${documento.title}`}
+          src={documento.viewerUrl ?? buildViewerUrl(documento.downloadUrl)}
+          className="h-[70vh] w-full bg-muted"
+          loading="lazy"
+        />
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-border px-6 py-3 text-xs text-muted-foreground">
+          <span>Se o documento não aparecer aqui, abra o arquivo em uma nova aba.</span>
+          <a href={documento.downloadUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 font-semibold text-primary hover:underline">
+            Abrir em nova aba <ExternalLink className="h-3.5 w-3.5" />
+          </a>
         </div>
-        <h1 className="mt-3 font-display text-3xl font-bold leading-tight md:text-5xl">
-          {title}
-        </h1>
-        <p className="mt-4 max-w-2xl text-primary-foreground/85 md:text-lg">
-          {description}
-        </p>
-      </div>
-    </section>
+      </DialogContent>
+    </Dialog>
   );
 }

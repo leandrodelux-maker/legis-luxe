@@ -17,15 +17,15 @@ export function ImageUploader({
 
   return (
     <div className="space-y-2">
-      {label && <p className="text-xs font-medium text-slate-600">{label}</p>}
+      {label && <p className="text-xs font-medium text-muted-foreground">{label}</p>}
       <div
-        className="border-2 border-dashed border-slate-300 rounded-lg bg-slate-50 flex items-center justify-center overflow-hidden"
+        className="border-2 border-dashed border-border rounded-lg bg-muted/40 flex items-center justify-center overflow-hidden"
         style={{ height }}
       >
         {value ? (
           <img src={value} alt="" className="max-h-full max-w-full object-contain p-2" />
         ) : (
-          <div className="text-center text-slate-400">
+          <div className="text-center text-muted-foreground">
             <ImageIcon className="w-6 h-6 mx-auto mb-1" />
             <p className="text-[11px]">Sem imagem</p>
           </div>

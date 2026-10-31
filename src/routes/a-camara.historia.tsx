@@ -1,19 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-  Landmark,
-  CalendarDays,
-  Users,
-  Ruler,
-  Sprout,
-  GraduationCap,
-  HeartPulse,
-  Leaf,
-  Coins,
-  MapPin,
-  ArrowRight,
-} from "lucide-react";
-import { SectionHeading } from "@/components/section-heading";
+import { useState } from "react";
+import { ArrowRight, Coins, Download, ExternalLink, Flag, GraduationCap, HeartPulse, Landmark, Leaf, Sprout, Users } from "lucide-react";
+import { CabecalhoPagina } from "@/components/cabecalho-pagina";
 import { ROUTES } from "@/lib/site-links";
+import banner from "@/assets/adelandia-banner.webp";
+import feijao from "@/assets/adelandia-feijao.webp";
+import bandeira from "@/assets/bandeira-adelandia.png";
 
 export const Route = createFileRoute("/a-camara/historia")({
   head: () => ({
@@ -22,13 +14,12 @@ export const Route = createFileRoute("/a-camara/historia")({
       {
         name: "description",
         content:
-          "Conheça a história do município de Adelândia (GO): fundação em 1987, a Capital do Feijão, economia, população e indicadores oficiais.",
+          "Conheça a história do município de Adelândia (GO): emancipação em 1987, a Capital do Feijão, a bandeira municipal, economia, população e indicadores oficiais.",
       },
       { property: "og:title", content: "História de Adelândia — Câmara Municipal" },
       {
         property: "og:description",
-        content:
-          "Origem do município, emancipação em 1987, economia agropecuária e indicadores sociais de Adelândia (GO).",
+        content: "Origem do município, emancipação em 1987, economia agropecuária e indicadores sociais de Adelândia (GO).",
       },
       { property: "og:type", content: "article" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -37,29 +28,33 @@ export const Route = createFileRoute("/a-camara/historia")({
   component: HistoriaPage,
 });
 
-const FACTS = [
-  { icon: CalendarDays, label: "Fundação", value: "1987" },
-  { icon: Sprout, label: "Aniversário", value: "1º de junho" },
-  { icon: Users, label: "População", value: "2.515 hab." },
-  { icon: Ruler, label: "Área", value: "115,39 km²" },
-  { icon: MapPin, label: "Gentílico", value: "Adelandense" },
-  { icon: Landmark, label: "Microrregião", value: "Anicuns" },
-];
+const FONTE_IBGE = "https://www.ibge.gov.br/cidades-e-estados/go/adelandia.html";
 
-const INDICATORS: { title: string; icon: typeof Users; rows: [string, string][] }[] = [
+const INDICADORES: { titulo: string; icone: typeof Users; linhas: [string, string][] }[] = [
   {
-    title: "População",
-    icon: Users,
-    rows: [
-      ["População estimada (2021)", "2.515"],
-      ["População no último censo (2010)", "2.477"],
-      ["Densidade demográfica (2010)", "21,47 hab/km²"],
+    titulo: "População",
+    icone: Users,
+    linhas: [
+      ["População estimada (2026)", "2.268"],
+      ["População no Censo de 2022", "2.297"],
+      ["População no Censo de 2010", "2.477"],
+      ["Densidade demográfica (2022)", "19,91 hab/km²"],
     ],
   },
   {
-    title: "Trabalho e rendimento",
-    icon: Coins,
-    rows: [
+    titulo: "Economia",
+    icone: Landmark,
+    linhas: [
+      ["PIB per capita (2023)", "R$ 25.897,08"],
+      ["Receitas brutas realizadas (2025)", "R$ 36.079.950,33"],
+      ["Despesas brutas empenhadas (2025)", "R$ 29.934.341,86"],
+      ["IDHM (2010)", "0,702"],
+    ],
+  },
+  {
+    titulo: "Trabalho e rendimento",
+    icone: Coins,
+    linhas: [
       ["Salário médio mensal (2020)", "1,5 salário mínimo"],
       ["Pessoal ocupado (2020)", "508 pessoas"],
       ["População ocupada (2020)", "20,2%"],
@@ -67,10 +62,10 @@ const INDICATORS: { title: string; icon: typeof Users; rows: [string, string][] 
     ],
   },
   {
-    title: "Educação",
-    icon: GraduationCap,
-    rows: [
-      ["Escolarização de 6 a 14 anos (2010)", "100%"],
+    titulo: "Educação",
+    icone: GraduationCap,
+    linhas: [
+      ["Escolarização de 6 a 14 anos (2022)", "100%"],
       ["IDEB anos iniciais (2021)", "5,1"],
       ["IDEB anos finais (2021)", "4,8"],
       ["Matrículas no ensino fundamental (2021)", "256"],
@@ -78,191 +73,180 @@ const INDICATORS: { title: string; icon: typeof Users; rows: [string, string][] 
     ],
   },
   {
-    title: "Economia",
-    icon: Landmark,
-    rows: [
-      ["PIB per capita (2020)", "R$ 16.858,06"],
-      ["Receitas de fontes externas (2015)", "93,9%"],
-      ["IDHM (2010)", "0,702"],
-      ["Receitas realizadas (2017)", "R$ 12.780,35 mil"],
-      ["Despesas empenhadas (2017)", "R$ 11.340,79 mil"],
-    ],
+    titulo: "Saúde",
+    icone: HeartPulse,
+    linhas: [["Estabelecimentos de saúde SUS (2009)", "1"]],
   },
   {
-    title: "Saúde",
-    icon: HeartPulse,
-    rows: [
-      ["Estabelecimentos de saúde SUS (2009)", "1"],
-      ["Mortalidade infantil (2020)", "Sem dados"],
-      ["Internações por diarreia (2016)", "Sem dados"],
-    ],
-  },
-  {
-    title: "Meio ambiente e território",
-    icon: Leaf,
-    rows: [
+    titulo: "Meio ambiente e território",
+    icone: Leaf,
+    linhas: [
+      ["Área territorial (2025)", "115,385 km²"],
       ["Bioma (2019)", "Cerrado"],
       ["Área urbanizada (2019)", "0,86 km²"],
       ["Arborização de vias públicas (2010)", "98,3%"],
       ["Esgotamento sanitário adequado (2010)", "22,4%"],
-      ["Região intermediária (2021)", "Goiânia"],
     ],
   },
 ];
 
-const TIMELINE = [
+const LINHA_DO_TEMPO = [
   {
-    year: "Década de 1950",
-    text: "Erguida a capela em louvor a São Sebastião e, em seguida, uma pequena escola que atendia os moradores das fazendas da região de Mossâmedes, próxima ao Rio Turvo.",
+    ano: "Década de 1950",
+    texto: "Erguida a capela em louvor a São Sebastião e, em seguida, uma pequena escola que atendia os moradores das fazendas da região de Mossâmedes, próxima ao Rio Turvo.",
   },
   {
-    year: "1962",
-    text: "Surge Adelândia, nome em homenagem a dona Adélia, esposa do fazendeiro Domingos Alves Sobrinho, que doou as terras onde se formou o núcleo populacional. No mesmo ano, o povoado é elevado a distrito de Mossâmedes.",
+    ano: "1962",
+    texto: "Surge Adelândia, nome em homenagem a dona Adélia, esposa do fazendeiro Domingos Alves Sobrinho, que doou as terras onde se formou o núcleo populacional. No mesmo ano, o povoado é elevado a distrito de Mossâmedes.",
   },
   {
-    year: "Década de 1980",
-    text: "A fertilidade das terras e a grande produção de feijão rendem ao município o título de “Capital do Feijão”, marca histórica presente na bandeira municipal.",
+    ano: "Década de 1980",
+    texto: "A fertilidade das terras e a grande produção de feijão rendem ao lugar o título de “Capital do Feijão”, marca histórica presente na bandeira municipal.",
   },
   {
-    year: "30 de dezembro de 1987",
-    text: "Com a Lei nº 10.396, Adelândia é emancipada e torna-se município. O hino municipal foi escolhido por concurso público, vencido pela professora Waldir da Silva Avelar.",
+    ano: "30 de dezembro de 1987",
+    texto: "Com a Lei nº 10.396, Adelândia é emancipada e torna-se município. O hino municipal foi escolhido por concurso público, vencido pela professora Waldir da Silva Avelar.",
   },
   {
-    year: "A partir de 1988",
-    text: "Na primeira eleição direta foram eleitos Lourival Lobó (prefeito) e Francisco Quintiliano de Avelar Filho (vice). Seguiram-se Antonio dos Reis Pereira, André Gomes Duarte, Maurício Martins de Freitas, Victor Leonardo de Lima Soares (dois mandatos), Joaquim dos Reis e, em 2020, Edson Vieira de Paula.",
+    ano: "A partir de 1988",
+    texto: "Na primeira eleição direta foram eleitos Lourival Lobó (prefeito) e Francisco Quintiliano de Avelar Filho (vice). Seguiram-se Antonio dos Reis Pereira, André Gomes Duarte, Maurício Martins de Freitas, Victor Leonardo de Lima Soares (dois mandatos), Joaquim dos Reis e Edson Vieira de Paula.",
   },
 ];
 
+const FICHA: [string, string][] = [
+  ["Gentílico", "Adelandense"],
+  ["Aniversário", "1º de junho"],
+  ["Microrregião", "Anicuns"],
+  ["Região intermediária", "Goiânia"],
+  ["Bioma", "Cerrado"],
+];
+
 function HistoriaPage() {
+  const [tema, setTema] = useState("");
+  const visiveis = INDICADORES.filter((b) => !tema || b.titulo === tema);
+
   return (
-    <main className="min-h-screen bg-background">
-      {/* HERO */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary-deep via-primary to-primary-deep text-primary-foreground">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-20 [background-image:radial-gradient(circle_at_20%_20%,white,transparent_45%),radial-gradient(circle_at_80%_0%,white,transparent_40%)]"
-        />
-        <div className="container-page relative py-8 md:py-10">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/40 bg-white/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-gold">
-            <Landmark className="h-3 w-3" /> A Câmara
-          </span>
-          <h1 className="mt-3 font-display text-3xl font-extrabold md:text-4xl">História</h1>
-          <p className="mt-2 max-w-3xl text-sm text-primary-foreground/85 md:text-base">
-            Da capela de São Sebastião à emancipação em 1987: conheça a trajetória de Adelândia, a
-            Capital do Feijão, e os números que retratam o município hoje.
-          </p>
+    <>
+      <CabecalhoPagina
+        titulo="História de Adelândia"
+        trilha={[{ rotulo: "A Câmara" }]}
+        icone={Landmark}
+        descricao="Da capela de São Sebastião à emancipação em 1987: a trajetória da Capital do Feijão e os números que retratam o município hoje."
+        numeros={[
+          { rotulo: "Emancipação", valor: "1987" },
+          { rotulo: "População (Censo 2022)", valor: "2.297" },
+          { rotulo: "Área", valor: "115,39 km²" },
+          { rotulo: "Título histórico", valor: <span className="text-lg leading-tight block">Capital do Feijão</span> },
+        ]}
+      />
 
-          <dl className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-            {FACTS.map((f) => (
-              <div
-                key={f.label}
-                className="rounded-xl border border-white/15 bg-white/10 p-3 backdrop-blur-sm"
-              >
-                <f.icon className="h-4 w-4 text-gold" />
-                <dt className="mt-2 text-[10px] font-semibold uppercase tracking-widest text-primary-foreground/70">
-                  {f.label}
-                </dt>
-                <dd className="font-display text-lg font-bold leading-tight">{f.value}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </section>
+      <div className="container-page py-8 md:py-10 space-y-10 md:space-y-12">
+        <figure>
+          <img src={banner} width={1800} height={600} alt="Ilustração com a bandeira de Adelândia, sacas e vagens de feijão em primeiro plano e a vista de uma pequena cidade ao fundo." className="w-full h-auto rounded-2xl border border-border" />
+          <figcaption className="text-xs text-muted-foreground mt-2">Ilustração artística. A paisagem não é uma fotografia da cidade.</figcaption>
+        </figure>
 
-      {/* NOSSA HISTÓRIA */}
-      <section className="container-page py-10 md:py-14">
-        <div className="grid gap-10 lg:grid-cols-[1.35fr_1fr]">
+        <section aria-labelledby="titulo-origem" className="grid gap-8 lg:grid-cols-[1fr_1.15fr]">
           <div>
-            <SectionHeading eyebrow="Nossa história" title="A cidade e sua origem" />
-            <div className="mt-6 space-y-4 text-[15px] leading-8 text-muted-foreground">
-              <p>
-                Adelândia é um município brasileiro do interior do estado de Goiás, na Região
-                Centro-Oeste do país, integrante da microrregião de Anicuns. A população, formada
-                originalmente por trabalhadores rurais, mantém forte vínculo com o campo.
-              </p>
-              <p>
-                A economia é baseada na agropecuária e em pequenas empresas, com destaque para a
-                bacia leiteira, o cultivo de bananas e a produção cerâmica — sobretudo de tijolos,
-                com quatro empresas do gênero. Na área de laticínios, o município conta com uma das
-                indústrias mais prósperas da região. Há também potencial expressivo em confecções e
-                facções, além da usina de álcool e açúcar instalada em Anicuns, a 25 km, que gera
-                empregos para a população adelandense.
-              </p>
-              <p>
-                A grande concentração de pequenas propriedades rurais fixa a economia na região e
-                sustenta, direta e indiretamente, centenas de empregos.
-              </p>
+            <h2 id="titulo-origem" className="font-display font-bold text-2xl text-foreground">A cidade e sua origem</h2>
+            <div className="mt-3 space-y-4 text-foreground/85 leading-relaxed">
+              <p>Adelândia é um município do interior de Goiás, na Região Centro-Oeste, integrante da microrregião de Anicuns. A população, formada originalmente por trabalhadores rurais, mantém forte vínculo com o campo.</p>
+              <p>O nome homenageia dona Adélia, esposa do fazendeiro Domingos Alves Sobrinho, que doou as terras onde o povoado se formou ao redor da capela de São Sebastião.</p>
             </div>
           </div>
+          <div className="bg-card border border-border rounded-2xl p-5 md:p-6">
+            <h3 className="font-display font-bold text-lg text-foreground">Linha do tempo</h3>
+            <ol className="relative mt-4 space-y-5 border-l-2 border-border pl-5">
+              {LINHA_DO_TEMPO.map((t) => (
+                <li key={t.ano} className="relative">
+                  <span className="absolute -left-[27px] top-1 h-3 w-3 rounded-full bg-primary ring-4 ring-primary/15" aria-hidden />
+                  <p className="text-sm font-bold text-primary">{t.ano}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{t.texto}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
 
-          <ol className="relative space-y-6 border-l border-border pl-6">
-            {TIMELINE.map((t) => (
-              <li key={t.year} className="relative">
-                <span className="absolute -left-[31px] top-1.5 grid h-3 w-3 place-items-center rounded-full bg-primary ring-4 ring-primary/15" />
-                <p className="text-xs font-bold uppercase tracking-widest text-primary">{t.year}</p>
-                <p className="mt-1.5 text-sm leading-7 text-muted-foreground">{t.text}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
+        <section aria-labelledby="titulo-feijao" className="grid md:grid-cols-2 overflow-hidden rounded-2xl bg-card border border-border">
+          <img src={feijao} width={1100} height={733} loading="lazy" alt="Ilustração com a bandeira de Adelândia ao fundo, sacas de feijão, vagens e folhas em primeiro plano." className="w-full h-full object-cover min-h-64" />
+          <div className="p-6 md:p-8 self-center">
+            <p className="inline-flex items-center gap-1.5 text-sm font-bold" style={{ color: "#8A5A00" }}><Sprout className="w-4 h-4" aria-hidden /> A vocação do campo</p>
+            <h2 id="titulo-feijao" className="font-display font-bold text-2xl text-foreground mt-1">A Capital do Feijão</h2>
+            <div className="mt-3 space-y-3 text-foreground/85 leading-relaxed">
+              <p>A terra fértil e a grande produção de feijão deram a Adelândia o título que ainda hoje identifica o município e que está estampado na sua bandeira.</p>
+              <p>A economia segue ligada ao campo e às pequenas empresas, com destaque para a bacia leiteira, o cultivo de bananas e a produção cerâmica. A grande concentração de pequenas propriedades rurais sustenta, direta e indiretamente, centenas de empregos. Há também potencial em confecções e facções.</p>
+            </div>
+          </div>
+        </section>
 
-      {/* INDICADORES */}
-      <section className="border-y border-border bg-secondary/40">
-        <div className="container-page py-10 md:py-14">
-          <SectionHeading
-            eyebrow="Adelândia em números"
-            title="Indicadores oficiais do município"
-            description="Dados de população, economia, educação, saúde e território reunidos a partir das bases públicas do IBGE."
-          />
-          <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {INDICATORS.map((block) => (
-              <article
-                key={block.title}
-                className="rounded-2xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md"
-              >
-                <div className="flex items-center gap-2.5">
-                  <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary/10 text-primary">
-                    <block.icon className="h-4.5 w-4.5" />
-                  </span>
-                  <h3 className="font-display text-base font-bold text-foreground">{block.title}</h3>
+        <section aria-labelledby="titulo-bandeira" className="grid gap-5 lg:grid-cols-[1.4fr_1fr]">
+          <div className="grid sm:grid-cols-[minmax(0,300px)_1fr] gap-5 items-center bg-card border border-border rounded-2xl p-5 md:p-6">
+            <img src={bandeira} width={675} height={454} loading="lazy" alt="Bandeira de Adelândia: faixas verticais vermelha, branca e azul, com uma vagem de feijão, folhas e grãos ao centro." className="w-full h-auto rounded-lg border border-border" />
+            <div>
+              <h2 id="titulo-bandeira" className="flex items-center gap-2 font-display font-bold text-xl text-foreground"><Flag className="w-5 h-5 text-primary" aria-hidden /> A bandeira municipal</h2>
+              <p className="text-sm text-muted-foreground leading-relaxed mt-2">Três faixas verticais, em vermelho, branco e azul. Ao centro, sobre o branco, a vagem aberta com folhas e grãos lembra a produção que deu fama ao município.</p>
+              <a href={bandeira} download="bandeira-de-adelandia.png" className="inline-flex items-center gap-1.5 h-10 px-3.5 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-muted transition mt-4"><Download className="w-4 h-4" aria-hidden /> Baixar a bandeira</a>
+            </div>
+          </div>
+          <div className="bg-card border border-border rounded-2xl p-5 md:p-6">
+            <h2 className="font-display font-bold text-xl text-foreground">Ficha do município</h2>
+            <dl className="mt-3 divide-y divide-border text-sm">
+              {FICHA.map(([k, v]) => (
+                <div key={k} className="flex justify-between gap-4 py-2">
+                  <dt className="text-muted-foreground">{k}</dt>
+                  <dd className="font-semibold text-foreground text-right">{v}</dd>
                 </div>
-                <dl className="mt-4 divide-y divide-border/70 text-sm">
-                  {block.rows.map(([k, v]) => (
+              ))}
+            </dl>
+          </div>
+        </section>
+
+        <section aria-labelledby="titulo-numeros" className="space-y-4">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h2 id="titulo-numeros" className="font-display font-bold text-2xl text-foreground">Adelândia em números</h2>
+              <p className="text-sm text-muted-foreground mt-0.5">Cada dado traz o ano a que se refere.</p>
+            </div>
+            <select aria-label="Filtrar por tema" value={tema} onChange={(e) => setTema(e.target.value)} className="h-11 rounded-xl border border-border bg-card px-3 text-sm font-medium text-foreground">
+              <option value="">Todos os temas</option>
+              {INDICADORES.map((b) => <option key={b.titulo} value={b.titulo}>{b.titulo}</option>)}
+            </select>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {visiveis.map((b) => (
+              <article key={b.titulo} className="bg-card border border-border rounded-2xl p-5">
+                <div className="flex items-center gap-2.5">
+                  <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary text-primary-foreground"><b.icone className="h-4 w-4" aria-hidden /></span>
+                  <h3 className="font-display font-bold text-foreground">{b.titulo}</h3>
+                </div>
+                <dl className="mt-3 divide-y divide-border text-sm">
+                  {b.linhas.map(([k, v]) => (
                     <div key={k} className="flex items-start justify-between gap-4 py-2">
                       <dt className="text-muted-foreground">{k}</dt>
-                      <dd className="whitespace-nowrap font-semibold text-foreground">{v}</dd>
+                      <dd className="font-semibold text-foreground text-right whitespace-nowrap">{v}</dd>
                     </div>
                   ))}
                 </dl>
               </article>
             ))}
           </div>
-        </div>
-      </section>
+          <a href={FONTE_IBGE} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary underline underline-offset-2">Fonte: IBGE, Cidades e Estados <ExternalLink className="w-3.5 h-3.5" aria-hidden /></a>
+        </section>
 
-      {/* CTA */}
-      <section className="container-page py-10 md:py-14">
-        <div className="grid gap-4 md:grid-cols-3">
+        <nav aria-label="Continue navegando" className="grid gap-3 sm:grid-cols-3">
           {[
-            { to: ROUTES.mesaDiretora, label: "Mesa Diretora", desc: "Composição do biênio em exercício." },
-            { to: ROUTES.comissoes, label: "Comissões", desc: "Comissões permanentes e seus membros." },
-            { to: ROUTES.vereadores, label: "Vereadores", desc: "Parlamentares da legislatura atual." },
-          ].map((c) => (
-            <Link
-              key={c.to}
-              to={c.to}
-              className="group rounded-2xl border border-border bg-card p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
-            >
-              <h3 className="font-display text-lg font-bold text-foreground">{c.label}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">{c.desc}</p>
-              <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
-                Acessar <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </span>
+            { to: ROUTES.mesaDiretora, rotulo: "Mesa Diretora" },
+            { to: ROUTES.comissoes, rotulo: "Comissões" },
+            { to: ROUTES.leiOrganica, rotulo: "Lei Orgânica Municipal" },
+          ].map((l) => (
+            <Link key={l.to} to={l.to} className="group flex items-center gap-3 bg-card border border-border rounded-2xl p-4 hover:shadow-md transition focus-visible:outline-2 focus-visible:outline-offset-2">
+              <span className="flex-1 text-sm font-semibold text-foreground">{l.rotulo}</span>
+              <ArrowRight className="w-4 h-4 text-muted-foreground transition group-hover:translate-x-0.5" aria-hidden />
             </Link>
           ))}
-        </div>
-      </section>
-    </main>
+        </nav>
+      </div>
+    </>
   );
 }

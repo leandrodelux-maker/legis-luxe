@@ -1,7 +1,26 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { ChevronRight, Home } from "lucide-react";
 
-import { buildBreadcrumbs } from "@/lib/site-links";
+import { buildBreadcrumbs, ROUTES } from "@/lib/site-links";
+
+/** Páginas cuja trilha já aparece em CabecalhoPagina. */
+const COM_TRILHA_NO_CABECALHO = new Set<string>([
+  ROUTES.historia,
+  ROUTES.mesaDiretora,
+  ROUTES.comissoes,
+  ROUTES.sessoes,
+  ROUTES.projetos,
+  ROUTES.cartaServicos,
+  ROUTES.leiOrganica,
+  ROUTES.regimentoInterno,
+  ROUTES.roteiroSessoes,
+  ROUTES.faq,
+  ROUTES.noticias,
+  ROUTES.esic,
+  ROUTES.contato,
+  ROUTES.lgpd,
+  ROUTES.mapaDoSite,
+]);
 
 /**
  * Breadcrumb dinâmico das páginas internas, derivado de ROUTES/SITE_SECTIONS.
@@ -11,7 +30,8 @@ export function SiteBreadcrumb() {
   const location = useLocation();
   const crumbs = buildBreadcrumbs(location.pathname);
 
-  if (crumbs.length < 2) return null;
+  const caminho = location.pathname.replace(/\/$/, "");
+  if (crumbs.length < 2 || COM_TRILHA_NO_CABECALHO.has(caminho) || caminho.startsWith(`${ROUTES.noticias}/`)) return null;
 
   const jsonLd = {
     "@context": "https://schema.org",

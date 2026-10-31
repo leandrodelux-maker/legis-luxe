@@ -1,203 +1,157 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import {
-  FileText,
-  ShieldCheck,
-  Clock,
-  Send,
-  CheckCircle2,
-  AlertCircle,
-  Info,
-  Scale,
-  Mail,
-  Phone,
-  MapPin,
-} from "lucide-react";
-import { useContactInfo } from "@/hooks/use-contact-info";
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
+import { ArrowRight, Clock, FileSearch, Scale, Send, ShieldCheck, Sparkles } from "lucide-react";
+import { CabecalhoPagina } from "@/components/cabecalho-pagina";
+import { CanaisDiretos, Comprovante, EscolhaCanal, campo, novoProtocolo } from "@/components/atendimento-publico";
 import { supabase } from "@/integrations/supabase/client";
+import { PRAZO_DIAS } from "@/lib/atendimento";
+import { ROUTES } from "@/lib/site-links";
+import { TODOS_ITENS, itemHref } from "@/data/transparenciaCatalogo";
 
 export const Route = createFileRoute("/e-sic")({
   head: () => ({
     meta: [
-      { title: "e-SIC — Serviço de Informação ao Cidadão" },
+      { title: "e-SIC — Câmara Municipal de Adelândia" },
       {
         name: "description",
-        content:
-          "Solicite informações públicas à Câmara Municipal pelo e-SIC — Lei de Acesso à Informação (Lei nº 12.527/2011).",
+        content: "Solicite informações públicas à Câmara Municipal pelo e-SIC, com base na Lei de Acesso à Informação (Lei nº 12.527/2011).",
       },
-      { property: "og:title", content: "e-SIC — Serviço de Informação ao Cidadão" },
-      {
-        property: "og:description",
-        content: "Registre pedidos de acesso à informação com base na LAI.",
-      },
+      { property: "og:title", content: "e-SIC — Câmara Municipal de Adelândia" },
+      { property: "og:description", content: "Registre pedidos de acesso à informação com base na LAI." },
     ],
   }),
   component: ESicPage,
 });
 
+const MODELOS = [
+  { rotulo: "Cópia de documento", texto: "Solicito cópia do seguinte documento da Câmara Municipal: " },
+  { rotulo: "Gastos da Câmara", texto: "Solicito informações sobre os gastos da Câmara Municipal com " },
+  { rotulo: "Andamento de projeto", texto: "Solicito informações sobre o andamento do seguinte projeto: " },
+];
+const FORMATOS = ["E-mail", "Arquivo digital", "Consulta presencial", "Cópia física"];
+const ETAPAS = [
+  { titulo: "Você envia o pedido", texto: "O site gera um protocolo na hora." },
+  { titulo: "A Câmara analisa", texto: "A resposta sai em até 20 dias, com mais 10 se houver justificativa." },
+  { titulo: "Você recebe a resposta", texto: "O retorno é enviado pelo contato informado." },
+  { titulo: "Se discordar, recorra", texto: "A lei garante recurso em até 10 dias, contados da resposta ou da negativa." },
+];
+const PUBLICADOS = TODOS_ITENS.filter((i) => i.popular);
+
 function ESicPage() {
-  const contact = useContactInfo();
-  const [status, setStatus] = useState<"idle" | "sending" | "ok" | "err">("idle");
+  const [pedido, setPedido] = useState("");
+  const [enviando, setEnviando] = useState(false);
+  const [erro, setErro] = useState(false);
+  const [protocolo, setProtocolo] = useState("");
+  const [publicado, setPublicado] = useState("");
+  const destino = PUBLICADOS.find((i) => i.slug === publicado);
 
-  const [protocolo, setProtocolo] = useState<string>("");
-
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function enviar(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setStatus("sending");
-    const fd = new FormData(e.currentTarget);
-    const prot = `SIC-${Date.now().toString().slice(-8)}`;
-    const prazo = new Date();
-    prazo.setDate(prazo.getDate() + 20);
-    const payload = {
-      protocolo: prot,
-      nome: String(fd.get("nome") || ""),
-      cpf: String(fd.get("cpf") || ""),
-      email: String(fd.get("email") || ""),
-      telefone: String(fd.get("telefone") || ""),
-      pedido: String(fd.get("pedido") || ""),
+    setEnviando(true);
+    setErro(false);
+    const d = new FormData(e.currentTarget);
+    const novo = novoProtocolo("SIC");
+    const prazo = new Date(Date.now() + PRAZO_DIAS.sic * 864e5);
+    const { error } = await supabase.from("esic_solicitacoes").insert({
+      protocolo: novo,
+      nome: String(d.get("nome")).trim(),
+      cpf: String(d.get("cpf")).trim(),
+      email: String(d.get("email")).trim(),
+      telefone: String(d.get("telefone")).trim(),
+      pedido: `${pedido.trim()}\n\nFormato de recebimento: ${d.get("formato")}`,
       prazo_resposta: prazo.toISOString().slice(0, 10),
       status: "pendente",
-    };
-    const { error } = await (supabase as any).from("esic_solicitacoes").insert(payload);
-    if (error) {
-      setStatus("err");
-      return;
-    }
-    setProtocolo(prot);
-    setStatus("ok");
-    (e.target as HTMLFormElement).reset();
+    });
+    setEnviando(false);
+    if (error) return setErro(true);
+    setPedido("");
+    setProtocolo(novo);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   return (
-    <main className="min-h-screen bg-background">
-      {/* HERO */}
-      <section className="relative overflow-hidden border-b border-border bg-gradient-to-br from-primary-deep via-primary to-primary-deep text-primary-foreground">
-        <div className="container-page py-10">
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/40 bg-white/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-gold">
-              <ShieldCheck className="h-3 w-3" /> LAI · Lei nº 12.527/2011
-            </span>
-          </div>
-          <h1 className="mt-3 font-display text-3xl font-extrabold md:text-4xl">
-            e-SIC — Serviço de Informação ao Cidadão
-          </h1>
-          <p className="mt-2 max-w-3xl text-sm text-primary-foreground/85 md:text-base">
-            Registre um pedido de acesso à informação pública. O órgão possui até 20 dias, prorrogáveis por
-            mais 10, para responder à sua solicitação.
-          </p>
-        </div>
-      </section>
+    <>
+      <CabecalhoPagina
+        titulo="e-SIC"
+        trilha={[{ rotulo: "Acesso à Informação" }]}
+        icone={FileSearch}
+        descricao="Peça qualquer informação pública à Câmara Municipal. É um direito garantido pela Lei de Acesso à Informação (Lei nº 12.527/2011)."
+        numeros={[{ rotulo: "Prazo de resposta", valor: "20 dias" }, { rotulo: "Prorrogação", valor: "+10 dias" }, { rotulo: "Prazo de recurso", valor: "10 dias" }]}
+      />
 
-      {/* INFO CARDS */}
-      <section className="container-page py-10 md:py-14 grid gap-5 md:grid-cols-3">
-        {[
-          { icon: FileText, title: "O que é?", text: "Canal oficial para qualquer cidadão solicitar informações públicas ao Poder Legislativo Municipal." },
-          { icon: Clock, title: "Prazos", text: "Resposta em até 20 dias corridos, com possibilidade de prorrogação por mais 10 dias mediante justificativa." },
-          { icon: Scale, title: "Base Legal", text: "Lei de Acesso à Informação — Lei nº 12.527/2011 e Decreto nº 7.724/2012." },
-        ].map((it) => (
-          <div key={it.title} className="rounded-xl border border-border bg-card p-6">
-            <div className="grid h-11 w-11 place-items-center rounded-lg bg-primary/10 text-primary">
-              <it.icon className="h-5 w-5" />
-            </div>
-            <h3 className="mt-4 font-display text-lg font-semibold">{it.title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground leading-6">{it.text}</p>
-          </div>
-        ))}
-      </section>
+      <div className="container-page py-8 md:py-10 space-y-8">
+        {protocolo ? (
+          <Comprovante protocolo={protocolo} titulo="Pedido registrado" prazoDias={PRAZO_DIAS.sic} resumo="A resposta será enviada pelo contato informado. Para falar sobre este pedido, tenha o número do protocolo em mãos." onNovo={() => setProtocolo("")} />
+        ) : (
+          <>
+            <EscolhaCanal atual={ROUTES.esic} />
 
-      {/* FORM */}
-      <section className="container-page pb-16">
-        <div className="mx-auto max-w-3xl rounded-2xl border border-border bg-card p-6 md:p-8 shadow-sm">
-          <div className="flex items-center gap-3">
-            <Send className="h-5 w-5 text-primary" />
-            <h2 className="font-display text-xl font-bold">Novo pedido de informação</h2>
-          </div>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Preencha os dados abaixo. Um número de protocolo será gerado para acompanhamento.
-          </p>
-
-          {status === "ok" ? (
-            <div className="mt-6 rounded-lg border border-emerald-300 bg-emerald-50 p-5 text-emerald-900">
-              <div className="flex items-center gap-2 font-semibold">
-                <CheckCircle2 className="h-5 w-5" /> Pedido registrado com sucesso!
-              </div>
-              <p className="mt-2 text-sm">
-                Protocolo: <span className="font-mono font-bold">{protocolo}</span>. Guarde este número
-                para acompanhamento.
-              </p>
-              <Button className="mt-4" variant="outline" onClick={() => setStatus("idle")}>
-                Fazer novo pedido
-              </Button>
-            </div>
-          ) : (
-            <form className="mt-6 grid gap-4 md:grid-cols-2" onSubmit={onSubmit}>
-              <div className="md:col-span-1">
-                <Label htmlFor="nome">Nome completo *</Label>
-                <Input id="nome" name="nome" required />
-              </div>
+            <section aria-labelledby="titulo-publicado" className="grid gap-3 md:grid-cols-[1fr_auto] md:items-end rounded-2xl text-white p-5" style={{ background: "linear-gradient(120deg, var(--primary-deep), var(--primary))" }}>
               <div>
-                <Label htmlFor="cpf">CPF</Label>
-                <Input id="cpf" name="cpf" placeholder="000.000.000-00" />
+                <h2 id="titulo-publicado" className="font-display font-bold text-xl">Talvez a resposta já esteja publicada</h2>
+                <label htmlFor="ja-publicado" className="block text-sm text-white/90 mt-0.5">Procure no Portal da Transparência antes de abrir o pedido:</label>
+                <select id="ja-publicado" value={publicado} onChange={(e) => setPublicado(e.target.value)} className="mt-2 h-11 w-full rounded-xl bg-white px-3 text-sm font-semibold text-slate-900">
+                  <option value="">Escolha um assunto</option>
+                  {PUBLICADOS.map((i) => <option key={i.slug} value={i.slug}>{i.label}</option>)}
+                </select>
               </div>
-              <div>
-                <Label htmlFor="email">E-mail *</Label>
-                <Input id="email" name="email" type="email" required />
-              </div>
-              <div>
-                <Label htmlFor="telefone">Telefone</Label>
-                <Input id="telefone" name="telefone" placeholder="(00) 00000-0000" />
-              </div>
-              <div className="md:col-span-2">
-                <Label htmlFor="pedido">Descreva sua solicitação *</Label>
-                <Textarea id="pedido" name="pedido" required rows={6} placeholder="Descreva de forma clara e objetiva a informação que deseja obter." />
-              </div>
-              <div className="md:col-span-2 flex flex-wrap items-center justify-between gap-3">
-                <p className="text-xs text-muted-foreground inline-flex items-center gap-1.5">
-                  <Info className="h-3.5 w-3.5" /> Ao enviar, você concorda com o tratamento dos dados conforme a LGPD.
-                </p>
-                <Button type="submit" disabled={status === "sending"}>
-                  {status === "sending" ? "Enviando..." : "Enviar pedido"} <Send className="ml-2 h-4 w-4" />
-                </Button>
-              </div>
-              {status === "err" && (
-                <div className="md:col-span-2 flex items-center gap-2 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-                  <AlertCircle className="h-4 w-4" /> Não foi possível registrar o pedido. Tente novamente.
-                </div>
+              {destino ? (
+                <a href={itemHref(destino)} className="inline-flex items-center justify-center gap-1.5 h-11 px-4 rounded-xl bg-white text-slate-900 text-sm font-semibold hover:bg-white/90 transition">Ver {destino.label} <ArrowRight className="w-4 h-4" aria-hidden /></a>
+              ) : (
+                <Link to={ROUTES.transparencia} className="inline-flex items-center justify-center gap-1.5 h-11 px-4 rounded-xl border border-white/50 text-sm font-semibold hover:bg-white/10 transition">Abrir o portal <ArrowRight className="w-4 h-4" aria-hidden /></Link>
               )}
-            </form>
-          )}
-        </div>
+            </section>
 
-        {/* CONTATOS ALTERNATIVOS */}
-        <div className="mx-auto mt-8 grid max-w-3xl gap-4 sm:grid-cols-2">
-          <div className="rounded-xl border border-border bg-card p-5">
-            <div className="flex items-center gap-2 text-primary"><Mail className="h-4 w-4" /> <span className="font-semibold">E-mail</span></div>
-            <a href={`mailto:${contact.email}`} className="mt-1 block break-all text-sm text-muted-foreground hover:text-primary">{contact.email}</a>
-          </div>
-          <div className="rounded-xl border border-border bg-card p-5">
-            <div className="flex items-center gap-2 text-primary"><Phone className="h-4 w-4" /> <span className="font-semibold">Telefone</span></div>
-            <a href={contact.telefoneHref} className="mt-1 block text-sm text-muted-foreground hover:text-primary">{contact.telefone}</a>
-          </div>
-          <div className="rounded-xl border border-border bg-card p-5">
-            <div className="flex items-center gap-2 text-primary"><MapPin className="h-4 w-4" /> <span className="font-semibold">Endereço</span></div>
-            <p className="mt-1 text-sm text-muted-foreground">{contact.endereco}</p>
-          </div>
-          <div className="rounded-xl border border-border bg-card p-5">
-            <div className="flex items-center gap-2 text-primary"><Clock className="h-4 w-4" /> <span className="font-semibold">Horário</span></div>
-            <p className="mt-1 text-sm text-muted-foreground">{contact.horario}</p>
-          </div>
-        </div>
+            <div className="grid gap-5 lg:grid-cols-[1fr_340px]">
+              <form onSubmit={enviar} aria-labelledby="titulo-pedido" className="bg-card border border-border rounded-2xl p-5 md:p-6 space-y-4 min-w-0">
+                <div>
+                  <h2 id="titulo-pedido" className="font-display font-bold text-xl text-foreground">Novo pedido de informação</h2>
+                  <p className="text-sm text-muted-foreground mt-0.5">Campos com * são obrigatórios. Você não precisa explicar o motivo do pedido.</p>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div><label htmlFor="nome" className="text-sm font-semibold text-foreground">Nome completo ou razão social *</label><input id="nome" name="nome" required minLength={2} maxLength={180} autoComplete="name" className={`${campo} h-11 mt-1`} /></div>
+                  <div><label htmlFor="cpf" className="text-sm font-semibold text-foreground">CPF ou CNPJ</label><input id="cpf" name="cpf" inputMode="numeric" className={`${campo} h-11 mt-1`} /></div>
+                  <div><label htmlFor="email" className="text-sm font-semibold text-foreground">E-mail *</label><input id="email" name="email" type="email" required autoComplete="email" className={`${campo} h-11 mt-1`} /></div>
+                  <div><label htmlFor="telefone" className="text-sm font-semibold text-foreground">Telefone</label><input id="telefone" name="telefone" type="tel" autoComplete="tel" className={`${campo} h-11 mt-1`} /></div>
+                </div>
+                <div>
+                  <label htmlFor="pedido" className="text-sm font-semibold text-foreground">O que você quer saber? *</label>
+                  <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+                    <span className="inline-flex items-center gap-1 text-xs text-muted-foreground"><Sparkles className="w-3.5 h-3.5" aria-hidden /> Comece por um modelo:</span>
+                    {MODELOS.map((m) => <button key={m.rotulo} type="button" onClick={() => setPedido(m.texto)} className="rounded-full border border-border px-2.5 py-1 text-xs font-semibold text-foreground hover:bg-muted transition">{m.rotulo}</button>)}
+                  </div>
+                  <textarea id="pedido" name="pedido" required minLength={10} maxLength={5000} rows={6} value={pedido} onChange={(e) => setPedido(e.target.value)} className={`${campo} py-2.5 mt-2`} />
+                </div>
+                <div className="sm:w-1/2">
+                  <label htmlFor="formato" className="text-sm font-semibold text-foreground">Como prefere receber?</label>
+                  <select id="formato" name="formato" className={`${campo} h-11 mt-1`}>{FORMATOS.map((f) => <option key={f}>{f}</option>)}</select>
+                </div>
+                {erro && <p role="alert" className="text-sm font-medium text-destructive">Não foi possível registrar o pedido. O texto continua no formulário: tente de novo em instantes.</p>}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-border">
+                  <p className="inline-flex items-start gap-1.5 text-xs text-muted-foreground"><ShieldCheck className="w-4 h-4 text-primary shrink-0" aria-hidden /> <span>Seus dados são usados para responder ao pedido. <Link to={ROUTES.lgpd} className="underline underline-offset-2">Saiba mais</Link>.</span></p>
+                  <button type="submit" disabled={enviando} className="inline-flex items-center justify-center gap-1.5 h-11 px-5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition disabled:opacity-60 shrink-0"><Send className="w-4 h-4" aria-hidden /> {enviando ? "Enviando…" : "Enviar pedido"}</button>
+                </div>
+              </form>
 
-
-        <div className="mx-auto mt-6 max-w-3xl text-center text-sm text-muted-foreground">
-          Veja também as <Link to="/perguntas-frequentes" className="text-primary hover:underline">Perguntas Frequentes</Link> ou consulte o <Link to="/transparencia-portal" className="text-primary hover:underline">Portal da Transparência</Link>.
-        </div>
-      </section>
-    </main>
+              <div className="space-y-5">
+                <section aria-labelledby="titulo-etapas" className="bg-card border border-border rounded-2xl p-5">
+                  <h2 id="titulo-etapas" className="flex items-center gap-2 font-display font-bold text-lg text-foreground"><Clock className="w-5 h-5 text-primary" aria-hidden /> Como funciona</h2>
+                  <ol className="space-y-3 mt-3">
+                    {ETAPAS.map((e, i) => (
+                      <li key={e.titulo} className="flex gap-3">
+                        <span className="w-7 h-7 shrink-0 rounded-lg grid place-items-center bg-primary/10 text-primary font-display text-sm font-bold">{i + 1}</span>
+                        <span className="text-sm"><strong className="block text-foreground">{e.titulo}</strong><span className="text-muted-foreground">{e.texto}</span></span>
+                      </li>
+                    ))}
+                  </ol>
+                </section>
+                <CanaisDiretos />
+                <p className="flex gap-2 text-xs text-muted-foreground leading-relaxed"><Scale className="w-4 h-4 text-primary shrink-0" aria-hidden /> Base legal: Lei nº 12.527/2011, arts. 10, 11 e 15.</p>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+    </>
   );
 }

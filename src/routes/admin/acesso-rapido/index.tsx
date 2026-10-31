@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Plus, Edit, Trash2, ExternalLink, Link as LinkIcon, RotateCcw } from "lucide-react";
+import { Plus, Edit, Trash2, ExternalLink, Link as LinkIcon, RotateCcw, TriangleAlert } from "lucide-react";
+import { BotaoCabecalho, PaginaModulo } from "@/components/admin/painel/PaginaModulo";
 import {
   useQuickAccess,
   CATEGORY_LABELS,
@@ -92,26 +93,21 @@ function AdminQuickAccess() {
   };
 
   return (
-    <div className="space-y-8 animate-[fade-up_0.5s_ease-out]">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-3xl font-display font-bold text-slate-900">Acesso Rápido</h2>
-          <p className="text-slate-500">
-            Gerencie os atalhos exibidos na seção "Acesso Rápido" da home.
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={reset}>
-            <RotateCcw className="w-4 h-4 mr-2" /> Restaurar padrões
-          </Button>
-          <Button className="bg-primary-deep text-white hover:bg-primary-deep/90" onClick={() => openNew(tab)}>
-            <Plus className="w-4 h-4 mr-2" /> Novo Atalho
-          </Button>
-        </div>
+    <PaginaModulo
+      acoes={
+        <>
+          <button type="button" onClick={reset} className="inline-flex items-center gap-1.5 h-10 px-3.5 rounded-xl text-sm font-semibold bg-white/15 hover:bg-white/25 text-white transition"><RotateCcw className="w-4 h-4" aria-hidden /> Restaurar padrões</button>
+          <BotaoCabecalho onClick={() => openNew(tab)}><Plus className="w-4 h-4" aria-hidden /> Novo atalho</BotaoCabecalho>
+        </>
+      }
+    >
+      <div role="note" className="flex gap-3 rounded-2xl border p-4 text-sm" style={{ borderColor: "color-mix(in srgb, #A8540F 35%, transparent)", backgroundColor: "color-mix(in srgb, #A8540F 8%, transparent)" }}>
+        <TriangleAlert className="w-5 h-5 shrink-0" style={{ color: "#A8540F" }} aria-hidden />
+        <p className="text-foreground"><strong>Atenção:</strong> estes atalhos ainda ficam guardados só neste navegador. Os visitantes do site continuam vendo a lista padrão.</p>
       </div>
 
       <Tabs value={tab} onValueChange={(v) => setTab(v as QuickAccessCategory)}>
-        <TabsList className="bg-white border border-slate-200 h-auto p-1">
+        <TabsList className="bg-card border border-border h-auto p-1">
           {CATEGORIES.map((c) => (
             <TabsTrigger key={c} value={c} className="px-4 py-2">
               {CATEGORY_LABELS[c]}
@@ -126,9 +122,9 @@ function AdminQuickAccess() {
           const list = items.filter((i) => i.category === c);
           return (
             <TabsContent key={c} value={c} className="mt-6">
-              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+              <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
                 <Table>
-                  <TableHeader className="bg-slate-50">
+                  <TableHeader className="bg-muted/40">
                     <TableRow>
                       <TableHead className="w-16">Ícone</TableHead>
                       <TableHead>Título</TableHead>
@@ -141,19 +137,19 @@ function AdminQuickAccess() {
                   <TableBody>
                     {list.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={6} className="text-center text-slate-400 py-10">
+                        <TableCell colSpan={6} className="text-center text-muted-foreground py-10">
                           Nenhum atalho nesta categoria.
                         </TableCell>
                       </TableRow>
                     ) : (
                       list.map((item) => (
-                        <TableRow key={item.id} className="hover:bg-slate-50/50">
+                        <TableRow key={item.id} className="hover:bg-muted/40/50">
                           <TableCell>
                             <div className="w-9 h-9 rounded-lg bg-primary/5 text-primary grid place-items-center">
                               <QuickAccessIconRender name={item.icon} className="w-4 h-4" />
                             </div>
                           </TableCell>
-                          <TableCell className="font-bold text-slate-900">{item.label}</TableCell>
+                          <TableCell className="font-bold text-foreground">{item.label}</TableCell>
                           <TableCell>
                             {item.tag ? (
                               <Badge variant="outline" className="text-[10px] text-primary border-primary/30">
@@ -163,16 +159,16 @@ function AdminQuickAccess() {
                               <span className="text-slate-300">—</span>
                             )}
                           </TableCell>
-                          <TableCell className="font-mono text-xs text-slate-500 max-w-xs truncate">
+                          <TableCell className="font-mono text-xs text-muted-foreground max-w-xs truncate">
                             {item.url}
                           </TableCell>
                           <TableCell>
                             {item.external ? (
-                              <span className="inline-flex items-center gap-1 text-xs text-amber-600">
+                              <span className="inline-flex items-center gap-1 text-xs text-amber-900">
                                 <ExternalLink className="w-3 h-3" /> Externo
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1 text-xs text-emerald-600">
+                              <span className="inline-flex items-center gap-1 text-xs text-emerald-800">
                                 <LinkIcon className="w-3 h-3" /> Interno
                               </span>
                             )}
@@ -183,6 +179,8 @@ function AdminQuickAccess() {
                                 variant="ghost"
                                 size="icon"
                                 className="h-8 w-8"
+                                aria-label={`Editar ${item.label}`}
+                                title="Editar"
                                 onClick={() => openEdit(item)}
                               >
                                 <Edit className="w-4 h-4" />
@@ -190,7 +188,9 @@ function AdminQuickAccess() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-8 w-8 text-red-500 hover:text-red-600"
+                                className="h-8 w-8 text-destructive hover:text-destructive"
+                                aria-label={`Excluir ${item.label}`}
+                                title="Excluir"
                                 onClick={() => remove(item.id)}
                               >
                                 <Trash2 className="w-4 h-4" />
@@ -279,10 +279,10 @@ function AdminQuickAccess() {
               />
             </div>
 
-            <div className="flex items-center justify-between rounded-lg border border-slate-200 p-3">
+            <div className="flex items-center justify-between rounded-lg border border-border p-3">
               <div>
                 <p className="text-sm font-medium">Link externo</p>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-muted-foreground">
                   Abre em nova aba. Desative para rotas internas do portal.
                 </p>
               </div>
@@ -300,6 +300,6 @@ function AdminQuickAccess() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </PaginaModulo>
   );
 }

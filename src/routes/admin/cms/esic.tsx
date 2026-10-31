@@ -1,46 +1,42 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { CrudPage, FieldDef } from "@/components/admin/crud-page";
-import { Badge } from "@/components/ui/badge";
+import { CaixaAtendimento, type Situacao } from "@/components/admin/painel/CaixaAtendimento";
 
 export const Route = createFileRoute("/admin/cms/esic")({
-  component: () => {
-    const fields: FieldDef[] = [
-      { name: "protocolo", label: "Protocolo" },
-      { name: "nome", label: "Nome", required: true },
-      { name: "cpf", label: "CPF" },
-      { name: "email", label: "E-mail", type: "email", required: true },
-      { name: "telefone", label: "Telefone" },
-      { name: "pedido", label: "Pedido de Informação", type: "textarea", required: true },
-      { name: "prazo_resposta", label: "Prazo de Resposta", type: "date" },
-      { name: "status", label: "Status", type: "select", options: [
-        { label: "Pendente", value: "pendente" },
-        { label: "Em análise", value: "analise" },
-        { label: "Respondido", value: "respondido" },
-        { label: "Prorrogado", value: "prorrogado" },
-        { label: "Negado", value: "negado" },
-      ] },
-      { name: "resposta", label: "Resposta", type: "textarea" },
-    ];
-    return (
-      <CrudPage<any>
-        title="e-SIC — Solicitações de Informação"
-        description="Pedidos de acesso à informação (Lei nº 12.527/2011)."
-        table="esic_solicitacoes"
-        orderBy={{ column: "created_at", ascending: false }}
-        defaultValues={{ status: "pendente" }}
-        columns={[
-          { key: "protocolo", label: "Protocolo", render: (r: any) => <span className="font-mono text-xs">{r.protocolo}</span> },
-          { key: "nome", label: "Solicitante" },
-          { key: "pedido", label: "Pedido", render: (r: any) => <span className="line-clamp-1 max-w-xs">{r.pedido}</span> },
-          { key: "prazo_resposta", label: "Prazo", render: (r: any) => {
-            const prazo = new Date(r.prazo_resposta);
-            const days = Math.ceil((prazo.getTime() - Date.now()) / (1000*60*60*24));
-            return <Badge variant={days < 0 ? "destructive" : days < 5 ? "default" : "outline"}>{days < 0 ? `${Math.abs(days)}d vencido` : `${days}d`}</Badge>;
-          } },
-          { key: "status", label: "Status", render: (r: any) => <Badge>{r.status}</Badge> },
-        ]}
-        fields={fields}
-      />
-    );
-  },
+  component: AdminEsic,
 });
+
+const SITUACOES: Situacao[] = [
+  { valor: "pendente", rotulo: "Pendente", cor: "#A8540F", aberta: true },
+  { valor: "analise", rotulo: "Em análise", cor: "#1F5FBF", aberta: true },
+  { valor: "prorrogado", rotulo: "Prorrogado", cor: "#5B45B0", aberta: true },
+  { valor: "respondido", rotulo: "Respondido", cor: "#0B7A4B", aberta: false },
+  { valor: "negado", rotulo: "Negado", cor: "#B42318", aberta: false },
+];
+const abertas = SITUACOES.filter((s) => s.aberta).map((s) => s.valor);
+
+function AdminEsic() {
+  return (
+    <CaixaAtendimento
+      tabela="esic_solicitacoes"
+      situacoes={SITUACOES}
+      respondido="respondido"
+      campoTexto="pedido"
+      assunto={(r) => String(r.pedido ?? "").split("\n")[0].slice(0, 110)}
+      prazo={{ campo: "prazo_resposta", situacaoProrrogada: "prorrogado" }}
+      vazio="Nenhum pedido recebido"
+      detalhes={(r) => [
+        { rotulo: "CPF ou CNPJ", valor: r.cpf },
+        { rotulo: "Prazo de resposta", valor: r.prazo_resposta ? new Date(`${r.prazo_resposta}T12:00:00`).toLocaleDateString("pt-BR") : null },
+      ]}
+      indicadores={(ls, { diasRestantes }) => {
+        const ab = ls.filter((l) => abertas.includes(l.status));
+        return [
+          { rotulo: "Pedidos", valor: ls.length },
+          { rotulo: "Em aberto", valor: ab.length, cor: "#A8540F" },
+          { rotulo: "Vencidos", valor: ab.filter((l) => (diasRestantes(l) ?? 0) < 0).length, cor: "#B42318", detalhe: "Prazo legal de 20 dias" },
+          { rotulo: "Respondidos", valor: ls.filter((l) => l.status === "respondido").length, cor: "#0B7A4B" },
+        ];
+      }}
+    />
+  );
+}

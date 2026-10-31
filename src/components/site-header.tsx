@@ -1,3 +1,4 @@
+import TransparenciaBusca from "@/components/transparency/TransparenciaBusca";
 import { Link } from "@tanstack/react-router";
 import { CONTACT_FALLBACK } from "@/hooks/use-contact-info";
 
@@ -23,6 +24,7 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import radarLogo from "@/assets/radar-transparencia.png.asset.json";
+import logoHeader from "@/assets/logo-header.png";
 import { ROUTES, INFO_ACCESS_LINKS, CAMARA_LINKS, ATOS_LEGISLATIVOS_LINKS } from "@/lib/site-links";
 
 type SiteSettings = {
@@ -44,7 +46,7 @@ const mainNav = [
 ] as const;
 
 const navCls =
-  "inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[15px] font-medium text-white/90 hover:bg-white/10 hover:text-white transition-colors whitespace-nowrap";
+  "inline-flex items-center gap-1 rounded-lg px-1.5 py-2 text-[13px] font-semibold text-white hover:bg-white/15 xl:gap-1.5 xl:px-2 xl:text-sm min-[1360px]:px-3 min-[1360px]:text-base hover:text-white transition-colors whitespace-nowrap";
 const navActive = "!bg-white !text-primary-deep shadow-sm";
 
 export function SiteHeader() {
@@ -63,7 +65,7 @@ export function SiteHeader() {
   const phone = settings?.contact_phone ?? CONTACT_FALLBACK.telefone;
   const email = settings?.contact_email ?? CONTACT_FALLBACK.email;
   const hours = settings?.contact_hours ?? CONTACT_FALLBACK.horario;
-
+  const headerLogoSrc = logoHeader;
 
   return (
     <>
@@ -74,7 +76,7 @@ export function SiteHeader() {
         Pular para o conteúdo
       </a>
 
-      <header className="relative z-40 bg-hero text-white">
+      <header className="relative z-50 bg-hero text-white">
         {/* TOP STRIP */}
         <div className="bg-primary-deep/70 text-xs">
           <div className="container-page flex h-9 items-center justify-between gap-4">
@@ -94,53 +96,37 @@ export function SiteHeader() {
           </div>
         </div>
 
+        <div className="container-page">
+        <div className="w-fit min-w-full">
         {/* LOGO + SEARCH + CTAs */}
-        <div className="container-page py-5 flex items-center justify-between gap-6">
+        <div className="py-5 flex items-center justify-between gap-6">
           <Link to="/" className="flex items-center gap-3 shrink-0 min-w-0">
-            {settings?.header_logo_url ? (
-              <img
-                src={settings.header_logo_url}
-                alt="Logo Câmara Municipal"
-                decoding="async"
-                style={{
-                  maxHeight: `${settings.header_logo_height || 80}px`,
-                  maxWidth: "55vw",
-                }}
-                className="w-auto h-auto object-contain"
-              />
-            ) : (
-              <>
-                <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-white text-primary-deep shadow-md">
-                  <Landmark className="h-7 w-7" />
-                </div>
-                <div className="leading-tight min-w-0">
-                  <div className="font-display font-bold text-lg md:text-2xl truncate">Câmara Municipal</div>
-                  <div className="text-xs md:text-sm text-gold font-medium truncate">Poder Legislativo · Adelândia</div>
-                </div>
-              </>
-            )}
+            <img
+              src={headerLogoSrc}
+              alt="Logo Câmara Municipal de Adelândia"
+              decoding="async"
+              style={{
+                maxHeight: "145px",
+                maxWidth: "60vw",
+              }}
+              className="h-28 md:h-36 w-auto object-contain"
+            />
           </Link>
 
           <div className="hidden lg:flex flex-col items-end gap-3 ml-auto">
             <div className="flex items-center gap-3">
-              <div className="relative w-[280px]">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/70" />
-                <input
-                  placeholder="Buscar no portal..."
-                  aria-label="Buscar no portal"
-                  className="w-full h-11 rounded-full bg-white/10 border border-white/25 pl-11 pr-4 text-sm text-white placeholder:text-white/70 focus:outline-none focus:bg-white/15 focus:border-white/50 transition-colors"
-                />
+              <div className="w-[300px] xl:w-[400px]">
+                <TransparenciaBusca placeholder="Buscar no portal..." />
               </div>
-              <a
-                href="https://radardatransparencia.com.br/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 h-11 px-4 rounded-full bg-white text-primary-deep font-semibold text-sm shadow-sm hover:shadow-md transition-shadow whitespace-nowrap"
-                aria-label="Radar da Transparência Pública"
+              <Link
+                to="/transparencia/$"
+                params={{ _splat: "atricon" }}
+                className="inline-flex items-center gap-2 h-11 px-4 rounded-xl bg-white text-primary-deep font-semibold text-sm shadow-sm hover:shadow-md transition-shadow whitespace-nowrap"
+                aria-label="Radar da Transparência: abrir a Matriz Atricon"
               >
                 <img src={radarLogo.url} alt="" className="h-7 w-auto" />
                 <span className="hidden xl:inline">Radar da Transparência</span>
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -156,8 +142,8 @@ export function SiteHeader() {
 
         {/* PILL NAV */}
         <nav id="menu-principal" aria-label="Principal" className="hidden lg:block pb-5" tabIndex={-1}>
-          <div className="container-page flex items-center justify-between gap-4">
-            <ul className="flex items-center gap-0.5 rounded-full border border-white/20 bg-white/5 p-1.5 backdrop-blur-sm">
+          <div className="flex items-center justify-between gap-4">
+            <ul className="flex flex-1 items-center justify-between gap-0.5 rounded-xl border border-white/25 bg-white/10 p-1.5 backdrop-blur-sm">
               {mainNav.map((item) =>
                 "children" in item && item.children ? (
                   <li key={item.to} className="relative group">
@@ -215,12 +201,14 @@ export function SiteHeader() {
 
             <Link
               to={ROUTES.transparencia}
-              className="inline-flex items-center gap-2 h-12 px-7 rounded-full bg-gold text-gold-foreground font-bold text-sm uppercase tracking-wide shadow-gold hover:brightness-105 transition-all whitespace-nowrap"
+              className="inline-flex items-center gap-2 h-12 px-3 xl:px-4 min-[1360px]:px-7 rounded-xl bg-gold text-gold-foreground font-bold text-sm uppercase tracking-wide shadow-gold hover:brightness-105 transition-all whitespace-nowrap"
             >
               <Shield className="h-4 w-4" /> Transparência
             </Link>
           </div>
         </nav>
+        </div>
+        </div>
       </header>
 
       {/* MOBILE NAV */}
@@ -264,15 +252,14 @@ export function SiteHeader() {
               >
                 <Info className="h-4 w-4" /> Acesso a Transparência
               </Link>
-              <a
-                href="https://radardatransparencia.com.br/"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                to="/transparencia/$"
+                params={{ _splat: "atricon" }}
                 onClick={() => setOpen(false)}
                 className="flex-1 inline-flex items-center justify-center gap-2 h-[52px] px-4 rounded-xl bg-white text-primary-deep font-semibold text-sm ring-1 ring-white/20"
               >
                 <img src={radarLogo.url} alt="" className="h-7 w-auto" /> Radar
-              </a>
+              </Link>
             </li>
           </ul>
         </nav>

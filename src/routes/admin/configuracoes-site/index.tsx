@@ -8,6 +8,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Upload, Image as ImageIcon, Video, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
+import { PaginaModulo } from "@/components/admin/painel/PaginaModulo";
+
 export const Route = createFileRoute("/admin/configuracoes-site/")({
   component: SiteSettingsAdmin,
 });
@@ -24,9 +26,6 @@ type Settings = {
   hero_title: string;
   hero_subtitle: string;
   hero_eyebrow: string;
-  contact_phone: string | null;
-  contact_email: string | null;
-  contact_hours: string | null;
   live_broadcast_url: string | null;
   header_logo_url: string | null;
   header_logo_height: number;
@@ -68,9 +67,6 @@ function SiteSettingsAdmin() {
         hero_title: settings.hero_title,
         hero_subtitle: settings.hero_subtitle,
         hero_eyebrow: settings.hero_eyebrow,
-        contact_phone: settings.contact_phone,
-        contact_email: settings.contact_email,
-        contact_hours: settings.contact_hours,
         live_broadcast_url: settings.live_broadcast_url,
         header_logo_url: settings.header_logo_url,
         header_logo_height: settings.header_logo_height,
@@ -137,27 +133,24 @@ function SiteSettingsAdmin() {
   if (loading || !settings) {
     return (
       <div className="p-12 grid place-items-center">
-        <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
       </div>
     );
   }
 
   return (
-    <form onSubmit={save} className="space-y-8 animate-[fade-up_0.4s_ease-out] max-w-4xl">
-      <div>
-        <h2 className="text-3xl font-display font-bold text-slate-900">Configurações do Site</h2>
-        <p className="text-slate-500">Gerencie a mídia do hero, textos e contato exibidos no site público.</p>
-      </div>
+    <PaginaModulo>
+    <form onSubmit={save} className="space-y-6 max-w-4xl">
 
       {/* HERO MEDIA */}
-      <section className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4">
+      <section className="bg-card rounded-2xl border border-border p-6 space-y-4">
         <div>
-          <h3 className="font-display font-bold text-lg text-slate-900">Mídia do Hero (Imagem ou Vídeo)</h3>
-          <p className="text-sm text-slate-500">Exibida no topo da página inicial.</p>
+          <h3 className="font-display font-bold text-lg text-foreground">Imagem ou vídeo de abertura</h3>
+          <p className="text-sm text-muted-foreground">Exibida no topo da página inicial.</p>
         </div>
 
         {settings.hero_media_url ? (
-          <div className="relative rounded-xl overflow-hidden border border-slate-200 bg-slate-100 aspect-video">
+          <div className="relative rounded-xl overflow-hidden border border-border bg-muted aspect-video">
             {settings.hero_media_type === "video" ? (
               <video src={settings.hero_media_url} controls className="w-full h-full object-cover" />
             ) : (
@@ -178,7 +171,7 @@ function SiteSettingsAdmin() {
             </span>
           </div>
         ) : (
-          <div className="rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 p-10 text-center text-slate-500">
+          <div className="rounded-xl border-2 border-dashed border-border bg-muted/40 p-10 text-center text-muted-foreground">
             Nenhuma mídia. Faça upload abaixo.
           </div>
         )}
@@ -202,19 +195,19 @@ function SiteSettingsAdmin() {
         </div>
 
         <div>
-          <Label>Ou cole uma URL externa</Label>
-          <Input
+          <Label htmlFor="site-1">Ou cole uma URL externa</Label>
+          <Input id="site-1"
             value={settings.hero_media_url ?? ""}
             placeholder="https://..."
             onChange={(e) => setSettings({ ...settings, hero_media_url: e.target.value || null })}
           />
         </div>
         <div>
-          <Label>Tipo de mídia</Label>
-          <select
+          <Label htmlFor="site-2">Tipo de mídia</Label>
+          <select id="site-2"
             value={settings.hero_media_type}
             onChange={(e) => setSettings({ ...settings, hero_media_type: e.target.value as "image" | "video" })}
-            className="w-full h-10 rounded-md border border-slate-200 px-3 text-sm bg-white"
+            className="w-full h-10 rounded-md border border-border px-3 text-sm bg-card"
           >
             <option value="image">Imagem</option>
             <option value="video">Vídeo</option>
@@ -223,18 +216,18 @@ function SiteSettingsAdmin() {
       </section>
 
       {/* LOGOTIPOS */}
-      <section className="bg-white rounded-2xl border border-slate-200 p-6 space-y-6">
+      <section className="bg-card rounded-2xl border border-border p-6 space-y-6">
         <div>
-          <h3 className="font-display font-bold text-lg text-slate-900">Logotipos do Site</h3>
-          <p className="text-sm text-slate-500">Personalize a identidade visual no cabeçalho e rodapé.</p>
+          <h3 className="font-display font-bold text-lg text-foreground">Logotipos do Site</h3>
+          <p className="text-sm text-muted-foreground">Personalize a identidade visual no cabeçalho e rodapé.</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
           {/* Header Logo */}
-          <div className="space-y-4 p-4 border rounded-xl bg-slate-50/50">
+          <div className="space-y-4 p-4 border rounded-xl bg-muted/40/50">
             <Label className="text-base font-bold">Logotipo do Cabeçalho</Label>
             
-            <div className="h-32 flex items-center justify-center border-2 border-dashed rounded-lg bg-white overflow-hidden">
+            <div className="h-32 flex items-center justify-center border-2 border-dashed rounded-lg bg-card overflow-hidden">
               {settings.header_logo_url ? (
                 <div className="relative group w-full h-full flex items-center justify-center p-4">
                   <img 
@@ -242,11 +235,12 @@ function SiteSettingsAdmin() {
                     alt="Logo Header" 
                     className="max-h-full max-w-full object-contain"
                   />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity flex items-center justify-center gap-2">
                     <Button 
                       type="button" 
                       variant="destructive" 
                       size="sm"
+                      aria-label="Remover logotipo do cabeçalho"
                       onClick={() => setSettings({ ...settings, header_logo_url: null })}
                     >
                       <Trash2 className="w-4 h-4" />
@@ -256,7 +250,7 @@ function SiteSettingsAdmin() {
               ) : (
                 <div className="text-center p-4">
                   <ImageIcon className="w-8 h-8 mx-auto text-slate-300 mb-2" />
-                  <p className="text-xs text-slate-400">Sem logotipo</p>
+                  <p className="text-xs text-muted-foreground">Sem logotipo</p>
                 </div>
               )}
             </div>
@@ -286,9 +280,9 @@ function SiteSettingsAdmin() {
               </Button>
 
               <div>
-                <Label className="text-xs">Altura do Logotipo (px)</Label>
+                <Label htmlFor="site-altura-201" className="text-xs">Altura do Logotipo (px)</Label>
                 <div className="flex items-center gap-4">
-                  <Input 
+                  <Input id="site-altura-201" 
                     type="range" 
                     min="30" 
                     max="200" 
@@ -304,7 +298,7 @@ function SiteSettingsAdmin() {
           </div>
 
           {/* Footer Logo */}
-          <div className="space-y-4 p-4 border rounded-xl bg-slate-50/50">
+          <div className="space-y-4 p-4 border rounded-xl bg-muted/40/50">
             <Label className="text-base font-bold">Logotipo do Rodapé</Label>
             
             <div className="h-32 flex items-center justify-center border-2 border-dashed rounded-lg bg-primary-deep overflow-hidden">
@@ -315,11 +309,12 @@ function SiteSettingsAdmin() {
                     alt="Logo Footer" 
                     className="max-h-full max-w-full object-contain"
                   />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity flex items-center justify-center gap-2">
                     <Button 
                       type="button" 
                       variant="destructive" 
                       size="sm"
+                      aria-label="Remover logotipo do rodapé"
                       onClick={() => setSettings({ ...settings, footer_logo_url: null })}
                     >
                       <Trash2 className="w-4 h-4" />
@@ -329,7 +324,7 @@ function SiteSettingsAdmin() {
               ) : (
                 <div className="text-center p-4">
                   <ImageIcon className="w-8 h-8 mx-auto text-slate-300 mb-2" />
-                  <p className="text-xs text-slate-400">Sem logotipo</p>
+                  <p className="text-xs text-muted-foreground">Sem logotipo</p>
                 </div>
               )}
             </div>
@@ -359,9 +354,9 @@ function SiteSettingsAdmin() {
               </Button>
 
               <div>
-                <Label className="text-xs">Altura do Logotipo (px)</Label>
+                <Label htmlFor="site-altura-202" className="text-xs">Altura do Logotipo (px)</Label>
                 <div className="flex items-center gap-4">
-                  <Input 
+                  <Input id="site-altura-202" 
                     type="range" 
                     min="20" 
                     max="100" 
@@ -379,19 +374,19 @@ function SiteSettingsAdmin() {
       </section>
 
       {/* TEXTOS HERO */}
-      <section className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4">
-        <h3 className="font-display font-bold text-lg text-slate-900">Textos do Hero</h3>
+      <section className="bg-card rounded-2xl border border-border p-6 space-y-4">
+        <h3 className="font-display font-bold text-lg text-foreground">Textos de abertura</h3>
         <div>
-          <Label>Eyebrow (chip superior)</Label>
-          <Input value={settings.hero_eyebrow} onChange={(e) => setSettings({ ...settings, hero_eyebrow: e.target.value })} />
+          <Label htmlFor="site-3">Texto pequeno acima do título</Label>
+          <Input id="site-3" value={settings.hero_eyebrow} onChange={(e) => setSettings({ ...settings, hero_eyebrow: e.target.value })} />
         </div>
         <div>
-          <Label>Título principal</Label>
-          <Input value={settings.hero_title} onChange={(e) => setSettings({ ...settings, hero_title: e.target.value })} />
+          <Label htmlFor="site-4">Título principal</Label>
+          <Input id="site-4" value={settings.hero_title} onChange={(e) => setSettings({ ...settings, hero_title: e.target.value })} />
         </div>
         <div>
-          <Label>Subtítulo</Label>
-          <Textarea
+          <Label htmlFor="site-5">Subtítulo</Label>
+          <Textarea id="site-5"
             rows={2}
             value={settings.hero_subtitle}
             onChange={(e) => setSettings({ ...settings, hero_subtitle: e.target.value })}
@@ -400,30 +395,13 @@ function SiteSettingsAdmin() {
       </section>
 
       {/* CONTATO */}
-      <section className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4">
-        <h3 className="font-display font-bold text-lg text-slate-900">Contato (barra superior)</h3>
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <Label>Telefone</Label>
-            <Input value={settings.contact_phone ?? ""} onChange={(e) => setSettings({ ...settings, contact_phone: e.target.value })} />
-          </div>
-          <div>
-            <Label>E-mail</Label>
-            <Input value={settings.contact_email ?? ""} onChange={(e) => setSettings({ ...settings, contact_email: e.target.value })} />
-          </div>
-          <div className="md:col-span-2">
-            <Label>Horário de atendimento</Label>
-            <Input value={settings.contact_hours ?? ""} onChange={(e) => setSettings({ ...settings, contact_hours: e.target.value })} />
-          </div>
-        </div>
-      </section>
 
       {/* TRANSMISSÃO AO VIVO */}
-      <section className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4">
-        <h3 className="font-display font-bold text-lg text-slate-900">Transmissão Ao Vivo</h3>
+      <section className="bg-card rounded-2xl border border-border p-6 space-y-4">
+        <h3 className="font-display font-bold text-lg text-foreground">Transmissão Ao Vivo</h3>
         <div>
-          <Label>URL do Canal de Transmissão (YouTube/Facebook)</Label>
-          <Input 
+          <Label htmlFor="site-6">URL do Canal de Transmissão (YouTube/Facebook)</Label>
+          <Input id="site-6" 
             value={settings.live_broadcast_url ?? ""} 
             placeholder="https://youtube.com/@seucanal/live"
             onChange={(e) => setSettings({ ...settings, live_broadcast_url: e.target.value })} 
@@ -432,12 +410,13 @@ function SiteSettingsAdmin() {
       </section>
 
 
-      <div className="flex justify-end">
-        <Button type="submit" disabled={saving} className="bg-primary-deep">
+      <div className="sticky bottom-0 flex justify-end bg-background/90 backdrop-blur py-3 border-t border-border">
+        <Button type="submit" disabled={saving} className="text-white hover:opacity-90" style={{ backgroundColor: "var(--tema)" }}>
           {saving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
           Salvar alterações
         </Button>
       </div>
     </form>
+    </PaginaModulo>
   );
 }
