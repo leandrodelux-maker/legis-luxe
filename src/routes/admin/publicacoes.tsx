@@ -28,7 +28,7 @@ type Publicacao = {
 
 const CATEGORIAS = [
   { label: "Legislação Municipal", value: "legislacao-municipal" },
-  { label: "Outras Publicações", value: "outras-publicacoes" },
+  { label: "Balancetes", value: "outras-publicacoes" },
   { label: "Atividades Legislativas dos Parlamentares", value: "atividades-legislativas" },
   { label: "Pauta das Comissões", value: "pauta-comissoes" },
   { label: "Leis e Atos Infralegais", value: "leis-atos-infralegais" },

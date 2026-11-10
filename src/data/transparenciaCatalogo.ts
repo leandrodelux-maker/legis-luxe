@@ -158,7 +158,7 @@ export const TEMAS: TransparenciaTema[] = [
     items: [
       { slug: "legislacao-municipal", label: "Legislação Municipal", desc: "Leis, decretos e demais atos publicados pela Câmara.", href: "/transparencia/legislacao", keywords: "lei decreto portaria", popular: true },
       { slug: "legislacao-federal", href: "/transparencia/legislacao-federal", label: "Legislação Federal", desc: "Leis federais de transparência e acesso à informação.", portal: LP + "legislacao-federal" },
-      { slug: "outras-publicacoes", href: "/transparencia/documentos/outras-publicacoes", label: "Outras Publicações", desc: "Documentos e publicações diversas.", portal: LP + "outras-publicacoes" },
+      { slug: "outras-publicacoes", href: "/transparencia/documentos/outras-publicacoes", label: "Balancetes", desc: "Balancetes publicados pela Câmara.", portal: LP + "outras-publicacoes" },
       { slug: "dados-abertos", label: "Dados Abertos", desc: "Bases do portal para download em formato aberto.", portal: LP + "dados-abertos", href: "/transparencia/dados-abertos", keywords: "csv download base de dados" },
       { slug: "atividades-legislativas", href: "/transparencia/documentos/atividades-legislativas", label: "Atividades Legislativas dos Parlamentares", desc: "Atuação e produção legislativa dos vereadores.", keywords: "vereador vereadores parlamentar atuação" },
       { slug: "cotas-verba-indenizatoria", href: "/transparencia/documentos/cotas-verba-indenizatoria", label: "Regulamentação das Cotas para Verba Indenizatória", desc: "Regras e valores das cotas para verba indenizatória.", portal: LP + "regulamentacao-dos-valores-relativos-as-cotas", keywords: "cota verba indenizatória vereador" },
