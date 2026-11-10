@@ -34,7 +34,7 @@ const CATEGORIAS = [
   { label: "Leis e Atos Infralegais", value: "leis-atos-infralegais" },
 ];
 const opcoes = (l: string[]) => l.map((v) => ({ label: v, value: v }));
-const TIPOS = opcoes(["Lei", "Lei Complementar", "Decreto", "Decreto Legislativo", "Resolução", "Portaria", "Pauta", "Relatório", "Balancetes"]);
+const TIPOS = opcoes(["Lei", "Lei Complementar", "Decreto", "Decreto Legislativo", "Resolução", "Portaria", "Pauta", "Relatório", "Outro"]);
 const SITUACOES = opcoes(["Vigente", "Revogada", "Alterada"]);
 const nomeCategoria = (v: string) => CATEGORIAS.find((c) => c.value === v)?.label ?? v;
 const dataBr = (d: string | null) => (d ? new Date(`${d.slice(0, 10)}T12:00:00`).toLocaleDateString("pt-BR") : "");
